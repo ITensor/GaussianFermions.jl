@@ -1,2 +1,2 @@
 
-abstract type AbstractGaussian end
+abstract type AbstractGaussianState end
