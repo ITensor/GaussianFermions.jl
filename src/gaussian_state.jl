@@ -15,3 +15,7 @@ struct GaussianState <: AbstractGaussianState
   ϕ::Matrix
   filling::Vector
 end
+
+function correlation_matrix(ϕ::GaussianState)
+  return ϕ*Diagonal(filling)*ϕ'
+end
