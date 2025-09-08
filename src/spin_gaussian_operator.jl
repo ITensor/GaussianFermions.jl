@@ -8,15 +8,39 @@ function SpinGaussianOperator(N::Integer)
   return SpinGaussianOperator(GaussianOperator(N), GaussianOperator(N))
 end
 
-function add_hop(
-  G::SpinGaussianOperator, coef::Number, i::Integer, j::Integer, spin::String=""
-)
+up_operator(G::SpinGaussianOperator) = G.up_operator
+dn_operator(G::SpinGaussianOperator) = G.dn_operator
+
+function Base.copy(G::SpinGaussianOperator)
+  SpinGaussianOperator(copy(G.up_operator), copy(G.dn_operator))
+end
+Base.length(G::SpinGaussianOperator) = length(up_operator(G))
+
+function call_function(G::SpinGaussianOperator, func::Function, args...; spin::String="")
   up_op, dn_op = copy(G.up_operator), copy(G.dn_operator)
   if spin=="up" || spin==""
-    up_op = add_hop(up_op, coef, i, j)
+    up_op = func(up_op, args...)
   end
   if spin=="dn" || spin==""
-    dn_op = add_hop(dn_op, coef, i, j)
+    dn_op = func(dn_op, args...)
   end
   return SpinGaussianOperator(up_op, dn_op)
+end
+
+function add_cdag_c(
+  G::SpinGaussianOperator, i::Integer, j::Integer, coef::Number=1.0; spin::String=""
+)
+  return call_function(G, add_cdag_c, i, j, coef; spin)
+end
+
+function add_c_cdag(
+  G::SpinGaussianOperator, i::Integer, j::Integer, coef::Number=1.0; spin::String=""
+)
+  return call_function(G, add_c_cdag, i, j, coef; spin)
+end
+
+function add_hop(
+  G::SpinGaussianOperator, i::Integer, j::Integer, coef::Number=1.0; spin::String=""
+)
+  return call_function(G, add_hop, i, j, coef; spin)
 end

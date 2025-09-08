@@ -1,3 +1,4 @@
+using LinearAlgebra: Diagonal
 
 """
 GaussianState
@@ -12,10 +13,10 @@ for such a state is given by
 C_ij = ∑ₙ ϕ_in f_n ϕ̄_jn 
 """
 struct GaussianState <: AbstractGaussianState
-  ϕ::Matrix
+  orbitals::Matrix
   filling::Vector
 end
 
 function correlation_matrix(ϕ::GaussianState)
-  return ϕ*Diagonal(filling)*ϕ'
+  return ϕ.orbitals*Diagonal(ϕ.filling)*ϕ.orbitals'
 end

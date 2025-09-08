@@ -1,4 +1,4 @@
-import GaussianFermions as GF
+import GaussianFermions as gf
 
 let
   N = 10
@@ -6,19 +6,21 @@ let
   Nfdn = N÷2
   t = 1.0
 
-  H = GF.SpinGaussianOperator(N)
+  H = gf.SpinGaussianOperator(N)
   for j in 1:(N - 1)
-    H = GF.add_hop(H, -t, j, j+1, "up")
-    H = GF.add_hop(H, -t, j, j+1, "dn")
+    H = gf.add_hop(H, j, j+1, -t; spin="up")
+    H = gf.add_hop(H, j, j+1, -t; spin="dn")
   end
 
-  @show H
+  display(H.up_operator.coefficients)
 
-  return nothing
+  E0, ϕ0 = gf.ground_state(H; Nfup, Nfdn)
+  @show E0
+  @show gf.expect(H, ϕ0)
 
-  E0, ϕ0 = GF.ground_state(H; Nfup, Nfdn)
-
-  C = GF.correlation_matrix(ϕ0)
+  O = gf.SpinGaussianOperator(N)
+  O = gf.add_cdag_c(O, 1, 2; spin="up")
+  @show gf.expect(O, ϕ0)
 
   return nothing
 end
