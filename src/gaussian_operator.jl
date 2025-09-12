@@ -1,4 +1,4 @@
-using LinearAlgebra: LinearAlgebra
+import LinearAlgebra as la
 
 struct GaussianOperator
   matrix_elems::Matrix
@@ -31,4 +31,4 @@ function add_hop(G::GaussianOperator, i::Integer, j::Integer, coef::Number)
   return G
 end
 
-energies_states(G) = LinearAlgebra.eigen(G.matrix_elems)
+energies_states(G) = la.eigen(G.matrix_elems)

@@ -1,4 +1,4 @@
-using LinearAlgebra: Diagonal
+import LinearAlgebra as la
 
 """
 GaussianState
@@ -17,6 +17,9 @@ struct GaussianState <: AbstractGaussianState
   filling::Vector
 end
 
+orbitals(ϕ::GaussianState) = ϕ.orbitals
+filling(ϕ::GaussianState) = ϕ.filling
+
 function correlation_matrix(ϕ::GaussianState)
-  return ϕ.orbitals*Diagonal(ϕ.filling)*ϕ.orbitals'
+  return orbitals(ϕ)*la.Diagonal(filling(ϕ))*orbitals(ϕ)'
 end

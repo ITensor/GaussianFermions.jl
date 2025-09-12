@@ -8,3 +8,6 @@ end
 
 up_state(ϕ::SpinGaussianState) = ϕ.ϕup
 dn_state(ϕ::SpinGaussianState) = ϕ.ϕdn
+
+up_orbitals(ϕ::SpinGaussianState) = orbitals(up_state(ϕ))
+dn_orbitals(ϕ::SpinGaussianState) = orbitals(dn_state(ϕ))
