@@ -7,8 +7,6 @@ include("gaussian_state.jl")
 include("spin_gaussian_state.jl")
 
 include("state_constructors.jl")
-include("observables.jl")
-
-export add_hop
+include("operations.jl")
 
 end # module GaussianFermions
