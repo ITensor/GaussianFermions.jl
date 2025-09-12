@@ -19,7 +19,24 @@ end
 
 orbitals(ϕ::GaussianState) = ϕ.orbitals
 filling(ϕ::GaussianState) = ϕ.filling
+Base.length(ϕ::GaussianState) = size(orbitals(ϕ),1)
 
-function correlation_matrix(ϕ::GaussianState)
-  return orbitals(ϕ)*la.Diagonal(filling(ϕ))*orbitals(ϕ)'
+function correlation_matrix(ϕ::GaussianState; range=1:length(ϕ))
+  orbs = orbitals(ϕ)[range,:]
+  return orbs*la.Diagonal(filling(ϕ))*orbs'
 end
+
+function entanglement(ϕ::GaussianState, range)
+  C = correlation_matrix(ϕ; range)
+  occs, _ = la.eigen(C)
+  Svn = 0.0
+  for ν in occs
+    if ν > 0.0
+      Svn += -ν*log(ν)
+    if ν < 1.0
+      Svn += -(1-ν)*log(1-ν)
+    end
+  end
+  return Svn
+end
+

@@ -18,6 +18,8 @@ let
   @show E0
   @show gf.expect(H, ϕ0)
 
+  @show gf.entanglement(ϕ0,1:5)
+
   O = gf.SpinGaussianOperator(N)
   O = gf.add_cdag_c(O, 1, 2; spin="up")
   @show gf.expect(O, ϕ0)
