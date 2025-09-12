@@ -1,7 +1,7 @@
 using LinearAlgebra: LinearAlgebra
 
 function expect(G::GaussianOperator, ϕ::GaussianState)
-  return LinearAlgebra.tr(G.coefficients*correlation_matrix(ϕ))
+  return LinearAlgebra.tr(matrix_elements(G)*correlation_matrix(ϕ))
 end
 
 function expect(G::SpinGaussianOperator, ϕ::SpinGaussianState)

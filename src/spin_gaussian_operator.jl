@@ -11,6 +11,9 @@ end
 up_operator(G::SpinGaussianOperator) = G.up_operator
 dn_operator(G::SpinGaussianOperator) = G.dn_operator
 
+up_matrix_elements(G::SpinGaussianOperator) = matrix_elements(up_operator(G))
+dn_matrix_elements(G::SpinGaussianOperator) = matrix_elements(dn_operator(G))
+
 function Base.copy(G::SpinGaussianOperator)
   SpinGaussianOperator(copy(G.up_operator), copy(G.dn_operator))
 end

@@ -12,7 +12,7 @@ let
     H = gf.add_hop(H, j, j+1, -t; spin="dn")
   end
 
-  display(H.up_operator.coefficients)
+  display(gf.up_matrix_elements(H))
 
   E0, ϕ0 = gf.ground_state(H; Nfup, Nfdn)
   @show E0

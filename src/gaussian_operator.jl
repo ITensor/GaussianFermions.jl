@@ -1,25 +1,27 @@
 using LinearAlgebra: LinearAlgebra
 
 struct GaussianOperator
-  coefficients::Matrix
+  matrix_elems::Matrix
 end
 
 function GaussianOperator(N::Integer)
   return GaussianOperator(zeros(N, N))
 end
 
-Base.copy(G) = GaussianOperator(copy(G.coefficients))
-Base.length(G) = size(G.coefficients, 1)
+Base.copy(G::GaussianOperator) = GaussianOperator(copy(G.matrix_elems))
+Base.length(G::GaussianOperator) = size(G.matrix_elems, 1)
+
+matrix_elements(G::GaussianOperator) = G.matrix_elems
 
 function add_cdag_c(G::GaussianOperator, i::Integer, j::Integer, coef::Number=1.0)
   G = copy(G)
-  G.coefficients[i, j] += coef
+  G.matrix_elems[i, j] += coef
   return G
 end
 
 function add_c_cdag(G::GaussianOperator, i::Integer, j::Integer, coef::Number=1.0)
   G = copy(G)
-  G.coefficients[j, i] += coef
+  G.matrix_elems[j, i] += coef
   return G
 end
 
@@ -29,4 +31,4 @@ function add_hop(G::GaussianOperator, i::Integer, j::Integer, coef::Number)
   return G
 end
 
-energies_states(G) = LinearAlgebra.eigen(G.coefficients)
+energies_states(G) = LinearAlgebra.eigen(G.matrix_elems)
