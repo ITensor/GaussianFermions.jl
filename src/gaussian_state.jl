@@ -19,10 +19,10 @@ end
 
 orbitals(ϕ::GaussianState) = ϕ.orbitals
 filling(ϕ::GaussianState) = ϕ.filling
-Base.length(ϕ::GaussianState) = size(orbitals(ϕ),1)
+Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
 
 function correlation_matrix(ϕ::GaussianState; range=1:length(ϕ))
-  orbs = orbitals(ϕ)[range,:]
+  orbs = orbitals(ϕ)[range, :]
   return orbs*la.Diagonal(filling(ϕ))*orbs'
 end
 
@@ -41,7 +41,6 @@ function entanglement(ϕ::GaussianState, range)
   return Svn
 end
 
-
 inactivity(ν) = abs(2ν-1)
 
 function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
@@ -49,41 +48,38 @@ function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
   occs, _ = la.eigen(C)
 
   n = length(occs)
-  inactivities = sort(inactivity.(occs);rev=true)
+  inactivities = sort(inactivity.(occs); rev=true)
 
   # Decimate spectrum by "freezing" inactive modes
   # Each decimation doubles number of discarded eigenvalues
   # (ndiscard is number of discarded modes)
   fidelity = 1.0
-  ndiscard = n
-  for j=1:n
-    if fidelity*inactivities[j] + cutoff < 1.0
-      ndiscard = (j-1)
-      break
-    end
-    println("Discarding $j modes")
-    fidelity *= inactivities[j]
-    println("  Fidelity is now ",fidelity)
+  ndisc_modes = 0
+  while fidelity*inactivities[ndisc_modes + 1]+cutoff > 1.0
+    fidelity *= inactivities[ndisc_modes + 1]
+    ndisc_modes += 1
   end
-  nactive = n-ndiscard
-  inactivities = inactivities[ndiscard+1:n]
+
+  nactive_modes = n-ndisc_modes
+  inactivities = inactivities[(ndisc_modes + 1):n]
 
   # Explicitly compute remaining eigenvalues
-  eigvals = zeros(2^nactive)
-  for (w,inds) in enumerate(Iterators.product(fill(0:1,nactive)...))
+  eigvals = zeros(2^nactive_modes)
+  for (w, inds) in enumerate(Iterators.product(fill(0:1, nactive_modes)...))
     eigvals[w] = fidelity # account for modes already discarded
-    for j=1:nactive
-      ν,s = occs[j], inds[j]
+    for j in 1:nactive_modes
+      ν, s = occs[j], inds[j]
       eigvals[w] *= ((1-s)*ν + s*(1-ν))
     end
   end
   eigvals = sort(eigvals)
 
-  ndisc_evals = 0 
-  while fidelity+cutoff-eigvals[ndisc_evals+1] > 1.0
-    fidelity -= eigvals[ndisc_evals+1]
+  # Discard more eigvalues until infidelity exceeds cutoff
+  ndisc_evals = 0
+  while fidelity+cutoff-eigvals[ndisc_evals + 1] > 1.0
+    fidelity -= eigvals[ndisc_evals + 1]
     ndisc_evals += 1
   end
 
-  return 2^nactive-ndisc_evals
+  return 2^nactive_modes-ndisc_evals
 end
