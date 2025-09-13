@@ -19,6 +19,7 @@ let
   @show gf.expect(H, ϕ0)
 
   @show gf.entanglement(ϕ0,1:5)
+  @show gf.bond_dimension(ϕ0,1:5,2E-6)
 
   O = gf.SpinGaussianOperator(N)
   O = gf.add_cdag_c(O, 1, 2; spin="up")

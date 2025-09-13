@@ -33,6 +33,7 @@ function entanglement(ϕ::GaussianState, range)
   for ν in occs
     if ν > 0.0
       Svn += -ν*log(ν)
+    end
     if ν < 1.0
       Svn += -(1-ν)*log(1-ν)
     end
@@ -40,3 +41,49 @@ function entanglement(ϕ::GaussianState, range)
   return Svn
 end
 
+
+inactivity(ν) = abs(2ν-1)
+
+function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
+  C = correlation_matrix(ϕ; range)
+  occs, _ = la.eigen(C)
+
+  n = length(occs)
+  inactivities = sort(inactivity.(occs);rev=true)
+
+  # Decimate spectrum by "freezing" inactive modes
+  # Each decimation doubles number of discarded eigenvalues
+  # (ndiscard is number of discarded modes)
+  fidelity = 1.0
+  ndiscard = n
+  for j=1:n
+    if fidelity*inactivities[j] + cutoff < 1.0
+      ndiscard = (j-1)
+      break
+    end
+    println("Discarding $j modes")
+    fidelity *= inactivities[j]
+    println("  Fidelity is now ",fidelity)
+  end
+  nactive = n-ndiscard
+  inactivities = inactivities[ndiscard+1:n]
+
+  # Explicitly compute remaining eigenvalues
+  eigvals = zeros(2^nactive)
+  for (w,inds) in enumerate(Iterators.product(fill(0:1,nactive)...))
+    eigvals[w] = fidelity # account for modes already discarded
+    for j=1:nactive
+      ν,s = occs[j], inds[j]
+      eigvals[w] *= ((1-s)*ν + s*(1-ν))
+    end
+  end
+  eigvals = sort(eigvals)
+
+  ndisc_evals = 0 
+  while fidelity+cutoff-eigvals[ndisc_evals+1] > 1.0
+    fidelity -= eigvals[ndisc_evals+1]
+    ndisc_evals += 1
+  end
+
+  return 2^nactive-ndisc_evals
+end
