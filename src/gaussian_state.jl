@@ -23,6 +23,7 @@ Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
 
 function correlation_matrix(ϕ::GaussianState; range=1:length(ϕ))
   orbs = orbitals(ϕ)[range, :]
+  # TODO: should orbs be complex conjugated here, so conj(orbs)*..*conj(orbs)' ?
   return orbs*la.Diagonal(filling(ϕ))*orbs'
 end
 
