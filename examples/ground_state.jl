@@ -1,7 +1,7 @@
 import GaussianFermions as gf
 
 let
-  N = 10
+  N = 20
   Nf = N÷2
   t = 1.0
 
@@ -16,8 +16,8 @@ let
   @show E0
   @show gf.expect(H, ϕ0)
 
-  @show gf.entanglement(ϕ0,1:5)
-  @show gf.bond_dimension(ϕ0,1:5,1E-9)
+  @show gf.entanglement(ϕ0, 1:5)
+  @show gf.bond_dimension(ϕ0, 1:5, 1E-7)
 
   return nothing
 end

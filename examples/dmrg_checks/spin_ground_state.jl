@@ -6,16 +6,18 @@ let
 
   h = OpSum()
   for j in 1:(N - 1)
-    h += -t, "Cdag", j, "C", j+1
-    h += -t, "Cdag", j+1, "C", j
+    h += -t, "Cdagup", j, "Cup", j+1
+    h += -t, "Cdagup", j+1, "Cup", j
+    h += -t, "Cdagdn", j, "Cdn", j+1
+    h += -t, "Cdagdn", j+1, "Cdn", j
   end
-  sites = siteinds("Fermion", N)
+  sites = siteinds("Electron", N)
   H = MPO(h, sites)
 
-  ψ0 = MPS(sites, [isodd(j) ? "1" : "0" for j in 1:N])
+  ψ0 = MPS(sites, [isodd(j) ? "Up" : "Dn" for j in 1:N])
 
-  nsweeps = 20
-  maxdim = [10, 20, 40, 80, 160, 320]
+  nsweeps = 10
+  maxdim = [10, 20, 40, 80, 160]
   cutoff = 1E-12
   E0, ψ = dmrg(H, ψ0; nsweeps, cutoff, maxdim)
   @show E0
