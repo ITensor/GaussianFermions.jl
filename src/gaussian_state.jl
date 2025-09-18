@@ -20,6 +20,9 @@ end
 orbitals(ϕ::GaussianState) = ϕ.orbitals
 filling(ϕ::GaussianState) = ϕ.filling
 Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
+Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ),filling(ϕ))
+
+ispure(ϕ::GaussianState) = all(f->(f==1.0 || f==0.0), filling(ϕ))
 
 function correlation_matrix(ϕ::GaussianState; range=1:length(ϕ))
   orbs = orbitals(ϕ)[range, :]
