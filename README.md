@@ -1,2 +1,3 @@
-# FreeFermions
-Tools for free fermion calculations
+# Gaussian Fermions
+
+Tools for Gaussian or free fermion calculations.
