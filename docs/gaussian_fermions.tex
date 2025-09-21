@@ -1,0 +1,173 @@
+\documentclass[aps, superscriptaddress, floatfix, onecolumn]{revtex4-2}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{braket}
+
+% For a list of named colors, see https://www.overleaf.com/learn/latex/Using_colors_in_LaTeX
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+
+\newcommand{\I}{\mathrm{i}}
+\newcommand{\matele}[3]{\langle #1|#2|#3\rangle}
+\newcommand{\mcG}{\mathcal{G}}
+\newcommand{\dtau}{\Delta \tau}
+\newcommand{\omax}{\omega_{\max}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\OO}[1]{\mathcal{O}(#1)}
+\newcommand{\paren}[1]{\left( #1 \right)}
+\newcommand{\brak}[1]{\left[ #1 \right]}
+\newcommand{\cbrak}[1]{\left\{ #1 \right\}}
+\newcommand{\pd}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wb}[1]{\overline{#1}}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\tr}{Tr}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{remark}{Remark}
+
+\newcommand{\CCQ}{Center for Computational Quantum Physics, Flatiron Institute, 162 5th Avenue, New York, NY 10010, USA}
+
+\newcommand{\ms}[1]{\textcolor{blue}{[MS: #1]}}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Gaussian Fermions}
+
+\author{E.\ Miles Stoudenmire}
+\affiliation{\CCQ}
+
+\maketitle
+
+\section{Fermionic Vector Spaces}
+
+Fermions are conventionally defined in terms of creation and annihilation operators. Here we will start from state vectors, or fermionic vector spaces. In the next section, we will see that the properties of the operators derive from the properties of the states.
+
+The simplest fermionic vector space $V$ has the basis 
+\begin{align}
+    \mathcal{B}(V) = \{ \ket{0}, \ket{1} \}
+\end{align}
+which is the basis for a single ``spinless fermion site'', with $\ket{0}$ being the vacuum or empty state and $\ket{1}$ being the filled state or state of one fermion. So far the fermionic nature is not very obvious except  that we can only have at most one fermion. 
+
+Many-body spaces can be formed by taking Cartesian products of spaces (tensor products of basis vectors) so we could consider a space $V_1$ with basis $\{ \ket{0}_1, \ket{1}_1 \}$ and space $V_2$ with basis $\{ \ket{0}_2, \ket{1}_2 \}$, then the space $V_1 \times V_2$ has a basis
+\begin{align}
+    \mathcal{B}(V_1 \times V_2) = \{ \ket{0}_1 \otimes \ket{0}_2,\  \ket{1}_1 \otimes \ket{0}_2, \  \ket{0}_1 \otimes \ket{1}_2,\  \ket{1}_1  \otimes \ket{1}_2 \} \ .
+\end{align}
+An example of a vector (or ``state'') in this space is $\ket{\psi} = a \ket{1}_1 \otimes \ket{0}_2 + b \ket{0}_1 \otimes \ket{1}_2$.
+
+The defining property of fermions is how vectors in the space $V_1 \times V_2$  are identified vectors in the space $V_2 \times V_1$. We can define this identification, or vector space isomorphism, by defining it on the basis vectors. It is given by:
+\begin{align}
+\ket{0}_1 \otimes \ket{0}_2 & \leftrightarrow {\color{ForestGreen} +}\ket{0}_2 \otimes \ket{0}_1 \nonumber \\
+\ket{1}_1 \otimes \ket{0}_2 & \leftrightarrow {\color{ForestGreen} +}\ket{1}_2 \otimes \ket{0}_1 \nonumber \\
+\ket{0}_1 \otimes \ket{1}_2 & \leftrightarrow {\color{ForestGreen} +}\ket{0}_2 \otimes \ket{1}_1  \nonumber \\
+\ket{1}_1 \otimes \ket{1}_2 & \leftrightarrow {\color{BrickRed} -}\ket{1}_2 \otimes \ket{1}_1  \ \ .
+\end{align}
+Note the minus sign in the last line. Plus signs are shown for emphasis.
+
+We can summarize the vector space isomorphism as
+\begin{align}
+     \ket{n_1}_1 \otimes \ket{n_2}_2 \ \leftrightarrow\ (-1)^{n_1 \cdot n_2} \ket{n_2}_2 \otimes \ket{n_1}_1 \ \ .
+\end{align}
+In other words, the order in which fermionic basis vectors are arranged is important. If two odd basis vectors are permuted, the basis vector is multiplied by a minus sign.
+
+Often a tensor product of basis states such as $\ket{1}_i \otimes \ket{1}_j$ is written in the more compact notation $\ket{1_i 1_j}$. And more generally, tensor product symbols ``$\otimes$'' are dropped when understood from context.
+
+
+\section{Fermionic Operators}
+
+For the simplest case of a ``spinless fermion'' space $V$ with basis $\mathcal{B}(V) = \{ \ket{0}, \ket{1} \}$, we can define the following operators:
+\begin{align}
+\hat{n}\ &= \ \ket{1} \bra{1} \\ 
+\hat{c}\ &= \ \ket{0} \bra{1} \\ 
+\hat{c}^\dagger &= \ \ket{1} \bra{0}  \ \ .
+\end{align}
+Together with the identity operator, this set actually defines a complete operator basis.
+
+The $\hat{n}$ operator is known as the ``number operator''
+since it ``detects'' the filling of a state:
+\begin{align}
+\hat{n} \ket{0}  &= 0 \cdot \ket{0}  \nonumber \\ 
+\hat{n} \ket{1}  &= 1 \cdot \ket{1}  \ \ .
+\end{align}
+
+The $\hat{c}$ and $\hat{c}^\dagger$ are known as the ``annihilation'' and ``creation'' operators, respectively. This is simply because they map a filled state to an empty state or vice versa:
+\begin{align}
+\hat{c} \ket{1}  &= \ket{0}  \\ 
+\hat{c}^\dagger \ket{0}  &= \ket{0}  \ \ .
+\end{align}
+
+One can of course define tensor products of operators in the usual way, such as $\hat{c}_1 \otimes \hat{c_2}$ or $\hat{c}^\dagger_2 \otimes \hat{c}_1$.
+\footnote{When an operator like $\hat{c}_1$ is written in isolation, it actually stands for $\hat{c}_1 \otimes \hat{I}_2$. Products of operators such as $\hat{c}^\dagger_1 \hat{c}_2$ are actually shorthand for $(\hat{c}^\dagger_1 \otimes \hat{I}_2) (\hat{I}_1 \otimes \hat{c}_2) = \hat{c}^\dagger_1 \otimes \hat{c}_2$.
+If the operators act on the same space, they ``stack'', meaning for example that $(\hat{c}^\dagger_1 \otimes \hat{I}_2) (\hat{c}_1 \otimes \hat{I}_2) = (\hat{c}^\dagger_1 \hat{c}_1) \otimes \hat{I}_2$. All of this is easier to see with tensor diagrams!}
+These operators act on the spaces $V_1 \times V_2$ or $V_2 \times V_1$, respectively.
+
+Now comes a crucial point: the creation and annihilation operators have non-trivial commutation relations, and these are entirely a consequence of the state properties. For operators on state spaces $V_i$ and $V_j$, the commutation relations are
+\begin{align}
+\hat{c}_i \otimes \hat{c}_j = -  \hat{c}_j \otimes \hat{c}_1 \\ 
+\hat{c}^\dagger_i \otimes \hat{c}^\dagger_j = -  \hat{c}^\dagger_j \otimes \hat{c}^\dagger_i \\ 
+\hat{c}_i \otimes \hat{c}^\dagger_j = -  \hat{c}^\dagger_j \otimes \hat{c}_i  \label{eqn:ccdag_relation}
+\end{align}
+The first two of these are commonly summarized as:
+\begin{align}
+\{ \hat{c}_i, \hat{c}_j \} = 0 \nonumber \\
+\{ \hat{c}^\dagger_i, \hat{c}^\dagger_j \} = 0
+\end{align}
+where $\{ a, b \} = a\, b + b\, a$ is the anti-commutator.
+
+The third relation Eq.~(\ref{eqn:ccdag_relation}) has the special case that when $i=j$, $(\hat{c}_i \hat{c}^\dagger_i + \hat{c}^\dagger_i \hat{c}_i) = 1$. Therefore it is commonly summarized as 
+\begin{align}
+\{ \hat{c}_i, \hat{c}^\dagger_j \} = \delta_{ij} \ \ .
+\end{align}
+
+In many presentations, the anticommutation relations of the operators are stated as an axiom, but they actually follow from the properties of the state spaces.
+For example, 
+\begin{align}
+\hat{c}_1  \otimes \hat{c}_2   & =  \ket{0}_1 \otimes \bra{1}_1 \otimes \ket{0}_2 \otimes \bra{1}_2 \nonumber \\
+& =  \ket{0}_1 \otimes (\bra{1}_1  \otimes \bra{1}_2) \otimes \ket{0}_2 \nonumber \\
+& = \ket{0}_1 \otimes ( - \bra{1}_2  \otimes \bra{1}_1) \otimes \ket{0}_2 \nonumber \\
+& = - \ket{0}_2 \otimes \bra{1}_2  \otimes \bra{0}_1 \otimes \ket{1}_1 \nonumber \\
+& = - \hat{c}_2  \otimes \hat{c}_1 \ \ .
+\end{align}
+
+\section{Many-Body States}
+
+Many-body or many-particle basis states can be defined or constructed as
+\begin{align}
+\ket{1_i 1_j 1_k} = \hat{c}^\dagger_i \hat{c}^\dagger_j \hat{c}^\dagger_k \ket{0} \ .
+\end{align}
+The most general many-particle state is a sum of these:
+\begin{align}
+\ket{\Psi} = \sum_{n_1, n_2, \ldots, n_N} \Psi^{n_1 n_2 \cdots n_N} \ket{n_1 n_2 \cdots n_N} \label{eqn:general_state}
+\end{align}
+where $\Psi^{n_1 n_2 \cdots n_N}$ is an arbitrary tensor of complex amplitudes. The anti-commuting nature of the fermions is automatically satisfied by the properties of the basis, and no additional symmetry properties need to be assumed for the amplitudes $\Psi^{n_1 n_2 \cdots n_N}$. One common assumption, though, is that for a closed system the total number of particles $N_p$ is fixed, such that $n_1 + n_2 + \ldots + n_N = N_p$ otherwise $\Psi^{n_1 n_2 \cdots n_N} = 0$. (Superconducting states are a common exception to this rule, though these are probably more properly understood as mixed states.)
+
+A special subset of many-particle fermionic states are the \emph{Gaussian states}, also known as \emph{Slater determinants}:
+\begin{align}
+\ket{\Psi} & = \hat{A}^\dagger \hat{B}^\dagger \hat{C}^\dagger \hat{D}^\dagger \ket{0} \nonumber \\
+& = \left( \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1} \right) \left( \sum_{i_2=1}^N B^{i_2} \hat{c}^\dagger_{i_2} \right) \left( \sum_{i_3=1}^N C^{i_3} \hat{c}^\dagger_{i_3} \right) \left( \sum_{i_4=1}^N D^{i_4} \hat{c}^\dagger_{i_4} \right) \ket{0} \ \ \ .
+\end{align}
+Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions, which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not necessarily orthogonal.
+
+The Gaussian states are quite special and far from being a general fermionic state. To see this, let us relate a specific Gaussian state 
+$\ket{AB} = \hat{A}^\dagger \hat{B}^\dagger \ket{0}$ with the general form Eq.~(\ref{eqn:general_state}) of a fermionic state.
+We see that for the state $\ket{AB}$, the amplitudes take the form:
+\begin{align}
+\Psi^{0_1 0_2 \cdots 1_i \cdots 1_j \cdots 0_N} & = A_i B_j \\
+\Psi^{n_1 n_2 \cdots n_N} & = 0 \ \ \ \ \  \text{otherwise for}\ \sum_i n_i \neq 2 \ \ .
+\end{align}
+So the amplitude tensor $\Psi$ of $\ket{AB}$ is constructed from two vectors (it is rank-2 in a certain sense) and is not fully general.
+
+\end{document}
