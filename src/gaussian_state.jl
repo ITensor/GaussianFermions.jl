@@ -20,7 +20,7 @@ end
 orbitals(ϕ::GaussianState) = ϕ.orbitals
 filling(ϕ::GaussianState) = ϕ.filling
 Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
-Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ),filling(ϕ))
+Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), filling(ϕ))
 
 ispure(ϕ::GaussianState) = all(f->(f==1.0 || f==0.0), filling(ϕ))
 
@@ -34,11 +34,12 @@ function entanglement(ϕ::GaussianState, range)
   C = correlation_matrix(ϕ; range)
   occs, _ = la.eigen(C)
   Svn = 0.0
-  for ν in occs
-    if ν > 0.0
+  @assert la.norm(imag(occs)) < 1E-8
+  for ν in real(occs)
+    if real(ν) > 0.0
       Svn += -ν*log(ν)
     end
-    if ν < 1.0
+    if real(ν) < 1.0
       Svn += -(1-ν)*log(1-ν)
     end
   end
@@ -50,6 +51,7 @@ inactivity(ν) = abs(2ν-1)
 function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
   C = correlation_matrix(ϕ; range)
   occs, _ = la.eigen(C)
+  occs = real(occs)
 
   n = length(occs)
   inactivities = sort(inactivity.(occs); rev=true)
