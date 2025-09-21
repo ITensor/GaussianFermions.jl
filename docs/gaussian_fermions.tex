@@ -81,7 +81,8 @@ We can summarize the vector space isomorphism as
 \begin{align}
      \ket{n_1}_1 \otimes \ket{n_2}_2 \ \leftrightarrow\ (-1)^{n_1 \cdot n_2} \ket{n_2}_2 \otimes \ket{n_1}_1 \ \ .
 \end{align}
-In other words, the order in which fermionic basis vectors are arranged is important. If two odd basis vectors are permuted, the basis vector is multiplied by a minus sign.
+In other words, the order in which fermionic basis vectors are arranged is important. If two odd basis vectors are permuted, the basis vector is multiplied by a minus sign. 
+\footnote{In some mathematical literature, an isomorphism of this type is described as ``having a $\mathbb{Z}_2$ grading'', meaning that one assigns non-trivial properties based on the parity or grading of the basis, or having a ``braided'' or ``graded'' vector space isomorphism.}
 
 Often a tensor product of basis states such as $\ket{1}_i \otimes \ket{1}_j$ is written in the more compact notation $\ket{1_i 1_j}$. And more generally, tensor product symbols ``$\otimes$'' are dropped when understood from context.
 
@@ -161,13 +162,27 @@ A special subset of many-particle fermionic states are the \emph{Gaussian states
 \end{align}
 Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions, which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not necessarily orthogonal.
 
-The Gaussian states are quite special and far from being a general fermionic state. To see this, let us relate a specific Gaussian state 
-$\ket{AB} = \hat{A}^\dagger \hat{B}^\dagger \ket{0}$ with the general form Eq.~(\ref{eqn:general_state}) of a fermionic state.
-We see that for the state $\ket{AB}$, the amplitudes take the form:
+The Gaussian states are quite special and far from being a general fermionic state (even though they do belong to the vector space of general fermionic states). To see that the Gaussian states are not general, let us write a two-particle Gaussian state 
+$\ket{AB} = \hat{A}^\dagger \hat{B}^\dagger \ket{0}$ in the general form Eq.~(\ref{eqn:general_state}) for a fermionic state.
+We see that for the state $\ket{AB}$, the amplitudes $\Psi^{n_1 n_2 \cdots n_N}$ take the form:
 \begin{align}
-\Psi^{0_1 0_2 \cdots 1_i \cdots 1_j \cdots 0_N} & = A_i B_j \\
-\Psi^{n_1 n_2 \cdots n_N} & = 0 \ \ \ \ \  \text{otherwise for}\ \sum_i n_i \neq 2 \ \ .
+\Psi^{0_1 0_2 \cdots 1_i \cdots 1_j \cdots 0_N} & = A_i B_j \ \  \text{ for}\ \sum_i n_i = 2\\
+\Psi^{n_1 n_2 \cdots n_N} & = 0 \ \ \ \ \  \ \ \text{otherwise for}\ \sum_i n_i \neq 2 \ \ .
 \end{align}
-So the amplitude tensor $\Psi$ of $\ket{AB}$ is constructed from two vectors (it is rank-2 in a certain sense) and is not fully general.
+So the amplitude tensor $\Psi$ of $\ket{AB}$ is constructed from two vectors (it is rank-2 in a certain sense \footnote{The amplitude tensor for $\ket{AB}$ or a general two-particle Gaussian state is actually a bond-dimension 2 or rank 2 matrix product state}) and is not fully general.
+
+To understand the origin of the name Slater determinant, consider the basis defined as $\ket{i} = \hat{c}^\dagger_i \ket{0}$, the so-called ``real-space basis''.
+Expressing states in this basis is known as ``first quantization''.
+We can express the amplitudes of $\ket{AB}$ in this basis, as $\psi_{AB}(i,j) = \braket{i,j|AB} = \bra{0} c^\dagger_i c^\dagger_j \ket{AB}$. One finds that
+\begin{align}
+\psi_{AB}(i,j) =  A^i B^j - B^i A^j 
+\end{align}
+such that the amplitudes in real space take the form of an antisymmetric function.
+It was pointed out by Slater that expressions of the above type can be written as determinants of matrices whose columns are the orbital vectors $\vec{A}, \vec{B}, \ldots$ and whose rows are the spatial positions $i=1,2, \ldots, N$, hence the name Slater determinant. 
+
+The first-quantized basis can be convenient for proving facts such as if $\vec{A} = \vec{B}$, then the state $\ket{AB} = 0$. In the more general setting, this fact about orbitals required to be independent is known as the \emph{Pauli exclusion principle}. It is not a separate axiom about fermions, but follows from their vector space properties.
+
+
+
 
 \end{document}
