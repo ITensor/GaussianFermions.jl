@@ -24,10 +24,14 @@ Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), filling(ϕ))
 
 ispure(ϕ::GaussianState) = all(f->(f==1.0 || f==0.0), filling(ϕ))
 
-function correlation_matrix(ϕ::GaussianState; range=1:length(ϕ))
-  orbs = orbitals(ϕ)[range, :]
+function correlation_matrix(ϕ::GaussianState; spatial_range=1:length(ϕ))
+  orbs = orbitals(ϕ)[spatial_range, :]
   # TODO: should orbs be complex conjugated here, so conj(orbs)*..*conj(orbs)' ?
   return orbs*la.Diagonal(filling(ϕ))*orbs'
+end
+
+function density(ϕ::GaussianState; spatial_range=1:length(ϕ))
+  return la.diag(correlation_matrix(ϕ))
 end
 
 function entanglement(ϕ::GaussianState, range)
