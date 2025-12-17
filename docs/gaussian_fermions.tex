@@ -10,37 +10,14 @@
 \usepackage{color}
 \usepackage[dvipsnames]{xcolor}
 
-\newcommand{\I}{\mathrm{i}}
-\newcommand{\matele}[3]{\langle #1|#2|#3\rangle}
-\newcommand{\mcG}{\mathcal{G}}
-\newcommand{\dtau}{\Delta \tau}
-\newcommand{\omax}{\omega_{\max}}
-\newcommand{\RR}{\mathbb{R}}
-\newcommand{\CC}{\mathbb{C}}
-\newcommand{\ZZ}{\mathbb{Z}}
-\newcommand{\OO}[1]{\mathcal{O}(#1)}
-\newcommand{\paren}[1]{\left( #1 \right)}
-\newcommand{\brak}[1]{\left[ #1 \right]}
-\newcommand{\cbrak}[1]{\left\{ #1 \right\}}
-\newcommand{\pd}[2]{\frac{\partial#1}{\partial#2}}
-\newcommand{\wh}[1]{\widehat{#1}}
-\newcommand{\wt}[1]{\widetilde{#1}}
-\newcommand{\wb}[1]{\overline{#1}}
-\newcommand{\abs}[1]{\left| #1 \right|}
-\renewcommand{\Re}{\operatorname{Re}}
-\renewcommand{\Im}{\operatorname{Im}}
-\DeclareMathOperator{\supp}{supp}
-\DeclareMathOperator{\tr}{Tr}
+\newcommand{\result}[1]{\textcolor{blue}{#1}}
 
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
 
-\newtheorem{remark}{Remark}
 
 \newcommand{\CCQ}{Center for Computational Quantum Physics, Flatiron Institute, 162 5th Avenue, New York, NY 10010, USA}
 
+\newtheorem{remark}{Remark}
 \newcommand{\ms}[1]{\textcolor{blue}{[MS: #1]}}
-
 \newtheorem{theorem}{Theorem}
 
 \begin{document}
@@ -66,9 +43,9 @@ Many-body spaces can be formed by taking Cartesian products of spaces (tensor pr
 \begin{align}
     \mathcal{B}(V_1 \times V_2) = \{ \ket{0}_1 \otimes \ket{0}_2,\  \ket{1}_1 \otimes \ket{0}_2, \  \ket{0}_1 \otimes \ket{1}_2,\  \ket{1}_1  \otimes \ket{1}_2 \} \ .
 \end{align}
-An example of a vector (or ``state'') in this space is $\ket{\psi} = a \ket{1}_1 \otimes \ket{0}_2 + b \ket{0}_1 \otimes \ket{1}_2$.
+A generic vector (or ``state'') in this space has the form $\ket{\psi} = a \ket{0}_1 \otimes \ket{0}_2 + b \ket{0}_1 \otimes \ket{1}_2 + c \ket{1}_1 \otimes \ket{0}_2 + d \ket{1}_1 \otimes \ket{1}_2 $.
 
-The defining property of fermions is how vectors in the space $V_1 \times V_2$  are identified vectors in the space $V_2 \times V_1$. We can define this identification, or vector space isomorphism, by defining it on the basis vectors. It is given by:
+The defining property of fermions is how one identifies vectors in the space $V_1 \times V_2$  with vectors in the space $V_2 \times V_1$. We can define this identification, or vector space isomorphism, by defining it on the basis vectors. It is given by:
 \begin{align}
 \ket{0}_1 \otimes \ket{0}_2 & \leftrightarrow {\color{ForestGreen} +}\ket{0}_2 \otimes \ket{0}_1 \nonumber \\
 \ket{1}_1 \otimes \ket{0}_2 & \leftrightarrow {\color{ForestGreen} +}\ket{0}_2 \otimes \ket{1}_1 \nonumber \\
@@ -81,10 +58,10 @@ We can summarize the vector space isomorphism as
 \begin{align}
      \ket{n_1}_1 \otimes \ket{n_2}_2 \ \leftrightarrow\ (-1)^{n_1 \cdot n_2} \ket{n_2}_2 \otimes \ket{n_1}_1 \ \ .
 \end{align}
-Thus the order in which fermionic basis vectors are arranged is important: if two odd basis vectors are permuted, the basis vector is multiplied by a minus sign. 
+This means the ordering of fermionic basis vectors matters: if two odd basis vectors are permuted, the basis vector changes by a minus sign. 
 \footnote{In some mathematical literature, an isomorphism of this type is described as ``having a $\mathbb{Z}_2$ grading'', meaning that one assigns non-trivial properties based on the parity or grading of the basis, or having a ``braided'' or ``graded'' vector space isomorphism.}
 
-Often a tensor product of basis states such as $\ket{1}_i \otimes \ket{1}_j$ is written in the more compact notation $\ket{1}_i \ket{1}_j$ or even $\ket{1_i 1_j}$. More generally, tensor product symbols ``$\otimes$'' are dropped when understood from context.
+Note that tensor products of basis states such as $\ket{1}_i \otimes \ket{1}_j$ are commonly written in the more compact notation $\ket{1}_i \ket{1}_j$ or even $\ket{1_i 1_j}$. Tensor product symbols ``$\otimes$'' are thus generally dropped when understood from context, and will be dropped frequently in the rest of these notes.
 
 
 \section{Fermionic Operators}
@@ -143,7 +120,7 @@ For example,
 & = - \hat{c}_2  \otimes \hat{c}_1 \ \ .
 \end{align}
 
-\section{Many-Body States}
+\section{Many-Body States and Gaussian States}
 
 Many-body or many-particle basis states can be defined or constructed as
 \begin{align}
@@ -157,14 +134,15 @@ where $\Psi^{n_1 n_2 \cdots n_N}$ is an arbitrary tensor of complex amplitudes. 
 
 A typical extra assumption, though, is that for a closed system the total number of particles $N_p$ is fixed. Mathematically this means $n_1 + n_2 + \ldots + n_N = N_p$ otherwise $\Psi^{n_1 n_2 \cdots n_N} = 0$. (Superconducting states are a common exception to this rule, though these are probably more properly understood as mixed states.)
 
-A special subset of many-particle fermionic states are the \emph{Gaussian states}, also known as \emph{Slater determinants}:
+A special subset of many-particle fermionic states are the \emph{Gaussian states}, more commonly known as \emph{Slater determinants}.
+The general form of a Gaussian state with four fermions is:
 \begin{align}
 \ket{\Psi} & = \hat{A}^\dagger \hat{B}^\dagger \hat{C}^\dagger \hat{D}^\dagger \ket{0} \nonumber \\
 & = \left( \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1} \right) \left( \sum_{i_2=1}^N B^{i_2} \hat{c}^\dagger_{i_2} \right) \left( \sum_{i_3=1}^N C^{i_3} \hat{c}^\dagger_{i_3} \right) \left( \sum_{i_4=1}^N D^{i_4} \hat{c}^\dagger_{i_4} \right) \ket{0} \ \ \ .
 \end{align}
-Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions, which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not required to be orthogonal.
+Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not required to be orthogonal, though the properties of the state can be simpler to deduce if they are.
 
-The Gaussian states are quite special and far from being a general fermionic state (even though they do belong to the general vector space of fermionic states). To see that the Gaussian states are not general, let us write a two-particle Gaussian state 
+The Gaussian states are quite special and far from being a general fermionic state, even though they are elements of the general vector space of fermionic many-body states. To see that the Gaussian states are not general, let us write a two-particle Gaussian state 
 $\ket{AB} = \hat{A}^\dagger \hat{B}^\dagger \ket{0}$ in the general form Eq.~(\ref{eqn:general_state}) for a fermionic state.
 We see that for the state $\ket{AB}$, the amplitudes $\Psi^{n_1 n_2 \cdots n_N}$ take the form:
 \begin{align}
@@ -185,6 +163,59 @@ It was pointed out by Slater that expressions of the above type can be written a
 The first-quantized basis can be convenient for proving facts such as if $\vec{A} = \vec{B}$, then the state $\ket{AB} = 0$, as is evident from Eq.~(\ref{eq:two_particle_slater}) above. In the more general setting, the requirement that orbitals required be independent is known as the \emph{Pauli exclusion principle}. It is not a separate axiom about fermions, but follows from their vector space properties.
 
 
+\section{Static Properties of Gaussian States}
+
+\emph{Define g operators.}
+
+The most generic form of a Gaussian state or Slater determinant is
+\begin{align}
+\ket{m_1 m_2 \ldots m_n}_g & = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0} \\
+& = \prod_{m=1} (\hat{g}^\dagger_{m})^{\nu_m} \ket{0}
+\end{align}
+where $\nu_m$ is the \emph{occupancy} of state $m$ in the $g$ basis. The occupancy is defined here as $\nu_m = 1$ if $m \in \{m_1, m_2, \ldots, m_n\}$ and $\nu_m = 0$ otherwise.
+
+
+
+\section{Dynamics of Gaussian States}
+
+\section{Mathematical Results}
+
+
+\textbf{Correlation functions and expectation values.}
+\begin{itemize}
+
+\item \emph{Correlation matrix:} Given a Gaussian state $\ket{g} = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0}$ where $\hat{g}^\dagger_m = g^{i}_m \hat{f}^\dagger_i$, the correlation matrix $C^j_i$ in the f basis is given by \textcolor{blue}{$C_i^j = \bra{g} \hat{f}^\dagger_i \hat{f}^j \ket{g} = \sum_n \bar{g}_i^n \nu_n g^j_n$}, where $\nu_m = \bra{g} \hat{n}_{m} \ket{g}$ is the occupancy of state $m$ in the $g$ basis ($\nu_m = 1$ if $m \in \{m_1, m_2, m_n\}$, $\nu_m = 0$ otherwise).
+
+\item \emph{Same-basis correlation matrix:} Given a Gaussian state $\ket{f} = \hat{f}^\dagger_{j_1} \hat{f}^\dagger_{j_2} \cdots \hat{f}^\dagger_{j_n} \ket{0}$, the correlation matrix $C^j_i$ in the f basis is given by \textcolor{blue}{$C_i^j = \bra{f} \hat{f}^\dagger_i \hat{f}^j \ket{f} = \delta_j^i \nu_j$} where $\nu_j = \bra{f}\hat{n}_j\ket{f}$ is the occupancy of orbital $j$ in the $f$ basis.
+
+\item \emph{Expectation value:} Given an operator $\hat{M} = m^{i}_j \hat{c}^\dagger_i c^j$ and a Gaussian state $\ket{f}$ with correlation matrix 
+\mbox{$C_i^j = \bra{f} \hat{c}^\dagger_i \hat{c}^j \ket{f}$}, the expected value of $\hat{M}$ is \result{$\langle \hat{M} \rangle = \text{Tr}[mC]$}.
+
+\end{itemize}
+
+
+\textbf{Action of operators.}
+\begin{itemize}
+
+\item \emph{Action of creation operator:} Given state $\ket{g} = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0}$ where $\hat{g}^\dagger_m = g^{i}_m \hat{f}^\dagger_i$ and an operator $\hat{v}^\dagger = v^j \hat{f}^\dagger_i$, the correlation matrix of the state $\ket{g'} = \hat{v}^\dagger \ket{g}$ is given by \result{$C' = ||v_0||^2 C + v_0 v_0^\dagger$}, where $v_0 = (1-C)v$ is the projection of $v$ onto the unoccupied subspace of $C$.
+
+\item \emph{Action of annihilation operator:} Given state $\ket{g} = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0}$ where $\hat{g}^\dagger_m = g^{i}_m \hat{f}^\dagger_i$ and an operator $\hat{w} = \bar{w}_i \hat{f}^i$, the correlation matrix of the state $\ket{g'} = \hat{w} \ket{g}$ is given by \result{$C' = ||w_1||^2 C - w_1 w_1^\dagger$}, where $w_1 = C w$ is the projection of $w$ onto the occupied subspace of $C$.
+
+
+\end{itemize}
+
+
+\textbf{Dynamics}. All of these results assume the Hamiltonian $\hat{H} = h^i_j \hat{c}^\dagger_i \hat{c}^j$ has a hopping matrix which can be diagonalized
+as $h^i_j = \phi^i_n \epsilon_n \phi^n_j$. The ground state of $\hat{H}$ is $\ket{\Phi_0}$.
+\begin{itemize}
+\item \emph{Heisenberg time evolution of operators:} Define the operators $\hat{\phi}^\dagger_n = \sum_n \phi^j_n \hat{c}^\dagger_j$ and $\hat{\phi}^n = \sum_n \bar{\phi}_j^n \hat{c}^j$. These evolve in the Heisenberg picture as \result{$\hat{\phi}^n(t) = e^{i \hat{H} t} \hat{\phi}^n e^{-i \hat{H} t} = e^{- i\epsilon_n t} \hat{\phi}^n$} and \textcolor{blue}{$\hat{\phi}^\dagger_n(t) = e^{i \epsilon_n t} \hat{\phi}^\dagger_n$}.
+\item \emph{Lesser Greens function:} Defined as $G^{<\, i}_j(t)= i \bra{\Phi_0} \hat{c}^\dagger_j \hat{c}^i(t) \ket{\Phi_0}$, it is given by \result{$G^{<\, i}_j(t) = i \sum_n \nu_n  \phi^i_n e^{-i \epsilon_n t}  \bar{\phi}_j^n $} where $\nu_n$ is the occupancy of the ground state in the $\phi$ basis.
+\item \emph{Greater Greens function:} Defined as $G^{>\, i}_j(t) = -i \bra{\Phi_0} \hat{c}^i(t) \hat{c}^\dagger_j \ket{\Phi_0}$, it is given by \mbox{\result{$G^{>\, i}_j(t) = -i \sum_n (1-\nu_n) \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n $}} where $\nu_n$ is the occupancy of the ground state in the $\phi$ basis.
+\item \emph{Retarded Greens function:} Defined as $G^{R\, i}_j(t) = \theta(t)(G^{>\, i}_j(t) - G^{<\, i}_j(t)) $, it is given by \result{$G^{R\, i}_j(t) = -i \theta(t) \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n  = -i \theta(t) e^{-i h t}$}.
+\item \emph{Propagator:} Define the propagator as $g^i_j(t) = i(G^{>\, i}_j(t) - G^{<\, i}_j(t))$. It can be written simply as \result{$g^i_j(t) = e^{-i h t} = \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n$}.
+\item \emph{Evolution of correlation matrix:} For a pure, Gaussian state $\ket{f}$ with correlation matrix $C_i^j = \bra{f} \hat{c}^\dagger_i \hat{c}^j \ket{f} = \bar{f}_i^n \nu_n f^j_n$, the orbitals evolve, in the Schr\"odinger picture, as $f^j_n(t) = g^i_j(t) f^j_n$. So \result{$C_i^j(t) =  \bar{g}^{i'}_i(t) C_{i'}^{j'}  g^j_{j'}(t)$}.
+
+\end{itemize}
 
 
 \end{document}
