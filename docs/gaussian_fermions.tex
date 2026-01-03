@@ -56,12 +56,13 @@ Note the minus sign in the last line. Plus signs are shown for emphasis.
 
 We can summarize the vector space isomorphism as
 \begin{align}
-     \ket{n_1}_1 \otimes \ket{n_2}_2 \ \leftrightarrow\ (-1)^{n_1 \cdot n_2} \ket{n_2}_2 \otimes \ket{n_1}_1 \ \ .
+     \ket{n_1}_1 \otimes \ket{n_2}_2 \ \leftrightarrow\ (-1)^{n_1 \cdot n_2} \ket{n_2}_2 \otimes \ket{n_1}_1 
 \end{align}
-This means the ordering of fermionic basis vectors matters: if two odd basis vectors are permuted, the basis vector changes by a minus sign. 
+where $n_1, n_2 \in \{0,1\}$.
+The factor in front of this isomorphism rule means the \emph{ordering} of fermionic basis vectors matters: if two odd basis vectors are permuted, the basis vector changes by a minus sign. 
 \footnote{In some mathematical literature, an isomorphism of this type is described as ``having a $\mathbb{Z}_2$ grading'', meaning that one assigns non-trivial properties based on the parity or grading of the basis, or having a ``braided'' or ``graded'' vector space isomorphism.}
 
-Note that tensor products of basis states such as $\ket{1}_i \otimes \ket{1}_j$ are commonly written in the more compact notation $\ket{1}_i \ket{1}_j$ or even $\ket{1_i 1_j}$. Tensor product symbols ``$\otimes$'' are thus generally dropped when understood from context, and will be dropped frequently in the rest of these notes.
+Note that tensor products of basis states such as $\ket{1}_i \otimes \ket{1}_j$ are commonly written in the more compact notation $\ket{1}_i \ket{1}_j$ or even $\ket{1_i 1_j}$. Tensor product symbols ``$\otimes$'' are generally dropped when understood from context, and will be dropped frequently in the rest of these notes.
 
 
 \section{Fermionic Operators}
@@ -72,7 +73,7 @@ For the simplest case of a ``spinless fermion'' space $V$ with basis $\mathcal{B
 \hat{c}\ &= \ \ket{0} \bra{1} \\ 
 \hat{c}^\dagger &= \ \ket{1} \bra{0}  \ \ .
 \end{align}
-Together with the identity operator, this set actually defines a complete operator basis.
+Together with the identity operator, this set defines a complete operator basis.
 
 The $\hat{n}$ operator is known as the ``number operator''
 since it ``detects'' the filling of a state:
@@ -84,7 +85,7 @@ since it ``detects'' the filling of a state:
 The $\hat{c}$ and $\hat{c}^\dagger$ are known as the ``annihilation'' and ``creation'' operators, respectively. This is simply because they map a filled state to an empty state or vice versa:
 \begin{align}
 \hat{c} \ket{1}  &= \ket{0}  \\ 
-\hat{c}^\dagger \ket{0}  &= \ket{0}  \ \ .
+\hat{c}^\dagger \ket{0}  &= \ket{1}  \ \ .
 \end{align}
 
 One can of course define tensor products of operators in the usual way, such as $\hat{c}_1 \hat{c_2}$ or $\hat{c}^\dagger_2  \hat{c}_1$.
@@ -103,14 +104,14 @@ The first two of these are commonly summarized as:
 \{ \hat{c}_i, \hat{c}_j \} = 0 \nonumber \\
 \{ \hat{c}^\dagger_i, \hat{c}^\dagger_j \} = 0
 \end{align}
-where $\{ a, b \} = a\, b + b\, a$ is the anti-commutator.
+where $\{ a, b \} = a b + b a$ is the anti-commutator.
 
 The third relation Eq.~(\ref{eqn:ccdag_relation}) has the special case that when $i=j$, $(\hat{c}_i \hat{c}^\dagger_i + \hat{c}^\dagger_i \hat{c}_i) = 1$. Therefore it is commonly summarized as 
 \begin{align}
 \{ \hat{c}_i, \hat{c}^\dagger_j \} = \delta_{ij} \ \ .
 \end{align}
 
-In many presentations, the anticommutation relations of the operators are stated as an axiom, but they actually follow from the properties of the state spaces.
+In many presentations, the anticommutation relations of the operators are stated as axioms, but they actually follow from the properties of the state space.
 For example, 
 \begin{align}
 \hat{c}_1  \hat{c}_2   & =  \ket{0}_1 \otimes \bra{1}_1 \otimes \ket{0}_2 \otimes \bra{1}_2 \nonumber \\
@@ -122,7 +123,7 @@ For example,
 
 \section{Many-Body States and Gaussian States}
 
-Many-body or many-particle basis states can be defined or constructed as
+Basis states for many-body or many-particle systems can be defined or constructed as
 \begin{align}
 \ket{1_i 1_j 1_k} = \hat{c}^\dagger_i \hat{c}^\dagger_j \hat{c}^\dagger_k \ket{0} \ .
 \end{align}
@@ -130,9 +131,9 @@ The most general many-particle state is a sum of these:
 \begin{align}
 \ket{\Psi} = \sum_{n_1, n_2, \ldots, n_N} \Psi^{n_1 n_2 \cdots n_N} \ket{n_1 n_2 \cdots n_N} \label{eqn:general_state}
 \end{align}
-where $\Psi^{n_1 n_2 \cdots n_N}$ is an arbitrary tensor of complex amplitudes. The anti-commuting nature of the fermions is automatically satisfied by the properties of the basis, and no additional symmetry properties need to be assumed for the amplitudes $\Psi^{n_1 n_2 \cdots n_N}$. 
+where $\Psi^{n_1 n_2 \cdots n_N}$ is an arbitrary tensor of complex amplitudes. The anti-commuting nature of the fermions is automatically satisfied by the properties of the basis, and no additional symmetry property needs to be assumed for the amplitudes $\Psi^{n_1 n_2 \cdots n_N}$. 
 
-A typical extra assumption, though, is that for a closed system the total number of particles $N_p$ is fixed. Mathematically this means $n_1 + n_2 + \ldots + n_N = N_p$ otherwise $\Psi^{n_1 n_2 \cdots n_N} = 0$. (Superconducting states are a common exception to this rule, though these are probably more properly understood as mixed states.)
+A typical extra assumption, though, is that for a closed system the total number of particles $N_p$ is fixed. Mathematically this means $n_1 + n_2 + \ldots + n_N = N_p$ otherwise $\Psi^{n_1 n_2 \cdots n_N} = 0$. (Superconducting states are a common exception to this rule, though these are more properly understood in terms of density matrices or mixed states.)
 
 A special subset of many-particle fermionic states are the \emph{Gaussian states}, more commonly known as \emph{Slater determinants}.
 The general form of a Gaussian state with four fermions is:
@@ -140,7 +141,7 @@ The general form of a Gaussian state with four fermions is:
 \ket{\Psi} & = \hat{A}^\dagger \hat{B}^\dagger \hat{C}^\dagger \hat{D}^\dagger \ket{0} \nonumber \\
 & = \left( \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1} \right) \left( \sum_{i_2=1}^N B^{i_2} \hat{c}^\dagger_{i_2} \right) \left( \sum_{i_3=1}^N C^{i_3} \hat{c}^\dagger_{i_3} \right) \left( \sum_{i_4=1}^N D^{i_4} \hat{c}^\dagger_{i_4} \right) \ket{0} \ \ \ .
 \end{align}
-Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not required to be orthogonal, though the properties of the state can be simpler to deduce if they are.
+Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not required to be orthogonal, though the properties of the state are simpler to deduce if they are.
 
 The Gaussian states are quite special and far from being a general fermionic state, even though they are elements of the general vector space of fermionic many-body states. To see that the Gaussian states are not general, let us write a two-particle Gaussian state 
 $\ket{AB} = \hat{A}^\dagger \hat{B}^\dagger \ket{0}$ in the general form Eq.~(\ref{eqn:general_state}) for a fermionic state.
@@ -165,15 +166,41 @@ The first-quantized basis can be convenient for proving facts such as if $\vec{A
 
 \section{Static Properties of Gaussian States}
 
-\emph{Define g operators.}
+\begin{itemize}
+\item $[X]$ Define g operators.
+\item $[\ \ \ ]$ Emphasize neither basis is preferred in this section. Just a linear mapping from one to the other.
+\end{itemize}
+
+In this section we will consider static (time-independent) properties of Gaussian states. To define a generic Gaussian state,
+start by defining a matrix of orbitals $g^{j}\!_m$. This is assumed to be a unitary matrix $\bar{g}^{m'}\!_j g^j\!_m = \delta^{m'}_m$.
+The $m^\text{th}$ column $[\psi^{(m)}]^{j} = g^{j}\!_m$ can be interpreted as the real-space wavefunction
+for the single fermion that will be created by the $\hat{g}^\dagger_m$ operator defined next.
+
+Define the operator $\hat{g}^\dagger_m$ and its conjugate as
+\begin{align}
+\hat{g}^\dagger_m & = \sum_j g^j\!_m \, \hat{c}^\dagger_j \\
+\hat{g}^m & = \sum_j \bar{g}^m\!_j \, \hat{c}^j  \ .
+\end{align}
 
 The most generic form of a Gaussian state or Slater determinant is
 \begin{align}
 \ket{m_1 m_2 \ldots m_n}_g & = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0} \\
-& = \prod_{m=1} (\hat{g}^\dagger_{m})^{\nu_m} \ket{0}
+& = \left[ \prod_{m=1} (\hat{g}^\dagger_{m})^{\nu_m} \right] \ket{0}
 \end{align}
 where $\nu_m$ is the \emph{occupancy} of state $m$ in the $g$ basis. The occupancy is defined here as $\nu_m = 1$ if $m \in \{m_1, m_2, \ldots, m_n\}$ and $\nu_m = 0$ otherwise.
 
+Now we will derive important results about properties of Gaussian states.
+
+\subsection{Correlation matrix}
+
+First consider the case of a Gaussian state 
+
+Derivation strategy:
+\begin{itemize}
+\item Show that state like $\hat{c}^\dagger_{j_1} \hat{c}^\dagger_{j_2} |0\rangle$ has diagonal correlation matrix in c basis.
+\item Argue for similar result in g basis, using canonical commutation relations.
+\item Use canonical transformation to derive $\langle \mathbf{m} | \hat{c}^\dagger_i \hat{c}^j | \mathbf{m} \rangle$. 
+\end{itemize}
 
 
 \section{Dynamics of Gaussian States}
