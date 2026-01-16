@@ -166,41 +166,65 @@ The first-quantized basis can be convenient for proving facts such as if $\vec{A
 
 \section{Static Properties of Gaussian States}
 
-\begin{itemize}
-\item $[X]$ Define g operators.
-\item $[\ \ \ ]$ Emphasize neither basis is preferred in this section. Just a linear mapping from one to the other.
-\end{itemize}
 
-In this section we will consider static (time-independent) properties of Gaussian states. To define a generic Gaussian state,
-start by defining a matrix of orbitals $g^{j}\!_m$. This is assumed to be a unitary matrix $\bar{g}^{m'}\!_j g^j\!_m = \delta^{m'}_m$.
-The $m^\text{th}$ column $[\psi^{(m)}]^{j} = g^{j}\!_m$ can be interpreted as the real-space wavefunction
-for the single fermion that will be created by the $\hat{g}^\dagger_m$ operator defined next.
+In this section we will consider static or time-independent properties of Gaussian states. Here we consider only pure states. 
+To define a generic Gaussian state, start by defining a matrix of orbitals $g^{j}\!_m$.
+This is assumed to be a unitary matrix $\bar{g}^{m'}\!_j g^j\!_m = \delta^{m'}_m$.
+The $m^\text{th}$ column $[\vec{g}_{(m)}]^{j} = g^{j}\!_m$ can be interpreted as the real-space wavefunction
+for the single fermion that will be created by the $\hat{g}^\dagger_m$ operator defined below.
 
-Define the operator $\hat{g}^\dagger_m$ and its conjugate as
+Now define the operator $\hat{g}^\dagger_m$ and its conjugate as
 \begin{align}
-\hat{g}^\dagger_m & = \sum_j g^j\!_m \, \hat{c}^\dagger_j \\
-\hat{g}^m & = \sum_j \bar{g}^m\!_j \, \hat{c}^j  \ .
+\hat{g}^\dagger_m & = \sum_j g^j\!_m \, \hat{c}^\dagger_j \label{eq:gdagger_transform} \\
+\hat{g}^m & = \sum_j \bar{g}^m\!_j \, \hat{c}^j  \ . \label{eq:g_transform}
+\end{align}
+From the unitary property of $g^j\!_m$ it follows that 
+\begin{align}
+\hat{c}^\dagger_j & = \sum_m \bar{g}^m\!_j \, \hat{g}^\dagger_m \label{eq:cdagger_transform} \\
+\hat{c}^j & = \sum_m g^j\!_m \, \hat{g}^m  \ . \label{eq:c_transform}
 \end{align}
 
-The most generic form of a Gaussian state or Slater determinant is
+The transformation from $\hat{c}$ to $\hat{g}$ operators above is a \emph{canonical transformation}, which just means that the $\hat{g}$ operators obey the same commutation relations and have the same algebraic properties as the $\hat{c}$ operators, such as \mbox{$\{ \hat{g}^m, \hat{g}^\dagger_{m'} \} = \delta^m_{m'}$}. 
+
+Furthermore, although we took the perspective above that the states built from the vacuum $\ket{0}$ by the $\hat{c}^\dagger_j$ operators are our defining, or ``computational'', basis, note the similarity of the transformations (\ref{eq:gdagger_transform}), (\ref{eq:g_transform}) to the transformations (\ref{eq:cdagger_transform}), (\ref{eq:c_transform}). One can just as equally view the states built up from the $\hat{g}^\dagger_m$ operators as the defining basis and conclude that properties like expected values of $\hat{c}$ or $\hat{c}^\dagger$ operators in such states will be equivalent up to exchanging $g_i^j \leftrightarrow \bar{g}_i^j$.
+
+\subsection{Generic Gaussian State}
+
+The most generic form of a pure Gaussian state or Slater determinant is given by
 \begin{align}
-\ket{m_1 m_2 \ldots m_n}_g & = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0} \\
+\ket{\mathbf{m}}_g = \ket{m_1 m_2 \ldots m_n}_g & = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0} \\
 & = \left[ \prod_{m=1} (\hat{g}^\dagger_{m})^{\nu_m} \right] \ket{0}
 \end{align}
-where $\nu_m$ is the \emph{occupancy} of state $m$ in the $g$ basis. The occupancy is defined here as $\nu_m = 1$ if $m \in \{m_1, m_2, \ldots, m_n\}$ and $\nu_m = 0$ otherwise.
-
-Now we will derive important results about properties of Gaussian states.
+for some set of orbitals $g^j\!_m$ where $\nu_m$ is the \emph{occupancy} of state $m$ in the $g$ basis. The occupancy is defined here as $\nu_m = 1$ if $m \in \{m_1, m_2, \ldots, m_n\}$ and $\nu_m = 0$ otherwise.
 
 \subsection{Correlation matrix}
 
-First consider the case of a Gaussian state 
+A quantity that is central to the properties of Gaussian states is the correlation matrix $C_i\!^j = \bra{\mathbf{m}}_g  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_g $. We will see below that knowing the correlation matrix is sufficient to compute expected values of operators, the action
+of operators on Gaussian states, and dynamical properties such as single-particle Green's functions.
 
-Derivation strategy:
-\begin{itemize}
-\item Show that state like $\hat{c}^\dagger_{j_1} \hat{c}^\dagger_{j_2} |0\rangle$ has diagonal correlation matrix in c basis.
-\item Argue for similar result in g basis, using canonical commutation relations.
-\item Use canonical transformation to derive $\langle \mathbf{m} | \hat{c}^\dagger_i \hat{c}^j | \mathbf{m} \rangle$. 
-\end{itemize}
+The correlation matrix of a Gaussian state $\ket{\mathbf{m}}_g$ is given by
+\begin{align}
+C_i\!^j =  \bra{\mathbf{m}}_g  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_g = \sum_m \bar{g}_i^m \nu_m g^j_m \ \ . \label{eq:correlation_matrix}
+\end{align}
+
+To derive this result, note that for a Gaussian state $\ket{\mathbf{n}}_c  = \left[ \prod_{n=1} (\hat{c}^\dagger_{n})^{\nu_n} \right] \ket{0}$
+the correlation matrix is \mbox{$\bra{\mathbf{n}}_c \hat{c}^\dagger_i \hat{c}^j  \ket{\mathbf{n}}_c = \delta_i^j \nu_i$}, i.e.\ it is a diagonal matrix of the occupations.
+This result follows from the fact
+that $\hat{c}^j  \ket{\mathbf{n}}_c = \nu_j \ket{\mathbf{n'}}_c$ where $\mathbf{n'}$ is the set $\mathbf{n}$ with the element $j$ removed if present.
+Then recalling that the transformation from the $\hat{c}$ operators to the $\hat{g}$ operators is a canonical transformation,  a similar
+result holds in the $g$ basis, namely $\bra{\mathbf{m}}_g \hat{g}^\dagger_m \hat{g}^{m'}  \ket{\mathbf{m}}_g = \delta_m^{m'} \nu_m$.
+Finally to derive Eq.~(\ref{eq:correlation_matrix}) use (\ref{eq:cdagger_transform}) and (\ref{eq:c_transform}) to write 
+\begin{align}
+C_i\!^j = \bra{\mathbf{m}}_g  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_g = \sum_{m,m'} \bar{g}^m\!_i g^j\!_{m'}  \bra{\mathbf{m}}_g  \hat{g}^\dagger_m \hat{g}^{m'} \ket{\mathbf{m}}_g  = \sum_m \bar{g}_i^m \nu_m g^j_m \ \ . \qed
+\end{align}
+
+\subsection{Expected Value of Quadratic Operator}
+
+Given a quadratic operator $\hat{M} = \sum_{i,j} m^i\!_j \hat{c}^\dagger_i c^j$, we can use the correlation matrix result above to derive the expected value 
+$\bra{\mathbf{m}}_g \hat{M} \ket{\mathbf{m}}_g$. It follows by linearity that
+\begin{align}
+\bra{\mathbf{m}}_g \hat{M} \ket{\mathbf{m}}_g = \sum_{i,j} m^i\!_j \bra{\mathbf{m}}_g  \hat{c}^\dagger_i c^j\ket{\mathbf{m}}_g = \sum_{i,j} m^i\!_j C_i\!^j = \text{Tr}[mC] \ \ .
+\end{align}
 
 
 \section{Dynamics of Gaussian States}
