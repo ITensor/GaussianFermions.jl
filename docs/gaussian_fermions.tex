@@ -10,6 +10,9 @@
 \usepackage{color}
 \usepackage[dvipsnames]{xcolor}
 
+%\usepackage{tcolorbox}
+%\tcbuselibrary{amsmath}
+
 \newcommand{\result}[1]{\textcolor{blue}{#1}}
 
 
@@ -168,105 +171,229 @@ The first-quantized basis can be convenient for proving facts such as if $\vec{A
 
 
 In this section we will consider static or time-independent properties of Gaussian states. Here we consider only pure states. 
-To define a generic Gaussian state, start by defining a matrix of orbitals $g^{j}\!_m$.
-This is assumed to be a unitary matrix $\bar{g}^{m'}\!_j g^j\!_m = \delta^{m'}_m$.
-The $m^\text{th}$ column $[\vec{g}_{(m)}]^{j} = g^{j}\!_m$ can be interpreted as the real-space wavefunction
-for the single fermion that will be created by the $\hat{g}^\dagger_m$ operator defined below.
+To define a generic Gaussian state, start by defining a matrix of orbitals $d^{j}\!_m$.
+This is assumed to be a unitary matrix $\bar{d}^{m'}\!_j d^j\!_m = \delta^{m'}_m$.
+The $m^\text{th}$ column $[\vec{d}_{(m)}]^{j} = d^{j}\!_m$ can be interpreted as the real-space wavefunction
+for the single fermion that will be created by the $\hat{d}^\dagger_m$ operator defined below.
 
-Now define the operator $\hat{g}^\dagger_m$ and its conjugate as
+Now define the operator $\hat{d}^\dagger_m$ and its conjugate as
 \begin{align}
-\hat{g}^\dagger_m & = \sum_j g^j\!_m \, \hat{c}^\dagger_j \label{eq:gdagger_transform} \\
-\hat{g}^m & = \sum_j \bar{g}^m\!_j \, \hat{c}^j  \ . \label{eq:g_transform}
+\hat{d}^\dagger_m & = \sum_j d^j\!_m \, \hat{c}^\dagger_j \label{eq:ddagger_transform} \\
+\hat{d}^m & = \sum_j \bar{d}^m\!_j \, \hat{c}^j  \ . \label{eq:d_transform}
 \end{align}
 From the unitary property of $g^j\!_m$ it follows that 
 \begin{align}
-\hat{c}^\dagger_j & = \sum_m \bar{g}^m\!_j \, \hat{g}^\dagger_m \label{eq:cdagger_transform} \\
-\hat{c}^j & = \sum_m g^j\!_m \, \hat{g}^m  \ . \label{eq:c_transform}
+\hat{c}^\dagger_j & = \sum_m \bar{d}^m\!_j \, \hat{d}^\dagger_m \label{eq:cdagger_transform} \\
+\hat{c}^j & = \sum_m d^j\!_m \, \hat{d}^m  \ . \label{eq:c_transform}
 \end{align}
 
-The transformation from $\hat{c}$ to $\hat{g}$ operators above is a \emph{canonical transformation}, which just means that the $\hat{g}$ operators obey the same commutation relations and have the same algebraic properties as the $\hat{c}$ operators, such as \mbox{$\{ \hat{g}^m, \hat{g}^\dagger_{m'} \} = \delta^m_{m'}$}. 
+The transformation from $\hat{c}$ to $\hat{d}$ operators above is a \emph{canonical transformation}, which just means that the $\hat{d}$ operators obey the same commutation relations and have the same algebraic properties as the $\hat{c}$ operators, such as \mbox{$\{ \hat{d}^m, \hat{d}^\dagger_{m'} \} = \delta^m_{m'}$}. 
 
-Furthermore, although we took the perspective above that the states built from the vacuum $\ket{0}$ by the $\hat{c}^\dagger_j$ operators are our defining, or ``computational'', basis, note the similarity of the transformations (\ref{eq:gdagger_transform}), (\ref{eq:g_transform}) to the transformations (\ref{eq:cdagger_transform}), (\ref{eq:c_transform}). One can just as equally view the states built up from the $\hat{g}^\dagger_m$ operators as the defining basis and conclude that properties like expected values of $\hat{c}$ or $\hat{c}^\dagger$ operators in such states will be equivalent up to exchanging $g_i^j \leftrightarrow \bar{g}_i^j$.
+Furthermore, although we took the perspective above that the states built from the vacuum $\ket{0}$ by the $\hat{c}^\dagger_j$ operators are our defining, or ``computational'', basis, note the similarity of the transformations (\ref{eq:ddagger_transform}), (\ref{eq:d_transform}) to the transformations (\ref{eq:cdagger_transform}), (\ref{eq:c_transform}). One can just as equally view the states built up from the $\hat{d}^\dagger_m$ operators as the defining basis and conclude that properties like expected values of $\hat{c}$ or $\hat{c}^\dagger$ operators in such states will be equivalent up to replacing $d^j\!_m \leftrightarrow \bar{d}^m\!_j$.
 
 \subsection{Generic Gaussian State}
 
 The most generic form of a pure Gaussian state or Slater determinant is given by
 \begin{align}
-\ket{\mathbf{m}}_g = \ket{m_1 m_2 \ldots m_n}_g & = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0} \\
-& = \left[ \prod_{m=1} (\hat{g}^\dagger_{m})^{\nu_m} \right] \ket{0}
+\ket{\mathbf{m}}_d = \ket{m_1 m_2 \ldots m_{N}}_d & = \hat{d}^\dagger_{m_1} \hat{d}^\dagger_{m_2} \cdots \hat{d}^\dagger_{m_{N}} \ket{0} \\
+& = \left[ \prod_{m=1} (\hat{d}^\dagger_{m})^{\eta_m} \right] \ket{0}
 \end{align}
-for some set of orbitals $g^j\!_m$ where $\nu_m$ is the \emph{occupancy} of state $m$ in the $g$ basis. The occupancy is defined here as $\nu_m = 1$ if $m \in \{m_1, m_2, \ldots, m_n\}$ and $\nu_m = 0$ otherwise.
+for some set of orbitals $d^j\!_m$ where $\eta_m$ is the \emph{occupancy} of state $m$ in the $d$ basis. The occupancy is defined here as $\eta_m = 1$ if $m \in \{m_1, m_2, \ldots, m_n\}$ and $\eta_m = 0$ otherwise. The total number of fermions is $N$.
 
 \subsection{Correlation matrix}
 
-A quantity that is central to the properties of Gaussian states is the correlation matrix $C_i\!^j = \bra{\mathbf{m}}_g  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_g $. We will see below that knowing the correlation matrix is sufficient to compute expected values of operators, the action
-of operators on Gaussian states, and dynamical properties such as single-particle Green's functions.
+A central quantity for Gaussian states is the correlation matrix $C_i\!^j = \bra{\mathbf{m}}_d  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_d $. We will see  that knowledge of the correlation matrix is sufficient to compute expected values of operators, the action
+of operators on Gaussian states, and dynamical properties such as single-particle Green's functions \footnote{This observation is closely analogous to the fact that  correlation functions of multi-variate Gaussian functions $\exp(- x^\dagger \Sigma^{-1} x)$ are uniquely determined by their covariance matrix $\Sigma$.}.
 
-The correlation matrix of a Gaussian state $\ket{\mathbf{m}}_g$ is given by
+The correlation matrix of a Gaussian state $\ket{\mathbf{m}}_d$ is given by
 \begin{align}
-C_i\!^j =  \bra{\mathbf{m}}_g  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_g = \sum_m \bar{g}_i^m \nu_m g^j_m \ \ . \label{eq:correlation_matrix}
+\boxed{C_i\!^j =  \bra{\mathbf{m}}_d  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_d = \sum_m \bar{d}_i^m \eta_m d^j_m} \ \ . \label{eq:correlation_matrix}
 \end{align}
 
-To derive this result, note that for a Gaussian state $\ket{\mathbf{n}}_c  = \left[ \prod_{n=1} (\hat{c}^\dagger_{n})^{\nu_n} \right] \ket{0}$
-the correlation matrix is \mbox{$\bra{\mathbf{n}}_c \hat{c}^\dagger_i \hat{c}^j  \ket{\mathbf{n}}_c = \delta_i^j \nu_i$}, i.e.\ it is a diagonal matrix of the occupations.
+To derive this result, note that for a Gaussian state $\ket{\mathbf{n}}_c  = \left[ \prod_{n=1} (\hat{c}^\dagger_{n})^{\gamma_n} \right] \ket{0}$
+the correlation matrix is \mbox{$\bra{\mathbf{n}}_c \hat{c}^\dagger_i \hat{c}^j  \ket{\mathbf{n}}_c = \delta_i^j \gamma_i$}, i.e.\ it is a diagonal matrix of the occupations.
 This result follows from the fact
-that $\hat{c}^j  \ket{\mathbf{n}}_c = \nu_j \ket{\mathbf{n'}}_c$ where $\mathbf{n'}$ is the set $\mathbf{n}$ with the element $j$ removed if present.
-Then recalling that the transformation from the $\hat{c}$ operators to the $\hat{g}$ operators is a canonical transformation,  a similar
-result holds in the $g$ basis, namely $\bra{\mathbf{m}}_g \hat{g}^\dagger_m \hat{g}^{m'}  \ket{\mathbf{m}}_g = \delta_m^{m'} \nu_m$.
+that $\hat{c}^j  \ket{\mathbf{n}}_c = \gamma_j \ket{\mathbf{n'}}_c$ where $\mathbf{n'}$ is the set $\mathbf{n}$ with the element $j$ removed if present.
+Then recalling that the transformation from the $\hat{c}$ operators to the $\hat{d}$ operators is a canonical transformation, a similar
+result holds in the $d$ basis, namely $\bra{\mathbf{m}}_d \hat{d}^\dagger_m \hat{d}^{m'}  \ket{\mathbf{m}}_d = \delta_m^{m'} \eta_m$.
 Finally to derive Eq.~(\ref{eq:correlation_matrix}) use (\ref{eq:cdagger_transform}) and (\ref{eq:c_transform}) to write 
 \begin{align}
-C_i\!^j = \bra{\mathbf{m}}_g  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_g = \sum_{m,m'} \bar{g}^m\!_i g^j\!_{m'}  \bra{\mathbf{m}}_g  \hat{g}^\dagger_m \hat{g}^{m'} \ket{\mathbf{m}}_g  = \sum_m \bar{g}_i^m \nu_m g^j_m \ \ . \qed
+C_i\!^j = \bra{\mathbf{m}}_d  \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_d = \sum_{m,m'} \bar{d}^m\!_i d^j\!_{m'}  \bra{\mathbf{m}}_d  \hat{d}^\dagger_m \hat{d}^{m'} \ket{\mathbf{m}}_d  = \sum_m \bar{d}_i^m \eta_m d^j_m \ \ . \qed
 \end{align}
 
-\subsection{Expected Value of Quadratic Operator}
-
-Given a quadratic operator $\hat{M} = \sum_{i,j} m^i\!_j \hat{c}^\dagger_i c^j$, we can use the correlation matrix result above to derive the expected value 
-$\bra{\mathbf{m}}_g \hat{M} \ket{\mathbf{m}}_g$. It follows by linearity that
+For a normalized state $\ket{\mathbf{m}}_d$, note that the trace of the correlation matrix gives the number of fermions in the state 
 \begin{align}
-\bra{\mathbf{m}}_g \hat{M} \ket{\mathbf{m}}_g = \sum_{i,j} m^i\!_j \bra{\mathbf{m}}_g  \hat{c}^\dagger_i c^j\ket{\mathbf{m}}_g = \sum_{i,j} m^i\!_j C_i\!^j = \text{Tr}[mC] \ \ .
+N \stackrel{\text{def}}{=} \sum_j \bra{\mathbf{m}}_d \hat{n}_j \ket{\mathbf{m}}_d = \sum_j \bra{\mathbf{m}}_d \hat{c}^\dagger_j \hat{c}^j \ket{\mathbf{m}}_d = \sum_j C_j\!^j = \sum_m \eta_m \ .
 \end{align}
+If the state is pure, the occupations $\eta_m$ are either 0 or 1, so that the correlation matrix is a projector $C^2 = C$. 
 
+\subsection{Expected Value of Quadratic Operators}
+
+Given a quadratic operator $\hat{\mathcal{O}} = \sum_{i,j} O^i\!_j \hat{c}^\dagger_i c^j$, we can use the correlation matrix result above to derive the expected value 
+$\bra{\mathbf{m}}_d \hat{\mathcal{O}} \ket{\mathbf{m}}_d$. It follows by linearity that
+\begin{align}
+\boxed{\bra{\mathbf{m}}_d \hat{\mathcal{O}} \ket{\mathbf{m}}_d = \sum_{i,j} O^i\!_j \bra{\mathbf{m}}_d  \hat{c}^\dagger_i c^j\ket{\mathbf{m}}_d = \sum_{i,j} O^i\!_j C_i\!^j = \text{Tr}[O C] } \ \ .
+\end{align}
+An important example of a quadratic operator is a non-interacting Hamiltonian, which in the particle-conserving case has the generic form $\hat{H} =  \sum_{i,j} h^i\!_j \hat{c}^\dagger_i \hat{c}^j$. So from the result above we see that the energy expectation value of a Gaussian state depends only on its correlation matrix.
+
+\subsection{Action of Operators on Gaussian States}
+
+Given an arbitrary creation operator $\hat{v}^\dagger = v^j \hat{c}^\dagger_i$, where $v^j$ is some vector of coefficients, consider its action on a Gaussian state $\ket{\phi}$, resulting in the state $\ket{\tilde{\psi}} = \hat{v}^\dagger \ket{\phi}$.
+The state $\ket{\tilde{\psi}}$ is a Gaussian state and its correlation matrix $( C_{\tilde{\psi}})_i\!^j = \bra{\tilde{\psi}} \hat{c}^\dagger_i \hat{c}^j \ket{\tilde{\psi}}$  is given by 
+\begin{align}
+\boxed{C_{\tilde{\psi}} = ||v_0||^2 C_\phi + v_0 v_0^\dagger}
+\end{align}
+where $C_\phi$ is the correlation matrix of $\ket{\phi}$ and $v_0 = (1-C_\phi)v$ is the projection of $v$ onto the unoccupied subspace of $C_\phi$.
+
+
+Analogously, given an arbitrary annihilation operator $\hat{w} = \bar{w}_j \hat{c}^i$, where $w^j$ is some vector of coefficients, consider its action on a Gaussian state $\ket{\phi}$, resulting in the state $\ket{\tilde{\eta}} = \hat{w} \ket{\phi}$.
+The state $\ket{\tilde{\eta}}$ is a Gaussian state and its correlation matrix $( C_{\tilde{\eta}})_i\!^j = \bra{\tilde{\eta}} \hat{c}^\dagger_i \hat{c}^j \ket{\tilde{\eta}}$  is given by 
+\begin{align}
+\boxed{C_{\tilde{\eta}} = ||w_1||^2 C_\phi - w_1 w_1^\dagger}
+\end{align}
+where $C_\phi$ is the correlation matrix of $\ket{\phi}$ and $w_1 = C_\phi w$ is the projection of $w$ onto the occupied subspace of $C_\phi$.
+
+Note that the states $\ket{\tilde{\psi}}$ or $\ket{\tilde{\eta}}$ are not normalized. This results in the trace of their correlation matrices $C_{\tilde{\psi}}$ or $C_{\tilde{\eta}}$ no longer having a trace equal to the correct particle number. (For $\ket{\tilde{\psi}}$ the correct particle number should be $N_\phi + 1$ and for $\ket{\tilde{\eta}}$ the correct particle number should be $N_\phi-1$.)
 
 \section{Dynamics of Gaussian States}
 
-\section{Mathematical Results}
+An appealing aspect of Gaussian states is that their dynamical or time-dependent properties can be completely understood through simple and efficiently- computable matrix expressions. In this section we will consider dynamics governed by a quadratic Hamiltonian of the form 
+\begin{align}
+\hat{H} = \sum_{ij} h^i\!_j \hat{c}^\dagger_i \hat{c}^j \ \ .
+\end{align} 
+We will construct its eigenoperators and eigenstates then discuss how generic Gaussian states evolve under this Hamiltonian and show expressions for the Green's functions (time-dependent correlation functions) of these states.
+
+\subsection{Eigenoperators}
+
+To construct eigenoperators, begin by diagonalizing the Hamiltonian ``hopping'' or coefficient matrix $h^i\!_j$ as
+\begin{align}
+h^i\!_j = \phi^i\!_n \epsilon_n \bar{\phi}_j\!^n \ \ .
+\end{align}
+The resulting ``single-particle eigenstates'' $\phi^i\!_n$ will play a crucial role in what follows. These can be viewed as spatial single-particle wavefunctions or orbitals labeled by $n$.
+
+Next construct eigenoperators defined as
+\begin{align}
+\hat{\phi}^\dagger_n & = \sum_j \phi^j\!_n \hat{c}^\dagger_j \label{eq:phidag_op} \\ 
+\hat{\phi}^n & = \sum_j \bar{\phi}_j\!^n \hat{c}^j \label{eq:phi_op}  \ \ .
+\end{align}
+from which it follows by unitarity of $\phi^j_n$ that 
+\begin{align}
+\hat{c}^\dagger_j & = \sum_n \bar{\phi}_j\!^n \hat{\phi}^\dagger_n  \label{eq:cdag_phi_transform} \\ 
+\hat{c}^j & = \sum_n \phi^j\!_n \hat{\phi}^n \ \ . \label{eq:c_phi_transform}
+\end{align}
+
+The reason we are calling these eigenoperators is that they only transform by a phase when evolving in time in the Heisenberg picture
+\begin{align}
+\boxed{\hat{\phi}^n(t) =  e^{-i \epsilon_n t}\ \hat{\phi}^n(0)} \label{eq:phi_t_evol}
+\end{align}
+\begin{align}
+\boxed{\hat{\phi}^\dagger_n(t) =  e^{i \epsilon_n t}\ \hat{\phi}^\dagger_n(0)} \label{eq:phidag_t_evol} \ \ .
+\end{align}
+To show this result, use the fact that the $\hat{\phi}^\dagger_n$ and $\hat{\phi}^n$ obey the canonical fermionic anticommutation relations and use this to show $[\hat{\phi}^n, \hat{H}] = \epsilon_n \hat{\phi}^n$ and $[\hat{\phi}^\dagger_n, \hat{H}] = -\epsilon_n \hat{\phi}^\dagger_n$ (these commutation relations hold for $\hat{\phi}^n(t)$ at all times). Then the properties (\ref{eq:phi_t_evol}) and (\ref{eq:phidag_t_evol}) follow from the Heisenberg equation $i \frac{d}{dt} \hat{\phi}^n(t) = [\hat{\phi}^n(t), \hat{H}]$ and similarly for $\hat{\phi}^\dagger_n(t)$.
+
+\subsection{Eigenstates}
+
+Having found eigenoperators, we can construct many-body, Gaussian eigenstates. These are generically of the form
+\begin{align}
+\ket{\mathbf{n}}_\phi = \prod_{n} \left(\hat{\phi}^\dagger_n \right)^{\nu_n} \ket{0}  
+\end{align}
+where $\nu_n = 1$ if $n \in \{n_1, n_2, \ldots, n_N \}$ and $\nu_n = 0$ otherwise. Such states, known as \emph{Fock states}, 
+evolve only by a phase under Schr\"odinger time evolution
+\begin{align}
+\boxed{e^{-i \hat{H} t} \ket{\mathbf{n}}_\phi  = e^{-i E_\mathbf{n} t}  \ket{\mathbf{n}}_\phi }
+\end{align}
+where 
+\begin{align}
+\boxed{E_\mathbf{n}  = \epsilon_{n_1} + \epsilon_{n_2} + \ldots + \epsilon_{n_N}} \label{eq:fock_energy}
+\end{align}
+ is the energy of the state.
+ 
+To derive this result, we can use the Heisenberg picture to write
+\begin{align}
+e^{-i \hat{H} t} \ket{\mathbf{n}}_\phi  & = e^{-i \hat{H} t} \hat{\phi}^\dagger_{n_1} \hat{\phi}^\dagger_{n_2} \cdots \hat{\phi}^\dagger_{n_N} \ket{0} \\
+& =  \left( e^{-i \hat{H} t} \hat{\phi}^\dagger_{n_1}  e^{i \hat{H} t} \right) \left(e^{-i \hat{H} t} \hat{\phi}^\dagger_{n_2}  e^{i \hat{H} t} \right) \cdots  \left( e^{-i \hat{H} t} \hat{\phi}^\dagger_{n_N}  e^{i \hat{H} t}\right) \ket{0}  \\ 
+& = e^{-i (\epsilon_{n_1} + \epsilon_{n_2} + \ldots + \epsilon_{n_N}) t} \ket{\mathbf{n}}_\phi \label{eq:eigenstate_t_evolution}
+\end{align}
+where we have used $e^{-i \hat{H} t} \hat{\phi}^\dagger_{n}  e^{i \hat{H} t} = \hat{\phi}_n(-t) =  e^{-i \epsilon_n t} \hat{\phi}_n(0)$ and $e^{i \hat{H} t} \ket{0} = \ket{0}$.
+ 
+Equation~(\ref{eq:fock_energy}) is a crucial result, and justifies the level-filling picture used in band theory. It says we can understand the full, many-body spectrum of a Gaussian fermionic Hamiltonian just by enumerating the single-particle states $\phi_n^j$ for $n=1,...,N_S$ where $N_S$ is the number of sites in the system. Then the $2^{N_S}$ different many-body eigenstates are just the exponentially many different ways of ``filling'' these $N_S$ single particle states or levels.
 
 
-\textbf{Correlation functions and expectation values.}
-\begin{itemize}
+\subsection{Zero-Temperature Green's Functions}
 
-\item \emph{Correlation matrix:} Given a Gaussian state $\ket{g} = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0}$ where $\hat{g}^\dagger_m = g^{i}_m \hat{f}^\dagger_i$, the correlation matrix $C^j_i$ in the f basis is given by \textcolor{blue}{$C_i^j = \bra{g} \hat{f}^\dagger_i \hat{f}^j \ket{g} = \sum_n \bar{g}_i^n \nu_n g^j_n$}, where $\nu_m = \bra{g} \hat{n}_{m} \ket{g}$ is the occupancy of state $m$ in the $g$ basis ($\nu_m = 1$ if $m \in \{m_1, m_2, m_n\}$, $\nu_m = 0$ otherwise).
+With these results in hand, it is straightforward to find expressions for the zero-temperature or ground state Green's functions. 
+Their definitions are general for any many-body system while the expressions for them in terms of the $\phi^j_n$ matrix is specific to Gaussian states.
 
-\item \emph{Same-basis correlation matrix:} Given a Gaussian state $\ket{f} = \hat{f}^\dagger_{j_1} \hat{f}^\dagger_{j_2} \cdots \hat{f}^\dagger_{j_n} \ket{0}$, the correlation matrix $C^j_i$ in the f basis is given by \textcolor{blue}{$C_i^j = \bra{f} \hat{f}^\dagger_i \hat{f}^j \ket{f} = \delta_j^i \nu_j$} where $\nu_j = \bra{f}\hat{n}_j\ket{f}$ is the occupancy of orbital $j$ in the $f$ basis.
+The lesser Green's function is given by
+\begin{align}
+\boxed{G^{<\, i}_j(t)= i \bra{\Phi_0} \hat{c}^\dagger_j \hat{c}^i(t) \ket{\Phi_0}  = i \sum_n \nu_n  \phi^i_n e^{-i \epsilon_n t}  \bar{\phi}_j^n} \ \ .
+\end{align}
+The greater Green's function is given by
+\begin{align}
+\boxed{G^{>\, i}_j(t)= -i \bra{\Phi_0} \hat{c}^i(t) \hat{c}^\dagger_j \ket{\Phi_0} = -i \sum_n (1-\nu_n) \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n} \ \ .
+\end{align}
+Finally the retarded Green's function is given by
+\begin{align}
+\boxed{G^{R\, i}_j(t) = \theta(t)(G^{>\, i}_j(t) - G^{<\, i}_j(t)) = -i \theta(t) \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n  = -i \theta(t) e^{-i h t} } \ \ . 
+\end{align}
+where $\theta(t) = 1$ for $t > 0$ and $\theta(t) = 0$ otherwise.
+In all the results above, the $\nu_n$ are the occupation numbers of the ground state of $N$ fermions, which means they are $\nu_n = 1$ for the $N$ lowest-energy single-particle eigenstates and $\nu_n = 0$ otherwise.
 
-\item \emph{Expectation value:} Given an operator $\hat{M} = m^{i}_j \hat{c}^\dagger_i c^j$ and a Gaussian state $\ket{f}$ with correlation matrix 
-\mbox{$C_i^j = \bra{f} \hat{c}^\dagger_i \hat{c}^j \ket{f}$}, the expected value of $\hat{M}$ is \result{$\langle \hat{M} \rangle = \text{Tr}[mC]$}.
-
-\end{itemize}
+These results can all be derived using Eqs.~(\ref{eq:phidag_op}) and (\ref{eq:phi_op}) to transform the $\hat{c}$ and $\hat{c}^\dagger$ into linear combinations of the $\hat{\phi}$, $\hat{\phi}^\dagger$ operators. Then the results above follow from the time evolution of the $\hat{\phi}$ operators Eqs.~(\ref{eq:phi_t_evol}) and (\ref{eq:phidag_t_evol}).
 
 
-\textbf{Action of operators.}
-\begin{itemize}
+\subsection{Time Evolution of a Generic Gaussian State}
 
-\item \emph{Action of creation operator:} Given state $\ket{g} = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0}$ where $\hat{g}^\dagger_m = g^{i}_m \hat{f}^\dagger_i$ and an operator $\hat{v}^\dagger = v^j \hat{f}^\dagger_i$, the correlation matrix of the state $\ket{g'} = \hat{v}^\dagger \ket{g}$ is given by \result{$C' = ||v_0||^2 C + v_0 v_0^\dagger$}, where $v_0 = (1-C)v$ is the projection of $v$ onto the unoccupied subspace of $C$.
+Consider now a generic Gaussian state
+\begin{align}
+\ket{\mathbf{m}}_d = \ket{m_1 m_2 \ldots m_{N}}_d & = \hat{d}^\dagger_{m_1} \hat{d}^\dagger_{m_2} \cdots \hat{d}^\dagger_{m_{N}} \ket{0} \\
+& = \left[ \prod_{m=1} (\hat{d}^\dagger_{m})^{\eta_m} \right] \ket{0} \ \ .
+\end{align}
+where the $\hat{d}^\dagger_m$ operators are defined as
+\begin{align}
+\hat{d}^\dagger_m = \sum_j d^j\!_m \hat{c}^\dagger_j \ \ . \label{eq:ddag_c_transform}
+\end{align}
+Define the \emph{propagator} as $\boxed{g(t) = e^{- i h t}}$ in other words $\boxed{g^i\!_j(t) = \sum_n \phi^i\!_n e^{-i \epsilon_n t} \bar{\phi}^n\!_j}$.
 
-\item \emph{Action of annihilation operator:} Given state $\ket{g} = \hat{g}^\dagger_{m_1} \hat{g}^\dagger_{m_2} \cdots \hat{g}^\dagger_{m_n} \ket{0}$ where $\hat{g}^\dagger_m = g^{i}_m \hat{f}^\dagger_i$ and an operator $\hat{w} = \bar{w}_i \hat{f}^i$, the correlation matrix of the state $\ket{g'} = \hat{w} \ket{g}$ is given by \result{$C' = ||w_1||^2 C - w_1 w_1^\dagger$}, where $w_1 = C w$ is the projection of $w$ onto the occupied subspace of $C$.
+Using the fact that $\hat{d}^\dagger_m = \sum_j d^j_m \hat{c}^\dagger_j = \sum_{j, n} (\bar{\phi}^n_j d^j_m ) \hat{\phi}^\dagger_n$, where we have used equations (\ref{eq:ddag_c_transform}) and (\ref{eq:cdag_phi_transform}), it follows that 
+\begin{align}
+\ket{\mathbf{m}}_d & = \sum_{j_1 j_2 \cdots}   \sum_{n_1 n_2 \cdots}  ( \bar{\phi}^{n_1}_{j_1} d^{j_1}_{m_1} ) (\bar{\phi}^{n_2}_{j_2} d^{j_2}_{m_2} ) \cdots (\bar{\phi}^{n_N}_{j_N} d^{j_N}_{m_N} ) \ \hat{\phi}^\dagger_{n_1} \hat{\phi}^\dagger_{n_2}  \cdots \hat{\phi}^\dagger_{n_N} \ket{0} 
+\end{align}
+which implies, using Eq.~(\ref{eq:eigenstate_t_evolution}) that
+\begin{align}
+e^{-i \hat{H} t} \ket{\mathbf{m}}_d & = \sum_{j_1 j_2 \cdots}   \sum_{n_1 n_2 \cdots}  ( \bar{\phi}^{n_1}_{j_1} d^{j_1}_{m_1} ) (\bar{\phi}^{n_2}_{j_2} d^{j_2}_{m_2} ) \cdots (\bar{\phi}^{n_N}_{j_N} d^{j_N}_{m_N} ) \ e^{-i (\epsilon_{n_1} + \epsilon_{n_2} + \ldots) t}\  \hat{\phi}^\dagger_{n_1} \hat{\phi}^\dagger_{n_2}  \cdots \hat{\phi}^\dagger_{n_N} \ket{0}  \\ 
+& = \sum_{j_1 j_2 \cdots}   \sum_{n_1 n_2 \cdots}  (\phi^{j'_1}_{n_1} e^{-i \epsilon_{n_1} t}   \bar{\phi}^{n_1}_{j_1} d^{j_1}_{m_1}) (\phi^{j'_2}_{n_2} e^{-i \epsilon_{n_2} t}  \bar{\phi}^{n_2}_{j_2}  d^{j_2}_{m_2}) \cdots (\phi^{j'_N}_{n_N} e^{-i \epsilon_{n_N} t}  \bar{\phi}^{n_N}_{j_N}  d^{j_N}_{m_N})  \ \hat{c}^\dagger_{n_1} \hat{c}^\dagger_{n_2}  \cdots \hat{c}^\dagger_{n_N} \ket{0}   \\
+& = \sum_{j_1 j_2 \cdots}   \sum_{n_1 n_2 \cdots}  (g^{j'_1}\!_{j_1}(t) d^{j_1}_{m_1}) (g^{j'_2}\!_{j_2}(t) d^{j_2}_{m_2}) \cdots (g^{j'_N}\!_{j_N}(t) d^{j_N}_{m_N})  \ \hat{c}^\dagger_{n_1} \hat{c}^\dagger_{n_2}  \cdots \hat{c}^\dagger_{n_N} \ket{0}   \\
+& = \hat{d}^\dagger_{m_1}(t) \hat{d}^\dagger_{m_2}(t) \cdots \hat{d}^\dagger_{m_N}(t)  \ket{0} \ \ .
+\end{align}
+where we have defined
+\begin{align}
+\boxed{\hat{d}^\dagger_m(t) = \sum_{j'} d^{j'}\!_m(t) \hat{c}^\dagger_{j'} = \sum_{j' j} \left(g^{j'}\!_{j}(t) d^j\!_m \right) \hat{c}^\dagger_{j'}} \ \ . 
+\end{align}
+We see that generic orbitals, defined by a matrix of orbitals $d^j\!_m$, evolve in time by acting with the propagator matrix $g^{j'}\!_j(t)$ onto
+the orbital matrix $d^j\!_m$.
 
+As a special case of this result, it is interesting to observe that if we choose the orbitals to be the eigenorbitals $d^j\!_m = \phi^j\!_m$ then we find 
+$\phi^j\!_m(t) = g^{j'}\!_j(t) \phi^j\!_m = e^{-i \epsilon_m t} \phi^j\!_m$.
 
-\end{itemize}
+\subsection{Time Evolution of a Generic Correlation Matrix}
 
+As we saw above, for a Gaussian state $\ket{\mathbf{m}}_d$ with correlation matrix $C_i\!^j = \bra{\mathbf{m}}_d \hat{c}^\dagger_i \hat{c}^j \ket{\mathbf{m}}_d = \sum_m \bar{d}_j\!^m \eta_m d^j\!_m$, the orbitals evolve, in the Schr\"odinger picture, as $d^i\!_m(t) = g^i\!_j(t) d^j\!_m$. 
+So we find that 
+\begin{align}
+\boxed{C_i\!^j(t) =  \bar{g}^{i'}_i(t)\, C_{i'}\!^{j'}\, g^j_{j'}(t) } \ \ .
+\end{align}
 
-\textbf{Dynamics}. All of these results assume the Hamiltonian $\hat{H} = h^i_j \hat{c}^\dagger_i \hat{c}^j$ has a hopping matrix which can be diagonalized
-as $h^i_j = \phi^i_n \epsilon_n \phi^n_j$. The ground state of $\hat{H}$ is $\ket{\Phi_0}$.
-\begin{itemize}
-\item \emph{Heisenberg time evolution of operators:} Define the operators $\hat{\phi}^\dagger_n = \sum_n \phi^j_n \hat{c}^\dagger_j$ and $\hat{\phi}^n = \sum_n \bar{\phi}_j^n \hat{c}^j$. These evolve in the Heisenberg picture as \result{$\hat{\phi}^n(t) = e^{i \hat{H} t} \hat{\phi}^n e^{-i \hat{H} t} = e^{- i\epsilon_n t} \hat{\phi}^n$} and \textcolor{blue}{$\hat{\phi}^\dagger_n(t) = e^{i \epsilon_n t} \hat{\phi}^\dagger_n$}.
-\item \emph{Lesser Greens function:} Defined as $G^{<\, i}_j(t)= i \bra{\Phi_0} \hat{c}^\dagger_j \hat{c}^i(t) \ket{\Phi_0}$, it is given by \result{$G^{<\, i}_j(t) = i \sum_n \nu_n  \phi^i_n e^{-i \epsilon_n t}  \bar{\phi}_j^n $} where $\nu_n$ is the occupancy of the ground state in the $\phi$ basis.
-\item \emph{Greater Greens function:} Defined as $G^{>\, i}_j(t) = -i \bra{\Phi_0} \hat{c}^i(t) \hat{c}^\dagger_j \ket{\Phi_0}$, it is given by \mbox{\result{$G^{>\, i}_j(t) = -i \sum_n (1-\nu_n) \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n $}} where $\nu_n$ is the occupancy of the ground state in the $\phi$ basis.
-\item \emph{Retarded Greens function:} Defined as $G^{R\, i}_j(t) = \theta(t)(G^{>\, i}_j(t) - G^{<\, i}_j(t)) $, it is given by \result{$G^{R\, i}_j(t) = -i \theta(t) \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n  = -i \theta(t) e^{-i h t}$}.
-\item \emph{Propagator:} Define the propagator as $g^i_j(t) = i(G^{>\, i}_j(t) - G^{<\, i}_j(t))$. It can be written simply as \result{$g^i_j(t) = e^{-i h t} = \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n$}.
-\item \emph{Evolution of correlation matrix:} For a pure, Gaussian state $\ket{f}$ with correlation matrix $C_i^j = \bra{f} \hat{c}^\dagger_i \hat{c}^j \ket{f} = \bar{f}_i^n \nu_n f^j_n$, the orbitals evolve, in the Schr\"odinger picture, as $f^j_n(t) = g^i_j(t) f^j_n$. So \result{$C_i^j(t) =  \bar{g}^{i'}_i(t) C_{i'}^{j'}  g^j_{j'}(t)$}.
-
-\end{itemize}
+%\section{Mathematical Results}
+%\textbf{Dynamics}. All of these results assume the Hamiltonian $\hat{H} = h^i_j \hat{c}^\dagger_i \hat{c}^j$ has a hopping matrix which can be diagonalizedas $h^i_j = \phi^i_n \epsilon_n \phi^n_j$. The ground state of $\hat{H}$ is $\ket{\Phi_0}$.
+%\begin{itemize}
+%\item \emph{Heisenberg time evolution of operators:} Define the operators $\hat{\phi}^\dagger_n = \sum_n \phi^j_n \hat{c}^\dagger_j$ and $\hat{\phi}^n = \sum_n \bar{\phi}_j^n \hat{c}^j$. These evolve in the Heisenberg picture as \result{$\hat{\phi}^n(t) = e^{i \hat{H} t} \hat{\phi}^n e^{-i \hat{H} t} = e^{- i\epsilon_n t} \hat{\phi}^n$} and \textcolor{blue}{$\hat{\phi}^\dagger_n(t) = e^{i \epsilon_n t} \hat{\phi}^\dagger_n$}.
+%\item \emph{Lesser Greens function:} Defined as $G^{<\, i}_j(t)= i \bra{\Phi_0} \hat{c}^\dagger_j \hat{c}^i(t) \ket{\Phi_0}$, it is given by \result{$G^{<\, i}_j(t) = i \sum_n \gamma_n  \phi^i_n e^{-i \epsilon_n t}  \bar{\phi}_j^n $} where $\gamma_n$ is the occupancy of the ground state in the $\phi$ basis.
+%\item \emph{Greater Greens function:} Defined as $G^{>\, i}_j(t) = -i \bra{\Phi_0} \hat{c}^i(t) \hat{c}^\dagger_j \ket{\Phi_0}$, it is given by \mbox{\result{$G^{>\, i}_j(t) = -i \sum_n (1-\gamma_n) \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n $}} where $\gamma_n$ is the occupancy of the ground state in the $\phi$ basis.
+%\item \emph{Retarded Greens function:} Defined as $G^{R\, i}_j(t) = \theta(t)(G^{>\, i}_j(t) - G^{<\, i}_j(t)) $, it is given by \result{$G^{R\, i}_j(t) = -i \theta(t) \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n  = -i \theta(t) e^{-i h t}$}.
+%\item \emph{Propagator:} Define the propagator as $g^i_j(t) = i(G^{>\, i}_j(t) - G^{<\, i}_j(t))$. It can be written simply as \result{$g^i_j(t) = e^{-i h t} = \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n$}.
+%\item \emph{Evolution of correlation matrix:} For a pure, Gaussian state $\ket{f}$ with correlation matrix $C_i^j = \bra{f} \hat{c}^\dagger_i \hat{c}^j \ket{f} = \bar{f}_i^n \gamma_n f^j_n$, the orbitals evolve, in the Schr\"odinger picture, as $f^j_n(t) = g^i_j(t) f^j_n$. So \result{$C_i^j(t) =  \bar{g}^{i'}_i(t) C_{i'}^{j'}  g^j_{j'}(t)$}.
+%\end{itemize}
 
 
 \end{document}
