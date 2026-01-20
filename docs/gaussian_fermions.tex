@@ -253,7 +253,7 @@ The state $\ket{\tilde{\eta}}$ is a Gaussian state and its correlation matrix $(
 \end{align}
 where $C_\phi$ is the correlation matrix of $\ket{\phi}$ and $w_1 = C_\phi w$ is the projection of $w$ onto the occupied subspace of $C_\phi$.
 
-Note that the states $\ket{\tilde{\psi}}$ or $\ket{\tilde{\eta}}$ are not normalized. This results in the trace of their correlation matrices $C_{\tilde{\psi}}$ or $C_{\tilde{\eta}}$ no longer having a trace equal to the correct particle number. (For $\ket{\tilde{\psi}}$ the correct particle number should be $N_\phi + 1$ and for $\ket{\tilde{\eta}}$ the correct particle number should be $N_\phi-1$.)
+Note that the states $\ket{\tilde{\psi}}$ or $\ket{\tilde{\eta}}$ are not normalized. This results in the trace of their correlation matrices $C_{\tilde{\psi}}$ or $C_{\tilde{\eta}}$ no longer having a trace equal to the correct particle number. (For $\ket{\tilde{\psi}}$ the correct particle number should be $N_\phi + 1$ and for $\ket{\tilde{\eta}}$ the correct particle number should be $N_\phi-1$.) If desired, the correct normalization can be restored by multiplying by the appropriate factor.
 
 \section{Dynamics of Gaussian States}
 
@@ -289,7 +289,7 @@ The reason we are calling these eigenoperators is that they only transform by a 
 \begin{align}
 \boxed{\hat{\phi}^\dagger_n(t) =  e^{i \epsilon_n t}\ \hat{\phi}^\dagger_n(0)} \label{eq:phidag_t_evol} \ \ .
 \end{align}
-To show this result, use the fact that the $\hat{\phi}^\dagger_n$ and $\hat{\phi}^n$ obey the canonical fermionic anticommutation relations and use this to show $[\hat{\phi}^n, \hat{H}] = \epsilon_n \hat{\phi}^n$ and $[\hat{\phi}^\dagger_n, \hat{H}] = -\epsilon_n \hat{\phi}^\dagger_n$ (these commutation relations hold for $\hat{\phi}^n(t)$ at all times). Then the properties (\ref{eq:phi_t_evol}) and (\ref{eq:phidag_t_evol}) follow from the Heisenberg equation $i \frac{d}{dt} \hat{\phi}^n(t) = [\hat{\phi}^n(t), \hat{H}]$ and similarly for $\hat{\phi}^\dagger_n(t)$.
+To show this result, use the fact that the $\hat{\phi}^\dagger_n$ and $\hat{\phi}^n$ obey the canonical fermionic anticommutation relations and use this to show $[\hat{\phi}^n, \hat{H}] = \epsilon_n \hat{\phi}^n$ and $[\hat{\phi}^\dagger_n, \hat{H}] = -\epsilon_n \hat{\phi}^\dagger_n$. These commutation relations hold for $\hat{\phi}^n(t)$ at all times. Then the properties (\ref{eq:phi_t_evol}) and (\ref{eq:phidag_t_evol}) follow from the Heisenberg equation $i \frac{d}{dt} \hat{\phi}^n(t) = [\hat{\phi}^n(t), \hat{H}]$ and similarly for $\hat{\phi}^\dagger_n(t)$.
 
 \subsection{Eigenstates}
 
@@ -316,7 +316,7 @@ e^{-i \hat{H} t} \ket{\mathbf{n}}_\phi  & = e^{-i \hat{H} t} \hat{\phi}^\dagger_
 \end{align}
 where we have used $e^{-i \hat{H} t} \hat{\phi}^\dagger_{n}  e^{i \hat{H} t} = \hat{\phi}_n(-t) =  e^{-i \epsilon_n t} \hat{\phi}_n(0)$ and $e^{i \hat{H} t} \ket{0} = \ket{0}$.
  
-Equation~(\ref{eq:fock_energy}) is a crucial result, and justifies the level-filling picture used in band theory. It says we can understand the full, many-body spectrum of a Gaussian fermionic Hamiltonian just by enumerating the single-particle states $\phi_n^j$ for $n=1,...,N_S$ where $N_S$ is the number of sites in the system. Then the $2^{N_S}$ different many-body eigenstates are just the exponentially many different ways of ``filling'' these $N_S$ single particle states or levels.
+Equation~(\ref{eq:fock_energy}) is a crucial result, and justifies the level-filling picture used in band theory. It says we can understand the full, many-body spectrum of a Gaussian fermionic Hamiltonian just by enumerating the single-particle states $\phi_n^j$ for $n=1,...,V$ where $V$ is the number of sites (volume) of the system. Then the $2^{N_S}$ different many-body eigenstates are just the exponentially many different ways of ``filling'' these $N_S$ single particle states or levels.
 
 
 \subsection{Zero-Temperature Green's Functions}
@@ -334,12 +334,18 @@ The greater Green's function is given by
 \end{align}
 Finally the retarded Green's function is given by
 \begin{align}
-\boxed{G^{R\, i}_j(t) = \theta(t)(G^{>\, i}_j(t) - G^{<\, i}_j(t)) = -i \theta(t) \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n  = -i \theta(t) e^{-i h t} } \ \ . 
+\boxed{G^{R\, i}_j(t) = \theta(t)(G^{>\, i}_j(t) - G^{<\, i}_j(t)) = -i \theta(t) \sum_n \phi^i_n e^{-i \epsilon_n t} \bar{\phi}_j^n  = -i \theta(t) e^{-i h t} } \ \ .  \label{eq:GR}
 \end{align}
 where $\theta(t) = 1$ for $t > 0$ and $\theta(t) = 0$ otherwise.
 In all the results above, the $\nu_n$ are the occupation numbers of the ground state of $N$ fermions, which means they are $\nu_n = 1$ for the $N$ lowest-energy single-particle eigenstates and $\nu_n = 0$ otherwise.
 
 These results can all be derived using Eqs.~(\ref{eq:phidag_op}) and (\ref{eq:phi_op}) to transform the $\hat{c}$ and $\hat{c}^\dagger$ into linear combinations of the $\hat{\phi}$, $\hat{\phi}^\dagger$ operators. Then the results above follow from the time evolution of the $\hat{\phi}$ operators Eqs.~(\ref{eq:phi_t_evol}) and (\ref{eq:phidag_t_evol}).
+
+The factor of $-i$ in the definition of $G^R$ helps its Fourier transform have a particularly simple form. The Fourier transform of $f(t) = \theta(t) e^{-i \epsilon t}$ is $\tilde{f}(w) = i/(\omega - \epsilon + i \alpha)$ with $\alpha > 0$ a small broadening factor. Using this fact in Eq.~(\ref{eq:GR}) gives the expression for $G^R$ in frequency space
+\begin{align}
+\boxed{ \tilde{G}^{R\, i}_j(\omega)  = \sum_n \frac{\phi^i_n \bar{\phi}_j^n}{\omega - \epsilon_n + i \alpha} = \frac{1}{(\omega + i \alpha) - h } } \ \ .
+\end{align}
+This form is known as the Lehmann representation. In the last expression above, the terms in the denominator are matrices and it is understood that $(\omega + i \alpha)$ is multiplied by an identity matrix.
 
 
 \subsection{Time Evolution of a Generic Gaussian State}
@@ -370,7 +376,7 @@ where we have defined
 \begin{align}
 \boxed{\hat{d}^\dagger_m(t) = \sum_{j'} d^{j'}\!_m(t) \hat{c}^\dagger_{j'} = \sum_{j' j} \left(g^{j'}\!_{j}(t) d^j\!_m \right) \hat{c}^\dagger_{j'}} \ \ . 
 \end{align}
-We see that generic orbitals, defined by a matrix of orbitals $d^j\!_m$, evolve in time by acting with the propagator matrix $g^{j'}\!_j(t)$ onto
+We therefore see that generic orbitals, defined by a matrix of orbitals $d^j\!_m$, evolve in time by acting with the propagator matrix $g^{j'}\!_j(t)$ onto
 the orbital matrix $d^j\!_m$.
 
 As a special case of this result, it is interesting to observe that if we choose the orbitals to be the eigenorbitals $d^j\!_m = \phi^j\!_m$ then we find 
