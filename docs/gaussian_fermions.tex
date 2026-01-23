@@ -390,6 +390,18 @@ So we find that
 \boxed{C_i\!^j(t) =  \bar{g}^{i'}_i(t)\, C_{i'}\!^{j'}\, g^j_{j'}(t) } \ \ .
 \end{align}
 
+
+\section{Thermal Gaussian States}
+
+The Gaussian formalism extends straightforwardly to finite temperature, also offering closed-form results for all properties of interest. Given a Gaussian Hamiltonian $\hat{H}= \sum_{i,j} h^i_j \hat{c}^\dagger_i \hat{c}^j$, the finite-temperature (mixed) state in the canonical ensemble formalism at temperature $T$ or coolness $\beta = 1/T$ has the form
+\begin{align}
+\hat{\rho} = \frac{1}{Z}\ e^{-\beta \hat{H}} \ \ .
+\end{align}
+Given a spectral decomposition of the ``hopping matrix'' $h^i_j = \sum_n \phi^i_n \epsilon_n \hat{\phi}^n_j$ and defining $\hat{\phi}^\dagger_n = \sum_j \phi^j_n \hat{c}^\dagger_j$, we can then write 
+\begin{align}
+\hat{\rho} = \frac{1}{Z}\   e^{-\beta \sum_n  \epsilon_n \hat{\phi}^\dagger_n \hat{\phi}^n} \ \ . 
+\end{align}
+
 %\section{Mathematical Results}
 %\textbf{Dynamics}. All of these results assume the Hamiltonian $\hat{H} = h^i_j \hat{c}^\dagger_i \hat{c}^j$ has a hopping matrix which can be diagonalizedas $h^i_j = \phi^i_n \epsilon_n \phi^n_j$. The ground state of $\hat{H}$ is $\ket{\Phi_0}$.
 %\begin{itemize}
