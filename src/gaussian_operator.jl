@@ -1,18 +1,26 @@
 import LinearAlgebra as la
 import Base: *, +
+using NamedArrays: NamedArray
 
 struct GaussianOperator
-  matrix_elems::Matrix
+    matrix_elems::NamedArray
 end
 
 function GaussianOperator(N::Integer)
-  return GaussianOperator(zeros(N, N))
+    return GaussianOperator(NamedArray(zeros(N, N)))
+end
+
+function GaussianOperator(vertices)
+    N = length(vertices)
+    return GaussianOperator(NamedArray(zeros(N, N), (vertices, vertices)))
 end
 
 Base.copy(G::GaussianOperator) = GaussianOperator(copy(G.matrix_elems))
 Base.length(G::GaussianOperator) = size(G.matrix_elems, 1)
 
 matrix_elements(G::GaussianOperator) = G.matrix_elems
+
+vertices(G::GaussianOperator) = names(G.matrix_elems, 1)
 
 function (x::Number * G::GaussianOperator)
   return GaussianOperator(x*matrix_elements(G))
