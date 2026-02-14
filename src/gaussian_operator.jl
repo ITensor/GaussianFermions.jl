@@ -7,12 +7,12 @@ struct GaussianOperator
 end
 
 function GaussianOperator(N::Integer)
-    return GaussianOperator(NamedArray(zeros(N, N)))
+    return GaussianOperator(NamedArray(zeros(N, N),(1:N,1:N),("Vertices","Vertices")))
 end
 
 function GaussianOperator(vertices)
     N = length(vertices)
-    return GaussianOperator(NamedArray(zeros(N, N), (vertices, vertices)))
+    return GaussianOperator(NamedArray(zeros(N, N), (vertices, vertices),("Vertices","Vertices")))
 end
 
 Base.copy(G::GaussianOperator) = GaussianOperator(copy(G.matrix_elems))
@@ -54,7 +54,12 @@ function add_hop(G::GaussianOperator, i, j, coef::Number)
     return G
 end
 
-energies_states(G) = la.eigen(G.matrix_elems)
+function energies_states(G) 
+    ϵ, ϕ = la.eigen(G.matrix_elems)
+    N = length(ϵ)
+    ϕ = NamedArray(ϕ,(vertices(G),1:N),("Vertices","Eigenstates"))
+    return ϵ, ϕ
+end
 
 function expect(G::GaussianOperator, ψ::GaussianState)
     return la.tr(matrix_elements(G) * correlation_matrix(ψ))

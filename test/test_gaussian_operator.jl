@@ -1,5 +1,5 @@
 using Test
-using LinearAlgebra: norm
+using LinearAlgebra: norm, Diagonal
 import GaussianFermions as gf
 
 @testset "GaussianOperator Constructors" begin
@@ -30,15 +30,43 @@ end
     @test norm(gf.matrix_elements(H) - h) < 1E-12
 
     # Construct with array of vertices
-    verts = [(1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3)]
+    # 2D square lattice Hamiltonian
+    verts = [(i,j) for i=1:N for j=1:N]
     H_graph = gf.GaussianOperator(verts)
-    for i=1:3,j=1:3
-        (i < 3) && (H_graph = gf.add_hop(H_graph, (i,j), (i+1,j), -1))
-        (j < 3) && (H_graph = gf.add_hop(H_graph, (i,j), (i,j+1), -1))
+    for i=1:N,j=1:N
+        (i < N) && (H_graph = gf.add_hop(H_graph, (i,j), (i+1,j), -1))
+        (j < N) && (H_graph = gf.add_hop(H_graph, (i,j), (i,j+1), -1))
     end
-    @test gf.matrix_elements(H_graph,(1,1),(2,1)) == -1
-    @test gf.matrix_elements(H_graph,(1,1),(1,2)) == -1
-    @test gf.matrix_elements(H_graph,(2,1),(3,1)) == -1
-    @test gf.matrix_elements(H_graph,(2,1),(2,2)) == -1
-    @test gf.matrix_elements(H_graph,(1,1),(3,3)) == 0
+
+    for r in verts, c in verts
+        if (r[1]+1,r[2]) == c || (r[1],r[2]+1) == c
+            @test gf.matrix_elements(H_graph,r,c) == -1
+        elseif (c[1]+1,c[2]) == r || (c[1],c[2]+1) == r
+            @test gf.matrix_elements(H_graph,r,c) == -1
+        else
+            @test gf.matrix_elements(H_graph,r,c) == 0
+        end
+    end
+end
+
+@testset "Energies and States" begin
+    # Construct with array of vertices
+    # 2D square lattice Hamiltonian
+    verts = [(i,j) for i=1:N for j=1:N]
+    H_graph = gf.GaussianOperator(verts)
+    for i=1:N,j=1:N
+        (i < N) && (H_graph = gf.add_hop(H_graph, (i,j), (i+1,j), -1))
+        (j < N) && (H_graph = gf.add_hop(H_graph, (i,j), (i,j+1), -1))
+    end
+    ϵ, ϕ = gf.energies_states(H_graph)
+
+    @test ϕ isa NamedArray
+    @test names(ϕ,1) == verts
+    @test names(ϕ,2) == 1:length(verts)
+
+    @test ϵ isa Vector{Float64}
+    @test length(ϵ) == length(verts)
+
+    h_reconstruct = ϕ * Diagonal(ϵ) * ϕ'
+    @test norm(gf.matrix_elements(H_graph) - h_reconstruct) < 1E-12
 end
