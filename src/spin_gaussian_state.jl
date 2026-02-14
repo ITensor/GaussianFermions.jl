@@ -1,7 +1,6 @@
-
 struct SpinGaussianState <: AbstractGaussianState
-  ϕup::GaussianState
-  ϕdn::GaussianState
+    ϕup::GaussianState
+    ϕdn::GaussianState
 end
 
 up_state(ϕ::SpinGaussianState) = ϕ.ϕup
@@ -15,11 +14,11 @@ Base.copy(ϕ::SpinGaussianState) = SpinGaussianState(copy(up_state(ϕ)), copy(dn
 ispure(ϕ::SpinGaussianState) = ispure(up_state(ϕ)) && ispure(dn_state(ϕ))
 
 function entanglement(ϕ::SpinGaussianState, range)
-  return entanglement(up_state(ϕ), range)+entanglement(dn_state(ϕ), range)
+    return entanglement(up_state(ϕ), range) + entanglement(dn_state(ϕ), range)
 end
 
 function bond_dimension(ϕ::SpinGaussianState, range, cutoff::Real)
-  return bond_dimension(
-    up_state(ϕ), range, cutoff/2
-  )*bond_dimension(dn_state(ϕ), range, cutoff/2)
+    return bond_dimension(
+        up_state(ϕ), range, cutoff / 2
+    ) * bond_dimension(dn_state(ϕ), range, cutoff / 2)
 end

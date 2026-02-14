@@ -23,68 +23,68 @@ matrix_elements(G::GaussianOperator) = G.matrix_elems
 vertices(G::GaussianOperator) = names(G.matrix_elems, 1)
 
 function (x::Number * G::GaussianOperator)
-  return GaussianOperator(x*matrix_elements(G))
+    return GaussianOperator(x * matrix_elements(G))
 end
 
 function (G::GaussianOperator * x::Number)
-  return GaussianOperator(x*matrix_elements(G))
+    return GaussianOperator(x * matrix_elements(G))
 end
 
 function (A::GaussianOperator + B::GaussianOperator)
-  return GaussianOperator(matrix_elements(A)+matrix_elements(B))
+    return GaussianOperator(matrix_elements(A) + matrix_elements(B))
 end
 
-function add_cdag_c(G::GaussianOperator, i::Integer, j::Integer, coef::Number=1.0)
-  G = copy(G)
-  G.matrix_elems[i, j] += coef
-  return G
+function add_cdag_c(G::GaussianOperator, i::Integer, j::Integer, coef::Number = 1.0)
+    G = copy(G)
+    G.matrix_elems[i, j] += coef
+    return G
 end
 
-function add_c_cdag(G::GaussianOperator, i::Integer, j::Integer, coef::Number=1.0)
-  G = copy(G)
-  G.matrix_elems[j, i] += coef
-  return G
+function add_c_cdag(G::GaussianOperator, i::Integer, j::Integer, coef::Number = 1.0)
+    G = copy(G)
+    G.matrix_elems[j, i] += coef
+    return G
 end
 
 function add_hop(G::GaussianOperator, i::Integer, j::Integer, coef::Number)
-  G = add_cdag_c(G, i, j, coef)
-  G = add_c_cdag(G, i, j, coef)
-  return G
+    G = add_cdag_c(G, i, j, coef)
+    G = add_c_cdag(G, i, j, coef)
+    return G
 end
 
 energies_states(G) = la.eigen(G.matrix_elems)
 
 function expect(G::GaussianOperator, ψ::GaussianState)
-  return la.tr(matrix_elements(G)*correlation_matrix(ψ))
+    return la.tr(matrix_elements(G) * correlation_matrix(ψ))
 end
 
 function greens_function(H::GaussianOperator, t::Number)
-  ϵ, ϕ = energies_states(H)
-  exp_itϵ = [exp(-im*t*ϵ[n]) for n in 1:length(ϵ)]
-  return -im*ϕ*la.Diagonal(exp_itϵ)*ϕ'
+    ϵ, ϕ = energies_states(H)
+    exp_itϵ = [exp(-im * t * ϵ[n]) for n in 1:length(ϵ)]
+    return -im * ϕ * la.Diagonal(exp_itϵ) * ϕ'
 end
 
 function lesser_greens_function(H::GaussianOperator, t::Number)
-  ϵ, ϕ = energies_states(H)
-  exp_itϵ = [filling(H)[n]*exp(-im*t*ϵ[n]) for n in 1:length(ϵ)]
-  return im*ϕ*la.Diagonal(exp_itϵ)*ϕ'
+    ϵ, ϕ = energies_states(H)
+    exp_itϵ = [filling(H)[n] * exp(-im * t * ϵ[n]) for n in 1:length(ϵ)]
+    return im * ϕ * la.Diagonal(exp_itϵ) * ϕ'
 end
 
 function greater_greens_function(H::GaussianOperator, t::Number)
-  ϵ, ϕ = energies_states(H)
-  exp_itϵ = [(1-filling(H)[n])*exp(-im*t*ϵ[n]) for n in 1:length(ϵ)]
-  return -im*ϕ*la.Diagonal(exp_itϵ)*ϕ'
+    ϵ, ϕ = energies_states(H)
+    exp_itϵ = [(1 - filling(H)[n]) * exp(-im * t * ϵ[n]) for n in 1:length(ϵ)]
+    return -im * ϕ * la.Diagonal(exp_itϵ) * ϕ'
 end
 
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
-  expHt = im*greens_function(H, t)
-  orbs_t = expHt*orbitals(ψ)
-  return GaussianState(orbs_t, filling(ψ))
+    expHt = im * greens_function(H, t)
+    orbs_t = expHt * orbitals(ψ)
+    return GaussianState(orbs_t, filling(ψ))
 end
 
 function time_evolve(H::GaussianOperator, t::Number, O::GaussianOperator)
-  expHt = im*greens_function(H, t)
-  # TODO: check conjugation convention here:
-  matrix_elems_t = expHt'*matrix_elements(O)*expHt
-  return GaussianOperator(matrix_elems_t)
+    expHt = im * greens_function(H, t)
+    # TODO: check conjugation convention here:
+    matrix_elems_t = expHt' * matrix_elements(O) * expHt
+    return GaussianOperator(matrix_elems_t)
 end
