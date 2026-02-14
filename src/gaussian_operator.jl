@@ -18,6 +18,8 @@ end
 Base.copy(G::GaussianOperator) = GaussianOperator(copy(G.matrix_elems))
 Base.length(G::GaussianOperator) = size(G.matrix_elems, 1)
 
+matrix_elements(G::GaussianOperator,r,c) = G.matrix_elems[r,c]
+
 matrix_elements(G::GaussianOperator) = G.matrix_elems
 
 vertices(G::GaussianOperator) = names(G.matrix_elems, 1)
@@ -34,19 +36,19 @@ function (A::GaussianOperator + B::GaussianOperator)
     return GaussianOperator(matrix_elements(A) + matrix_elements(B))
 end
 
-function add_cdag_c(G::GaussianOperator, i::Integer, j::Integer, coef::Number = 1.0)
+function add_cdag_c(G::GaussianOperator, i, j, coef::Number = 1.0)
     G = copy(G)
     G.matrix_elems[i, j] += coef
     return G
 end
 
-function add_c_cdag(G::GaussianOperator, i::Integer, j::Integer, coef::Number = 1.0)
+function add_c_cdag(G::GaussianOperator, i, j, coef::Number = 1.0)
     G = copy(G)
     G.matrix_elems[j, i] += coef
     return G
 end
 
-function add_hop(G::GaussianOperator, i::Integer, j::Integer, coef::Number)
+function add_hop(G::GaussianOperator, i, j, coef::Number)
     G = add_cdag_c(G, i, j, coef)
     G = add_c_cdag(G, i, j, coef)
     return G
