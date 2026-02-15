@@ -89,7 +89,7 @@ end
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
     expHt = im * greens_function(H, t)
     orbs_t = expHt * orbitals(ψ)
-    return GaussianState(orbs_t, filling(ψ))
+    return GaussianState(orbs_t, filling(ψ), nparticles(ψ))
 end
 
 function time_evolve(H::GaussianOperator, t::Number, O::GaussianOperator)
