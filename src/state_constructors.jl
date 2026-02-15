@@ -11,11 +11,5 @@ function ground_state(G::GaussianOperator; Nf = nothing)
     for n in 1:length(filling)
         E += ϵ[n] * filling[n]
     end
-    return E, GaussianState(ϕ, filling)
-end
-
-function ground_state(G::SpinGaussianOperator; Nfup = nothing, Nfdn = nothing)
-    Eup, ϕup = ground_state(up_operator(G); Nf = Nfup)
-    Edn, ϕdn = ground_state(dn_operator(G); Nf = Nfdn)
-    return (Eup + Edn), SpinGaussianState(ϕup, ϕdn)
+    return E, GaussianState(ϕ, filling, Nf)
 end

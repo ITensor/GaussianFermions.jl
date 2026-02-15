@@ -1,6 +1,7 @@
 using Test
 using LinearAlgebra: norm, Diagonal
 import GaussianFermions as gf
+using NamedArrays: NamedArray
 
 @testset "GaussianOperator Constructors" begin
     # Construct with integer dimension
@@ -50,6 +51,7 @@ end
 end
 
 @testset "Energies and States" begin
+    N = 4
     # Construct with array of vertices
     # 2D square lattice Hamiltonian
     verts = [(i,j) for i=1:N for j=1:N]

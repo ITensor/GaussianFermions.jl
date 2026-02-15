@@ -4,6 +4,9 @@ using NamedArrays: NamedArray
 
 struct GaussianOperator
     matrix_elems::NamedArray
+    function GaussianOperator(A::NamedArray)
+        new(A)
+    end
 end
 
 function GaussianOperator(N::Integer)

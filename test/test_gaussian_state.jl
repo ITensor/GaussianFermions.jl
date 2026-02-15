@@ -2,29 +2,34 @@ using Test
 using LinearAlgebra: norm
 import GaussianFermions as gf
 
-@testset "Compute Ground State and Properties" begin
-    # Construct with integer dimension
-    # 1D chain Hamiltonian
-    N = 10
-    H = gf.GaussianOperator(N)
-    for j=1:(N-1)
-        H = gf.add_hop(H, j, j+1, -1)
-    end
+include("utilities/hamiltonians.jl")
 
+@testset "Ground State" begin
+    # Test ground state of a 1D chain
+    N = 10
+    H = fermion_chain_h(N)
     Nf = N÷2
     E0, ϕ0 = gf.ground_state(H; Nf)
     @test gf.expect(H, ϕ0) ≈ E0
 
-    # Construct with array of vertices
-    # 2D square lattice Hamiltonian
-    verts = [(i,j) for i=1:N for j=1:N]
-    H_graph = gf.GaussianOperator(verts)
-    for i=1:N,j=1:N
-        (i < N) && (H_graph = gf.add_hop(H_graph, (i,j), (i+1,j), -1))
-        (j < N) && (H_graph = gf.add_hop(H_graph, (i,j), (i,j+1), -1))
-    end
-    Nsites = length(verts)
+    # 1D electron chain
+    H = electron_chain_h(N)
+    Nf = N÷2
+    E0, ϕ0 = gf.ground_state(H; Nf)
+    @test gf.expect(H, ϕ0) ≈ E0
+
+    # Test for 2D square lattice
+    H_graph = square_lattice_h(4)
+    Nsites = length(gf.vertices(H))
     Nf_graph = Nsites÷2
     E0_graph, ϕ0_graph = gf.ground_state(H_graph; Nf=Nf_graph)
     @test gf.expect(H_graph, ϕ0_graph) ≈ E0_graph
+    @test gf.vertices(ϕ0_graph) == gf.vertices(H_graph)
+end
+
+@testset "Entanglement" begin
+    N = 10
+    H = fermion_chain_h(N)
+    E0, ϕ0 = gf.ground_state(H; Nf=N÷2)
+    @show gf.entanglement(ϕ0; sites=1:N÷2)
 end
