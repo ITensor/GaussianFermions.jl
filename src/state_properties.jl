@@ -1,11 +1,14 @@
 
 function correlation_matrix(ϕ::GaussianState; sites = 1:length(ϕ))
+    if !(sites isa UnitRange)
+        error("Only UnitRange types supported for sites argument")
+    end
     orbs = orbitals(ϕ)[sites, :]
     return orbs * la.Diagonal(filling(ϕ)) * orbs'
 end
 
 function density(ϕ::GaussianState; sites = 1:length(ϕ))
-    return la.diag(correlation_matrix(ϕ))
+    return la.diag(correlation_matrix(ϕ; sites))
 end
 
 function entanglement(ϕ::GaussianState; sites)
