@@ -6,9 +6,10 @@ function format_string(x)
     error("Writing to data file of type $(typeof(x)) not currently supported")
 end
 
-function write_data(fname::AbstractString, xv::Vector, yv::Vector)
+function write_data(fname::AbstractString, xvals, yvals; verbose = false)
+    verbose && println("Writing file $fname")
     f = open(fname, "w")
-    for (x, y) in zip(xv, yv)
+    for (x, y) in zip(xvals, yvals)
         write(f, "$(format_string(x)) $(format_string(y))\n")
     end
     return close(f)
