@@ -29,7 +29,6 @@ Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
 
 Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), filling(ϕ), nparticles(ϕ))
 
-vertices(ϕ::GaussianState) = names(orbitals(ϕ),1)
+vertices(ϕ::GaussianState) = names(orbitals(ϕ), 1)
 
 ispure(ϕ::GaussianState) = all(f -> (f == 1.0 || f == 0.0), filling(ϕ))
-

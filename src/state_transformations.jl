@@ -1,4 +1,3 @@
-
 # TODO: this method is buggy. It doesn't change the norm
 #       of the state even when `orb` is not orthogonal to the filled orbitals
 function add_orbital(ψ::GaussianState, orb::Vector)

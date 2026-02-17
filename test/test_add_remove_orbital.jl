@@ -3,10 +3,10 @@ import GaussianFermions as gf
 
 @testset "Add and Remove Orbitals" begin
     N = 20
-    Nf = N÷2
+    Nf = N ÷ 2
     H = gf.GaussianOperator(N)
     for j in 1:(N - 1)
-    H = gf.add_hop(H, j, j+1, -1.0)
+        H = gf.add_hop(H, j, j + 1, -1.0)
     end
     E0, ϕ0 = gf.ground_state(H; Nf)
     @show gf.density(ϕ0)

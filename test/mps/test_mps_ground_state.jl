@@ -17,12 +17,12 @@ import GaussianFermions as gf
     end
     E0_gf, ϕ0 = gf.ground_state(H_gf; Nf)
 
-    S_gf = [gf.entanglement(ϕ0; sites=1:b) for b in 1:(N - 1)]
+    S_gf = [gf.entanglement(ϕ0; sites = 1:b) for b in 1:(N - 1)]
 
     #
     # ITensorMPS / DMRG: ground state energy and entanglement
     #
-    sites = siteinds("Fermion", N; conserve_qns=true)
+    sites = siteinds("Fermion", N; conserve_qns = true)
 
     os = OpSum()
     for j in 1:(N - 1)
@@ -36,7 +36,7 @@ import GaussianFermions as gf
 
     nsweeps = 10
     maxdim = [10, 20, 40, 80, 100]
-    cutoff = 1e-12
+    cutoff = 1.0e-12
 
     E0_mps, psi = dmrg(H_mps, psi0; nsweeps, maxdim, cutoff)
 
@@ -52,7 +52,7 @@ import GaussianFermions as gf
         SvN = 0.0
         for n in 1:dim(S, 1)
             p = S[n, n]^2
-            if p > 1e-14
+            if p > 1.0e-14
                 SvN -= p * log(p)
             end
         end
@@ -75,24 +75,24 @@ import GaussianFermions as gf
     # Compare results
     #
     @testset "Ground state energy" begin
-        @test E0_gf ≈ E0_mps atol = 1e-8
+        @test E0_gf ≈ E0_mps atol = 1.0e-8
     end
 
     @testset "Bond entanglement entropies" begin
         for b in 1:(N - 1)
-            @test S_gf[b] ≈ S_mps[b] atol = 1e-6
+            @test S_gf[b] ≈ S_mps[b] atol = 1.0e-6
         end
     end
 
     @testset "Site densities" begin
         for j in 1:N
-            @test n_gf[j] ≈ n_mps[j] atol = 1e-8
+            @test n_gf[j] ≈ n_mps[j] atol = 1.0e-8
         end
     end
 
     @testset "Correlation matrix" begin
         for i in 1:N, j in 1:N
-            @test C_gf[i, j] ≈ C_mps[i, j] atol = 1e-6
+            @test C_gf[i, j] ≈ C_mps[i, j] atol = 1.0e-6
         end
     end
 end
@@ -119,7 +119,7 @@ end
 
     # Entanglement at bond b: include both spins for sites 1:b
     # Vertex ordering is [up1,...,upN, dn1,...,dnN]
-    S_gf = [gf.entanglement(ϕ0; sites=[1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
+    S_gf = [gf.entanglement(ϕ0; sites = [1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
 
     # Densities per spin
     n_all = gf.density(ϕ0)
@@ -134,7 +134,7 @@ end
     #
     # ITensorMPS / DMRG: Electron sites
     #
-    sites = siteinds("Electron", N; conserve_qns=true)
+    sites = siteinds("Electron", N; conserve_qns = true)
 
     os = OpSum()
     for j in 1:(N - 1)
@@ -150,7 +150,7 @@ end
 
     nsweeps = 6
     maxdim = [20, 50, 100, 200, 400]
-    cutoff = 1e-12
+    cutoff = 1.0e-12
 
     E0_mps, psi = dmrg(H_mps, psi0; nsweeps, maxdim, cutoff)
 
@@ -166,7 +166,7 @@ end
         SvN = 0.0
         for n in 1:dim(S, 1)
             p = S[n, n]^2
-            if p > 1e-14
+            if p > 1.0e-14
                 SvN -= p * log(p)
             end
         end
@@ -183,26 +183,26 @@ end
     # Compare results
     #
     @testset "Ground state energy" begin
-        @test E0_gf ≈ E0_mps atol = 1e-8
+        @test E0_gf ≈ E0_mps atol = 1.0e-8
     end
 
     @testset "Bond entanglement entropies" begin
         for b in 1:(N - 1)
-            @test S_gf[b] ≈ S_mps[b] atol = 1e-6
+            @test S_gf[b] ≈ S_mps[b] atol = 1.0e-6
         end
     end
 
     @testset "Site densities" begin
         for j in 1:N
-            @test nup_gf[j] ≈ nup_mps[j] atol = 1e-8
-            @test ndn_gf[j] ≈ ndn_mps[j] atol = 1e-8
+            @test nup_gf[j] ≈ nup_mps[j] atol = 1.0e-8
+            @test ndn_gf[j] ≈ ndn_mps[j] atol = 1.0e-8
         end
     end
 
     @testset "Correlation matrices" begin
         for i in 1:N, j in 1:N
-            @test Cup_gf[i, j] ≈ Cup_mps[i, j] atol = 1e-6
-            @test Cdn_gf[i, j] ≈ Cdn_mps[i, j] atol = 1e-6
+            @test Cup_gf[i, j] ≈ Cup_mps[i, j] atol = 1.0e-6
+            @test Cdn_gf[i, j] ≈ Cdn_mps[i, j] atol = 1.0e-6
         end
     end
 end

@@ -5,23 +5,23 @@ using NamedArrays: NamedArray
 struct GaussianOperator
     matrix_elems::NamedArray
     function GaussianOperator(A::NamedArray)
-        new(A)
+        return new(A)
     end
 end
 
 function GaussianOperator(N::Integer)
-    return GaussianOperator(NamedArray(zeros(N, N),(1:N,1:N),("Vertices","Vertices")))
+    return GaussianOperator(NamedArray(zeros(N, N), (1:N, 1:N), ("Vertices", "Vertices")))
 end
 
 function GaussianOperator(vertices)
     N = length(vertices)
-    return GaussianOperator(NamedArray(zeros(N, N), (vertices, vertices),("Vertices","Vertices")))
+    return GaussianOperator(NamedArray(zeros(N, N), (vertices, vertices), ("Vertices", "Vertices")))
 end
 
 Base.copy(G::GaussianOperator) = GaussianOperator(copy(G.matrix_elems))
 Base.length(G::GaussianOperator) = size(G.matrix_elems, 1)
 
-matrix_elements(G::GaussianOperator,r,c) = G.matrix_elems[r,c]
+matrix_elements(G::GaussianOperator, r, c) = G.matrix_elems[r, c]
 
 matrix_elements(G::GaussianOperator) = G.matrix_elems
 
@@ -57,10 +57,10 @@ function add_hop(G::GaussianOperator, i, j, coef::Number)
     return G
 end
 
-function energies_states(G) 
+function energies_states(G)
     ϵ, ϕ = la.eigen(G.matrix_elems)
     N = length(ϵ)
-    ϕ = NamedArray(ϕ,(vertices(G),1:N),("Vertices","Eigenstates"))
+    ϕ = NamedArray(ϕ, (vertices(G), 1:N), ("Vertices", "Eigenstates"))
     return ϵ, ϕ
 end
 

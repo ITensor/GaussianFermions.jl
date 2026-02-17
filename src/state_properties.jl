@@ -1,4 +1,3 @@
-
 function correlation_matrix(ϕ::GaussianState; sites = 1:length(ϕ))
     if !(sites isa UnitRange)
         error("Only UnitRange types supported for sites argument")
@@ -71,4 +70,3 @@ function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
 
     return 2^nactive_modes - ndisc_evals
 end
-
