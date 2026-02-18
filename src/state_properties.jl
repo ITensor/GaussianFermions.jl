@@ -1,7 +1,4 @@
 function correlation_matrix(ϕ::GaussianState; sites = 1:length(ϕ))
-    if !(sites isa UnitRange)
-        error("Only UnitRange types supported for sites argument")
-    end
     orbs = orbitals(ϕ)[sites, :]
     return orbs * la.Diagonal(filling(ϕ)) * orbs'
 end
