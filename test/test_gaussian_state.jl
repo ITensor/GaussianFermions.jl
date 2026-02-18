@@ -31,5 +31,5 @@ end
     N = 10
     H = fermion_chain_h(N)
     E0, ϕ0 = gf.ground_state(H; Nf = N ÷ 2)
-    @show gf.entanglement(ϕ0; sites = 1:(N ÷ 2))
+    @test gf.entanglement(ϕ0; sites = 1:(N ÷ 2)) > 0
 end

@@ -9,8 +9,8 @@ import GaussianFermions as gf
         H = gf.add_hop(H, j, j + 1, -1.0)
     end
     E0, ϕ0 = gf.ground_state(H; Nf)
-    @show gf.density(ϕ0)
-    @show sum(gf.density(ϕ0))
+    #@show gf.density(ϕ0)
+    #@show sum(gf.density(ϕ0))
 
     #orb = fill(0.,N)
     #orb[1] = 1.0

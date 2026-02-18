@@ -23,9 +23,9 @@ include("utilities/write_data.jl")
     time_range = 0:dt:T
     ϕt = copy(ϕ0)
     for (n, t) in enumerate(time_range)
-        if mod(t, 10.0) ≈ 0.0
-            @printf("  t=%.3f\n", t)
-        end
+        #if mod(t, 10.0) ≈ 0.0
+        #    @printf("  t=%.3f\n", t)
+        #end
         ϕt = gf.time_evolve(H, dt, ϕt)
         dens = only(real(gf.density(ϕt, sites = (N ÷ 2):(N ÷ 2))))
         push!(densities, dens)
