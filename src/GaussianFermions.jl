@@ -3,9 +3,7 @@ module GaussianFermions
 include("spin_types.jl")
 include("abstract_gaussian_state.jl")
 include("gaussian_state.jl")
-include("spin_gaussian_state.jl")
 include("gaussian_operator.jl")
-include("spin_gaussian_operator.jl")
 
 include("state_constructors.jl")
 include("state_properties.jl")
