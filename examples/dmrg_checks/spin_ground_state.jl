@@ -1,3 +1,7 @@
+# DMRG reference calculation for a spin-1/2 (electron) tight-binding chain.
+# Uses ITensorMPS to find the ground state energy and MPS bond dimension at a given
+# truncation cutoff, for comparison against exact Gaussian-state results.
+
 using ITensorMPS
 
 let
