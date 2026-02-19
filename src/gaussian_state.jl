@@ -33,4 +33,4 @@ vertices(ϕ::GaussianState) = names(orbitals(ϕ), 1)
 
 ispure(ϕ::GaussianState) = all(f -> (f == 1.0 || f == 0.0), filling(ϕ))
 
-has_spin(ϕ::GaussianState) = first(names(ϕ.orbitals,1)) isa Spin 
+has_spin(ϕ::GaussianState) = first(names(ϕ.orbitals, 1)) isa Spin

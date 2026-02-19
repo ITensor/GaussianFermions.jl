@@ -25,7 +25,7 @@ end
 
 
 function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
-    C = correlation_matrix(ϕ; sites=range)
+    C = correlation_matrix(ϕ; sites = range)
     occs, _ = la.eigen(C)
     occs = real(occs)
 
