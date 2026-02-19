@@ -1,10 +1,10 @@
-function correlation_matrix(ϕ::GaussianState; sites = 1:length(ϕ))
+function correlation_matrix(ϕ::GaussianState; sites = vertices(ϕ))
     orbs = orbitals(ϕ)[sites, :]
     return orbs * la.Diagonal(filling(ϕ)) * orbs'
 end
 
-function density(ϕ::GaussianState; sites = 1:length(ϕ))
-    return la.diag(correlation_matrix(ϕ; sites))
+function density(ϕ::GaussianState; kws...)
+    return la.diag(correlation_matrix(ϕ; kws...))
 end
 
 function entanglement(ϕ::GaussianState; sites)
@@ -25,7 +25,7 @@ end
 
 
 function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
-    C = correlation_matrix(ϕ; range)
+    C = correlation_matrix(ϕ; sites=range)
     occs, _ = la.eigen(C)
     occs = real(occs)
 

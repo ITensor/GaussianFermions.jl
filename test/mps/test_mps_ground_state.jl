@@ -127,14 +127,12 @@ end
     S_gf = [gf.entanglement(ϕ0; sites = [1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
 
     # Densities per spin
-    n_all = gf.density(ϕ0)
-    nup_gf = n_all[1:N]
-    ndn_gf = n_all[(N + 1):(2N)]
+    nup_gf = gf.up_density(ϕ0)
+    ndn_gf = gf.dn_density(ϕ0)
 
     # Correlation matrices per spin
-    C_full = gf.correlation_matrix(ϕ0)
-    Cup_gf = C_full[1:N, 1:N]
-    Cdn_gf = C_full[(N + 1):(2N), (N + 1):(2N)]
+    Cup_gf = gf.up_correlation_matrix(ϕ0)
+    Cdn_gf = gf.dn_correlation_matrix(ϕ0)
 
     #
     # ITensorMPS / DMRG: Electron sites
