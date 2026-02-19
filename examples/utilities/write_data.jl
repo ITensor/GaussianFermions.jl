@@ -1,3 +1,6 @@
+# Utility for writing two-column data files (x, y) to disk.
+# Supports integer and Float64 values; each row is space-separated.
+
 using Printf: @sprintf
 
 format_string(i::Integer) = @sprintf("%d", i)

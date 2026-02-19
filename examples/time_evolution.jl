@@ -1,3 +1,8 @@
+# Spinless fermion chain time evolution under a Gaussian pulse.
+# The equilibrium chain Hamiltonian H excludes the 1→2 bond; a Gaussian drive field
+# periodically switches on that bond. The operator A = c†_1 c_2 is evolved in the
+# Heisenberg picture and its expectation value is written to disk over time.
+
 import GaussianFermions as gf
 
 include("utilities/write_data.jl")
@@ -12,13 +17,12 @@ let
     end
 
     B = gf.GaussianOperator(N)
-    B = gf.add_hop(H, 1, 2, -1)
+    B = gf.add_hop(B, 1, 2, -1)
 
     E0, ψ0 = gf.ground_state(H; Nf)
     @show E0
     @show gf.expect(H, ψ0)
     @show gf.entanglement(ψ0; sites = 1:(N ÷ 2))
-    #@show gf.bond_dimension(ψ0; 1:N÷2, 1E-7)
 
     A = gf.GaussianOperator(N)
     A = gf.add_cdag_c(A, 1, 2)

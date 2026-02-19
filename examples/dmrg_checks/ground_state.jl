@@ -1,3 +1,7 @@
+# DMRG reference calculation for a spinless fermion tight-binding chain.
+# Uses ITensorMPS to find the ground state energy and MPS bond dimension at a given
+# truncation cutoff, for comparison against the exact Gaussian-state results.
+
 using ITensorMPS
 
 let
