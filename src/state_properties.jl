@@ -2,7 +2,13 @@
     correlation_matrix(ϕ::GaussianState; sites=vertices(ϕ))
 
 Compute the single-particle correlation matrix ``C_{ij} = \\langle c^\\dagger_i c_j \\rangle``
-for the state `ϕ`. If `sites` is given, only the submatrix for those sites is returned.
+for the state `ϕ`, given by ``C_{ij} = \\sum_n \\bar{d}^n_i \\, \\eta_n \\, d^j_n``
+where ``d^j_n`` are the orbitals and ``\\eta_n`` the filling values.
+
+For a pure state (all ``\\eta_n \\in \\{0,1\\}``), the correlation matrix is a
+projector: ``C^2 = C``.
+
+If `sites` is given, only the submatrix for those sites is returned.
 
 # Example
 ```julia
@@ -47,6 +53,16 @@ end
     entanglement(ϕ::GaussianState; sites)
 
 Compute the von Neumann entanglement entropy of the subsystem defined by `sites`.
+
+The entropy is obtained from the eigenvalues ``\\nu_k`` of the reduced correlation
+matrix ``C_{AA}`` (the block of the correlation matrix restricted to `sites`):
+
+```math
+S = -\\sum_k \\bigl[\\nu_k \\ln \\nu_k + (1 - \\nu_k) \\ln(1 - \\nu_k)\\bigr]
+```
+
+Eigenvalues near 0 or 1 correspond to orbitals fully empty or full within the
+subsystem and do not contribute to entanglement.
 
 # Example
 ```julia

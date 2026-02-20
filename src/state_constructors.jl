@@ -4,6 +4,10 @@
 Compute the ground state of the Gaussian operator `G` with `Nf` fermions.
 If `Nf` is not specified, all negative-energy orbitals are filled.
 
+Diagonalizes the hopping matrix to obtain single-particle energies
+``\\epsilon_n`` and eigenstates, then fills the `Nf` lowest-energy levels.
+The ground state energy is ``E_0 = \\sum_{n=1}^{N_f} \\epsilon_n``.
+
 Returns a tuple `(E0, ϕ0)` where `E0` is the ground state energy and
 `ϕ0` is the corresponding [`GaussianState`](@ref).
 

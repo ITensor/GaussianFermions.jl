@@ -4,14 +4,16 @@ using NamedArrays: NamedArray, names
 """
 GaussianState
 
-Represents a Gaussian state of a single "species"
-(e.g. spinless fermions or fermions of the same spin label).
+Represents a Gaussian (free fermion) state. Vertices can be plain integer
+site labels (spinless fermions) or [`Up`](@ref)/[`Dn`](@ref) spin labels
+(spinful fermions).
+
 A pure state has a `filling` vector with entries fₙ=0,1.
 A mixed state can have fractional fillings fₙ ∈ [0,1].
 
 The single-particle density matrix or correlation matrix
 for such a state is given by
-C_ij = ∑ₙ ϕ_in f_n ϕ̄_jn 
+C_ij = ∑ₙ ϕ_in f_n ϕ̄_jn
 """
 struct GaussianState <: AbstractGaussianState
     orbitals::NamedArray

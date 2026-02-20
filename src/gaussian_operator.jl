@@ -28,6 +28,19 @@ end
 ups = [gf.Up(j) for j in 1:4]
 dns = [gf.Dn(j) for j in 1:4]
 H = gf.GaussianOperator(vcat(ups, dns))
+for j in 1:3
+    H = gf.add_hop(H, gf.Up(j), gf.Up(j + 1), -1.0)
+    H = gf.add_hop(H, gf.Dn(j), gf.Dn(j + 1), -1.0)
+end
+
+# 2D system with tuple labels
+Lx, Ly = 3, 3
+verts = [(x, y) for x in 1:Lx for y in 1:Ly]
+H = gf.GaussianOperator(verts)
+for x in 1:Lx, y in 1:Ly
+    x < Lx && (H = gf.add_hop(H, (x, y), (x + 1, y), -1.0))
+    y < Ly && (H = gf.add_hop(H, (x, y), (x, y + 1), -1.0))
+end
 ```
 """
 struct GaussianOperator
