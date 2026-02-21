@@ -188,23 +188,51 @@ function expect(G::GaussianOperator, ψ::GaussianState)
     return la.tr(matrix_elements(G) * correlation_matrix(ψ))
 end
 
-function greens_function(H::GaussianOperator, t::Number)
+"""
+    greens_function(H::GaussianOperator, times; verts = vertices(H))
+
+Compute the Greens function G(t)=exp(-i*h*t) from a GaussianOperator with
+hopping matrix h.
+Output is a Nt x Nv x Nv complex-valued tensor where the first index
+indexes the time points, and second two indices the vertices.
+Optionally passing a subset of vertices of H computes G(t) only on these
+vertices.
+"""
+function greens_function(H::GaussianOperator, times; verts = vertices(H))
     ϵ, ϕ = energies_states(H)
-    exp_itϵ = [exp(-im * t * ϵ[n]) for n in 1:length(ϵ)]
-    return -im * ϕ * la.Diagonal(exp_itϵ) * ϕ'
+    G = zeros(ComplexF64, length(times), length(verts), length(verts))
+    for j in 1:length(times)
+        exp_itϵ = [exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
+        G[j, :, :] = -im * ϕ[verts, :] * la.Diagonal(exp_itϵ) * (ϕ[verts, :])'
+    end
+    return G
 end
 
-function lesser_greens_function(H::GaussianOperator, t::Number)
+function lesser_greens_function(H::GaussianOperator, times; verts = vertices(H))
     ϵ, ϕ = energies_states(H)
-    exp_itϵ = [filling(H)[n] * exp(-im * t * ϵ[n]) for n in 1:length(ϵ)]
-    return im * ϕ * la.Diagonal(exp_itϵ) * ϕ'
+    occupancies = ground_state_occupancies(ϵ)
+    GL = zeros(ComplexF64, length(times), length(verts), length(verts))
+    for j in 1:length(times)
+        exp_itϵ = [occupancies[n] * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
+        GL[j, :, :] = im * ϕ[verts, :] * la.Diagonal(exp_itϵ) * (ϕ[verts, :])'
+    end
+    return GL
 end
 
-function greater_greens_function(H::GaussianOperator, t::Number)
+function greater_greens_function(H::GaussianOperator, times; verts = vertices(H))
     ϵ, ϕ = energies_states(H)
-    exp_itϵ = [(1 - filling(H)[n]) * exp(-im * t * ϵ[n]) for n in 1:length(ϵ)]
-    return -im * ϕ * la.Diagonal(exp_itϵ) * ϕ'
+    occupancies = ground_state_occupancies(ϵ)
+    GG = zeros(ComplexF64, length(times), length(verts), length(verts))
+    for j in 1:length(times)
+        exp_itϵ = [(1 - occupancies[n]) * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
+        GG[j, :, :] = -im * ϕ[verts, :] * la.Diagonal(exp_itϵ) * (ϕ[verts, :])'
+    end
+    return GG
 end
+
+greens_function(H, t::Number; kws...) = greens_function(H, [t]; kws...)
+lesser_greens_function(H, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
+greater_greens_function(H, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
 
 """
     time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)

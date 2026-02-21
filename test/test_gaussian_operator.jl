@@ -3,6 +3,8 @@ using LinearAlgebra: norm, Diagonal
 import GaussianFermions as gf
 using NamedArrays: NamedArray
 
+include("utilities/hamiltonians.jl")
+
 @testset "GaussianOperator Constructors" begin
     # Construct with integer dimension
     N = 10
@@ -73,4 +75,29 @@ end
 
     h_reconstruct = ϕ * Diagonal(ϵ) * ϕ'
     @test norm(gf.matrix_elements(H_graph) - h_reconstruct) < 1.0e-12
+end
+
+@testset "Greens Functions" begin
+    N = 10
+    H = electron_chain_h(N)
+    times = 0:0.1:6
+
+    G = gf.greens_function(H,times)
+    GG = gf.greater_greens_function(H,times)
+    GL = gf.lesser_greens_function(H,times)
+    @test norm(G-(GG-GL)) < 1E-10
+    @test size(G) == (length(times),2N,2N)
+    @test size(GG) == (length(times),2N,2N)
+    @test size(GL) == (length(times),2N,2N)
+
+    # Test pre-selecting vertices or labels 
+    # for computing G, GG, GL
+    verts = [2]
+    G = gf.greens_function(H,times; verts)
+    GG = gf.greater_greens_function(H,times; verts)
+    GL = gf.lesser_greens_function(H,times; verts)
+    @test norm(G-(GG-GL)) < 1E-10
+    @test size(G) == (length(times),1,1)
+    @test size(GG) == (length(times),1,1)
+    @test size(GL) == (length(times),1,1)
 end
