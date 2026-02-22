@@ -3,7 +3,7 @@ abstract type Spin end
 """
     Up(site)
 
-Spin-up vertex label wrapping a site index. Used with [`Dn`](@ref) to label
+Spin-up label wrapping a site label. Used with [`Dn`](@ref) to label
 orbitals in spinful fermion systems.
 
 # Example
@@ -22,7 +22,7 @@ end
 """
     Dn(site)
 
-Spin-down vertex label wrapping a site index. Used with [`Up`](@ref) to label
+Spin-down label wrapping a site label. Used with [`Up`](@ref) to label
 orbitals in spinful fermion systems.
 
 # Example

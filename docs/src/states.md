@@ -18,7 +18,7 @@ GaussianFermions.ground_state
 GaussianFermions.orbitals
 GaussianFermions.occupancy
 GaussianFermions.nparticles
-GaussianFermions.vertices(::GaussianFermions.GaussianState)
+GaussianFermions.labels(::GaussianFermions.GaussianState)
 GaussianFermions.ispure
 GaussianFermions.has_spin
 ```

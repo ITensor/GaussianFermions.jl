@@ -15,7 +15,8 @@ state built by filling a set of single-particle orbitals:
 
 where each ``\hat{d}^\dagger_m = \sum_j d^j_m \, \hat{c}^\dagger_j`` creates a
 fermion in the orbital defined by the column vector ``d^j_m``. Here ``\hat{c}^\dagger_j``
-creates a fermion at site (vertex) ``j``.
+creates a fermion with label ``j``. One can think of the label ``j`` as a site of a lattice,
+a combined site-spin label, or a more abstract label such as a momentum or vertex of a graph.
 
 In GaussianFermions.jl, a Gaussian state is represented by a
 [`GaussianState`](@ref GaussianFermions.GaussianState), which stores the orbital
@@ -23,9 +24,9 @@ matrix ``d^j_m`` (accessed via [`orbitals`](@ref GaussianFermions.orbitals)) and
 an occupancy vector ``\eta_m`` (accessed via [`occupancy`](@ref GaussianFermions.occupancy))
 indicating which orbitals are occupied.
 
-## Vertex Labels
+## Mode Labels
 
-The site indices (vertices) labeling the fermionic modes are flexible. They can be:
+The indices labelling the fermionic modes are flexible. They can be:
 
 - **Integers** `1, 2, 3, …` for spinless fermions on a chain.
 - **Tuples** `(1,1), (1,2), …` for fermions on a two-dimensional lattice.

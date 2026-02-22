@@ -4,10 +4,10 @@ using NamedArrays: NamedArray
 
 """
     GaussianOperator(N::Integer)
-    GaussianOperator(vertices)
+    GaussianOperator(labels)
 
 Create a Gaussian (quadratic) fermion operator, initialized to zero. Sites are
-labeled `1:N` (integer form) or by the given `vertices` (e.g. [`Up`](@ref)/[`Dn`](@ref)
+labeled `1:N` (integer form) or by the given `labels` (e.g. [`Up`](@ref)/[`Dn`](@ref)
 labels for spinful systems).
 
 Build up the operator with [`add_hop`](@ref), [`add_cdag_c`](@ref),
@@ -35,8 +35,8 @@ end
 
 # 2D system with tuple labels
 Lx, Ly = 3, 3
-verts = [(x, y) for x in 1:Lx for y in 1:Ly]
-H = gf.GaussianOperator(verts)
+labels = [(x, y) for x in 1:Lx for y in 1:Ly]
+H = gf.GaussianOperator(labels)
 for x in 1:Lx, y in 1:Ly
     x < Lx && (H = gf.add_hop(H, (x, y), (x + 1, y), -1.0))
     y < Ly && (H = gf.add_hop(H, (x, y), (x, y + 1), -1.0))
@@ -51,12 +51,12 @@ struct GaussianOperator
 end
 
 function GaussianOperator(N::Integer)
-    return GaussianOperator(NamedArray(zeros(N, N), (1:N, 1:N), ("Vertices", "Vertices")))
+    return GaussianOperator(NamedArray(zeros(N, N), (1:N, 1:N), ("Labels", "Labels")))
 end
 
-function GaussianOperator(vertices)
-    N = length(vertices)
-    return GaussianOperator(NamedArray(zeros(N, N), (vertices, vertices), ("Vertices", "Vertices")))
+function GaussianOperator(labels)
+    N = length(labels)
+    return GaussianOperator(NamedArray(zeros(N, N), (labels, labels), ("Labels", "Labels")))
 end
 
 Base.copy(G::GaussianOperator) = GaussianOperator(copy(G.matrix_elems))
@@ -74,11 +74,12 @@ matrix_elements(G::GaussianOperator, r, c) = G.matrix_elems[r, c]
 matrix_elements(G::GaussianOperator) = G.matrix_elems
 
 """
-    vertices(G::GaussianOperator)
+    labels(G::GaussianOperator)
 
-Return the vertex labels (site indices) of the operator `G`.
+Return the labels (e.g. site indices or spin-site indices) of the system on which
+the operator `G` acts.
 """
-vertices(G::GaussianOperator) = names(G.matrix_elems, 1)
+labels(G::GaussianOperator) = names(G.matrix_elems, 1)
 
 function (x::Number * G::GaussianOperator)
     return GaussianOperator(x * matrix_elements(G))
@@ -162,7 +163,7 @@ eigenstates (as a `NamedArray` of column vectors).
 function energies_states(G)
     ϵ, ϕ = la.eigen(G.matrix_elems)
     N = length(ϵ)
-    ϕ = NamedArray(ϕ, (vertices(G), 1:N), ("Vertices", "Eigenstates"))
+    ϕ = NamedArray(ϕ, (labels(G), 1:N), ("Labels", "Eigenstates"))
     return ϵ, ϕ
 end
 
@@ -189,63 +190,64 @@ function expect(G::GaussianOperator, ψ::GaussianState)
 end
 
 """
-    greens_function(H::GaussianOperator, times; verts = vertices(H))
+    greens_function(H::GaussianOperator, times; labels = labels(H))
 
-Compute the Greens function G(t)=exp(-i*h*t) from a GaussianOperator with
-hopping matrix h.
+Compute the Greens function ``g(t) = -i e^{-i h t}`` from a GaussianOperator with
+hopping matrix h. For positive time values this is identical to the 
+retarded Greens function ``G^R(t)``.
 Output is a Nt x Nv x Nv complex-valued tensor where the first index
-indexes the time points, and second two indices the vertices.
-Optionally passing a subset of vertices of H computes G(t) only on these
-vertices.
+the time points, and the second two indices run over mode labels.
+Optionally passing a subset of mode labels computes ``g(t)`` only on these
+labels.
 """
-function greens_function(H::GaussianOperator, times; verts = vertices(H))
+function greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
-    G = zeros(ComplexF64, length(times), length(verts), length(verts))
+    G = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        G[j, :, :] = -im * ϕ[verts, :] * la.Diagonal(exp_itϵ) * (ϕ[verts, :])'
+        G[j, :, :] = -im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
     end
-    return G
+    return NamedArray(G,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
 end
 
 """
-    lesser_greens_function(H::GaussianOperator, times; verts = vertices(H))
+    lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
 
 Compute the lesser Green's function G^<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
 Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
-the time points, and the second two indices the vertices.
-Optionally passing a subset of vertices of H computes G^<(t) only on these vertices.
+the time points, and the second two indices run over mode labels.
+Optionally passing a subset of mode labels computes G^<(t) only on these labels.
 """
-function lesser_greens_function(H::GaussianOperator, times; verts = vertices(H))
+function lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
     occupancies = ground_state_occupancies(ϵ)
-    GL = zeros(ComplexF64, length(times), length(verts), length(verts))
+    GL = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [occupancies[n] * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        GL[j, :, :] = im * ϕ[verts, :] * la.Diagonal(exp_itϵ) * (ϕ[verts, :])'
+        GL[j, :, :] = im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
     end
-    return GL
+    return NamedArray(GL,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
 end
 
 """
-    greater_greens_function(H::GaussianOperator, times; verts = vertices(H))
+    greater_greens_function(H::GaussianOperator, times; labels = labels(H))
 
 Compute the greater Green's function G^>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
 Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
-the time points, and the second two indices the vertices.
-Optionally passing a subset of vertices of H computes G^>(t) only on these vertices.
+the time points, and the second two indices run over mode labels.
+Optionally passing a subset of mode labels computes G^>(t) only on these labels.
 """
-function greater_greens_function(H::GaussianOperator, times; verts = vertices(H))
+function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
     occupancies = ground_state_occupancies(ϵ)
-    GG = zeros(ComplexF64, length(times), length(verts), length(verts))
+    GG = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [(1 - occupancies[n]) * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        GG[j, :, :] = -im * ϕ[verts, :] * la.Diagonal(exp_itϵ) * (ϕ[verts, :])'
+        GG[j, :, :] = -im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
     end
-    return GG
+    return NamedArray(GG,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
 end
 
 greens_function(H, t::Number; kws...) = greens_function(H, [t]; kws...)

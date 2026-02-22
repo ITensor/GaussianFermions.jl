@@ -13,9 +13,9 @@ include("utilities/hamiltonians.jl")
     @test norm(gf.matrix_elements(H)) < 1.0e-12
 
     # Construct with array of vertices
-    verts = [(1, 1), (1, 2), (2, 1), (2, 2)]
-    H = gf.GaussianOperator(verts)
-    @test length(H) == length(verts)
+    sites = [(1, 1), (1, 2), (2, 1), (2, 2)]
+    H = gf.GaussianOperator(sites)
+    @test length(H) == length(sites)
     @test norm(gf.matrix_elements(H)) < 1.0e-12
 end
 
@@ -36,14 +36,14 @@ end
 
     # Construct with array of vertices
     # 2D square lattice Hamiltonian
-    verts = [(i, j) for i in 1:N for j in 1:N]
-    H_graph = gf.GaussianOperator(verts)
+    sites = [(i, j) for i in 1:N for j in 1:N]
+    H_graph = gf.GaussianOperator(sites)
     for i in 1:N,j in 1:N
         (i < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i + 1, j), -1))
         (j < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i, j + 1), -1))
     end
 
-    for r in verts, c in verts
+    for r in sites, c in sites
         if (r[1] + 1, r[2]) == c || (r[1], r[2] + 1) == c
             @test gf.matrix_elements(H_graph, r, c) == -1
         elseif (c[1] + 1, c[2]) == r || (c[1], c[2] + 1) == r
@@ -58,8 +58,8 @@ end
     N = 4
     # Construct with array of vertices
     # 2D square lattice Hamiltonian
-    verts = [(i, j) for i in 1:N for j in 1:N]
-    H_graph = gf.GaussianOperator(verts)
+    sites = [(i, j) for i in 1:N for j in 1:N]
+    H_graph = gf.GaussianOperator(sites)
     for i in 1:N,j in 1:N
         (i < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i + 1, j), -1))
         (j < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i, j + 1), -1))
@@ -67,11 +67,11 @@ end
     ϵ, ϕ = gf.energies_states(H_graph)
 
     @test ϕ isa NamedArray
-    @test names(ϕ, 1) == verts
-    @test names(ϕ, 2) == 1:length(verts)
+    @test names(ϕ, 1) == sites
+    @test names(ϕ, 2) == 1:length(sites)
 
     @test ϵ isa Vector{Float64}
-    @test length(ϵ) == length(verts)
+    @test length(ϵ) == length(sites)
 
     h_reconstruct = ϕ * Diagonal(ϵ) * ϕ'
     @test norm(gf.matrix_elements(H_graph) - h_reconstruct) < 1.0e-12
@@ -89,15 +89,21 @@ end
     @test size(G) == (length(times),2N,2N)
     @test size(GG) == (length(times),2N,2N)
     @test size(GL) == (length(times),2N,2N)
+    @test G isa NamedArray
+    @test GL isa NamedArray
+    @test GG isa NamedArray
 
-    # Test pre-selecting vertices or labels 
+    # Test pre-selecting labels 
     # for computing G, GG, GL
-    verts = [2]
-    G = gf.greens_function(H,times; verts)
-    GG = gf.greater_greens_function(H,times; verts)
-    GL = gf.lesser_greens_function(H,times; verts)
+    labels = [2,4]
+    G = gf.greens_function(H,times; labels)
+    GG = gf.greater_greens_function(H,times; labels)
+    GL = gf.lesser_greens_function(H,times; labels)
     @test norm(G-(GG-GL)) < 1E-10
-    @test size(G) == (length(times),1,1)
-    @test size(GG) == (length(times),1,1)
-    @test size(GL) == (length(times),1,1)
+    @test size(G) == (length(times),2,2)
+    @test size(GG) == (length(times),2,2)
+    @test size(GL) == (length(times),2,2)
+    @test G isa NamedArray
+    @test GL isa NamedArray
+    @test GG isa NamedArray
 end

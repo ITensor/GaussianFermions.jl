@@ -4,7 +4,7 @@ using NamedArrays: NamedArray, names
 """
 GaussianState
 
-Represents a Gaussian (free fermion) state. Vertices can be plain integer
+Represents a Gaussian (free fermion) state. Orbital or mode labels can be plain integer
 site labels (spinless fermions) or [`Up`](@ref)/[`Dn`](@ref) spin labels
 (spinful fermions).
 
@@ -25,7 +25,7 @@ end
     orbitals(ϕ::GaussianState)
 
 Return the single-particle orbital matrix of the state `ϕ` as a `NamedArray`.
-Rows are labeled by vertices (sites) and columns by orbital indices.
+Rows are labeled by "orbital labels" or "mode labels" and columns by integers.
 """
 orbitals(ϕ::GaussianState) = ϕ.orbitals
 
@@ -49,11 +49,11 @@ Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
 Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), occupancy(ϕ), nparticles(ϕ))
 
 """
-    vertices(ϕ::GaussianState)
+    labels(ϕ::GaussianState)
 
-Return the vertex labels (site indices) of the state `ϕ`.
+Return the orbital or mode labels of the state `ϕ`.
 """
-vertices(ϕ::GaussianState) = names(orbitals(ϕ), 1)
+labels(ϕ::GaussianState) = names(orbitals(ϕ), 1)
 
 """
     ispure(ϕ::GaussianState)
@@ -65,6 +65,6 @@ ispure(ϕ::GaussianState) = all(f -> (f == 1.0 || f == 0.0), occupancy(ϕ))
 """
     has_spin(ϕ::GaussianState)
 
-Return `true` if the vertex labels of `ϕ` are spin labels ([`Up`](@ref) or [`Dn`](@ref)).
+Return `true` if the orbital labels of `ϕ` are spin labels ([`Up`](@ref) or [`Dn`](@ref)).
 """
 has_spin(ϕ::GaussianState) = first(names(ϕ.orbitals, 1)) isa Spin

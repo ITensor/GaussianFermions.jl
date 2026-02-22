@@ -18,6 +18,6 @@ GaussianFermions.add_c_cdag
 
 ```@docs
 GaussianFermions.matrix_elements
-GaussianFermions.vertices(::GaussianFermions.GaussianOperator)
+GaussianFermions.labels(::GaussianFermions.GaussianOperator)
 GaussianFermions.energies_states
 ```
