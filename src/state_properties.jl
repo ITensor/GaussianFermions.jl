@@ -1,5 +1,5 @@
 """
-    correlation_matrix(ϕ::GaussianState; sites=vertices(ϕ))
+    correlation_matrix(ϕ::GaussianState; labels=labels(ϕ))
 
 Compute the single-particle correlation matrix ``C_{ij} = \\langle c^\\dagger_i c_j \\rangle``
 for the state `ϕ`, given by ``C_{ij} = \\sum_n \\bar{d}^n_i \\, \\eta_n \\, d^j_n``
@@ -8,7 +8,7 @@ where ``d^j_n`` are the orbitals and ``\\eta_n`` the filling values.
 For a pure state (all ``\\eta_n \\in \\{0,1\\}``), the correlation matrix is a
 projector: ``C^2 = C``.
 
-If `sites` is given, only the submatrix for those sites is returned.
+If `labels` is given, only the submatrix for those labels is returned.
 
 # Example
 ```julia
@@ -22,13 +22,13 @@ _, ϕ = gf.ground_state(H; Nf=2)
 C = gf.correlation_matrix(ϕ)
 ```
 """
-function correlation_matrix(ϕ::GaussianState; sites = vertices(ϕ))
-    orbs = orbitals(ϕ)[sites, :]
+function correlation_matrix(ϕ::GaussianState; labels = labels(ϕ))
+    orbs = orbitals(ϕ)[labels, :]
     return orbs * la.Diagonal(filling(ϕ)) * orbs'
 end
 
 """
-    density(ϕ::GaussianState; sites=vertices(ϕ))
+    density(ϕ::GaussianState; labels=labels(ϕ))
 
 Return a vector of site occupation numbers ``\\langle n_i \\rangle`` (the diagonal
 of the correlation matrix).
@@ -50,12 +50,12 @@ function density(ϕ::GaussianState; kws...)
 end
 
 """
-    entanglement(ϕ::GaussianState; sites)
+    entanglement(ϕ::GaussianState; labels)
 
-Compute the von Neumann entanglement entropy of the subsystem defined by `sites`.
+Compute the von Neumann entanglement entropy of the subsystem defined by `labels`.
 
 The entropy is obtained from the eigenvalues ``\\nu_k`` of the reduced correlation
-matrix ``C_{AA}`` (the block of the correlation matrix restricted to `sites`):
+matrix ``C_{AA}`` (the block of the correlation matrix restricted to `labels`):
 
 ```math
 S = -\\sum_k \\bigl[\\nu_k \\ln \\nu_k + (1 - \\nu_k) \\ln(1 - \\nu_k)\\bigr]
@@ -73,11 +73,11 @@ for j in 1:9
     H = gf.add_hop(H, j, j + 1, -1.0)
 end
 _, ϕ = gf.ground_state(H; Nf=5)
-gf.entanglement(ϕ; sites=1:5)
+gf.entanglement(ϕ; labels=1:5)
 ```
 """
-function entanglement(ϕ::GaussianState; sites)
-    C = correlation_matrix(ϕ; sites)
+function entanglement(ϕ::GaussianState; labels)
+    C = correlation_matrix(ϕ; labels)
     occs, _ = la.eigen(C)
     Svn = 0.0
     @assert la.norm(imag(occs)) < 1.0e-8
@@ -97,7 +97,7 @@ end
     bond_dimension(ϕ::GaussianState, range, cutoff::Real)
 
 Estimate the MPS bond dimension needed to represent the state `ϕ` bipartitioned
-at `range` (the sites on one side of the cut) to accuracy `cutoff`.
+at `range` (the labels on one side of the cut) to accuracy `cutoff`.
 
 # Example
 ```julia
@@ -112,7 +112,7 @@ gf.bond_dimension(ϕ, 1:5, 1e-7)
 ```
 """
 function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
-    C = correlation_matrix(ϕ; sites = range)
+    C = correlation_matrix(ϕ; labels = range)
     occs, _ = la.eigen(C)
     occs = real(occs)
 

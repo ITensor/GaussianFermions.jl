@@ -1,9 +1,9 @@
 function sites(ϕ)
-    up_vertices = filter(v -> (v isa Up), vertices(ϕ))
-    if length(up_vertices) != length(vertices(ϕ)) ÷ 2
-        error("Expected equal number of Up and Dn vertices")
+    up_labels = filter(v -> (v isa Up), labels(ϕ))
+    if length(up_labels) != length(labels(ϕ)) ÷ 2
+        error("Expected equal number of Up and Dn labels")
     end
-    return map(v -> (v.site), up_vertices)
+    return map(v -> (v.site), up_labels)
 end
 
 """
