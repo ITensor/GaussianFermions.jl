@@ -26,7 +26,7 @@ Pages = [
     "operators.md",
     "states.md",
     "measurements.md",
-    "time_evolution.md",
+    "dynamics.md",
     "spinful.md",
 ]
 Depth = 2

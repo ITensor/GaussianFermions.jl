@@ -20,7 +20,7 @@ creates a fermion at site (vertex) ``j``.
 In GaussianFermions.jl, a Gaussian state is represented by a
 [`GaussianState`](@ref GaussianFermions.GaussianState), which stores the orbital
 matrix ``d^j_m`` (accessed via [`orbitals`](@ref GaussianFermions.orbitals)) and
-a filling vector ``\eta_m`` (accessed via [`filling`](@ref GaussianFermions.filling))
+an occupancy vector ``\eta_m`` (accessed via [`occupancy`](@ref GaussianFermions.occupancy))
 indicating which orbitals are occupied.
 
 ## Vertex Labels

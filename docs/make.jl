@@ -11,7 +11,7 @@ makedocs(;
     "Operators" => "operators.md",
     "States" => "states.md",
     "Measurements" => "measurements.md",
-    "Time Evolution" => "time_evolution.md",
+    "Dynamics" => "dynamics.md",
     "Spinful Systems" => "spinful.md",
   ],
 )

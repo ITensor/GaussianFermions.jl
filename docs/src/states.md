@@ -16,7 +16,7 @@ GaussianFermions.ground_state
 
 ```@docs
 GaussianFermions.orbitals
-GaussianFermions.filling
+GaussianFermions.occupancy
 GaussianFermions.nparticles
 GaussianFermions.vertices(::GaussianFermions.GaussianState)
 GaussianFermions.ispure
