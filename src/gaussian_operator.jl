@@ -208,6 +208,15 @@ function greens_function(H::GaussianOperator, times; verts = vertices(H))
     return G
 end
 
+"""
+    lesser_greens_function(H::GaussianOperator, times; verts = vertices(H))
+
+Compute the lesser Green's function G^<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
+with hopping matrix h, evaluated in the ground state.
+Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
+the time points, and the second two indices the vertices.
+Optionally passing a subset of vertices of H computes G^<(t) only on these vertices.
+"""
 function lesser_greens_function(H::GaussianOperator, times; verts = vertices(H))
     ϵ, ϕ = energies_states(H)
     occupancies = ground_state_occupancies(ϵ)
@@ -219,6 +228,15 @@ function lesser_greens_function(H::GaussianOperator, times; verts = vertices(H))
     return GL
 end
 
+"""
+    greater_greens_function(H::GaussianOperator, times; verts = vertices(H))
+
+Compute the greater Green's function G^>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
+with hopping matrix h, evaluated in the ground state.
+Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
+the time points, and the second two indices the vertices.
+Optionally passing a subset of vertices of H computes G^>(t) only on these vertices.
+"""
 function greater_greens_function(H::GaussianOperator, times; verts = vertices(H))
     ϵ, ϕ = energies_states(H)
     occupancies = ground_state_occupancies(ϵ)
