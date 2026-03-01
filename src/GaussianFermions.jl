@@ -7,7 +7,6 @@ include("gaussian_operator.jl")
 
 include("state_constructors.jl")
 include("state_properties.jl")
-include("state_transformations.jl")
 
 include("spinful_state_properties.jl")
 
