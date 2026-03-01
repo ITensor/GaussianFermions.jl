@@ -67,7 +67,7 @@ Base.length(G::GaussianOperator) = size(G.matrix_elems, 1)
     matrix_elements(G::GaussianOperator, r, c)
 
 Return the matrix elements of `G` as a `NamedArray`, or the element at row `r`
-and column `c`.
+and column `c`. The inputs `r` and `c` can also be ranges or collections of labels.
 """
 matrix_elements(G::GaussianOperator, r, c) = G.matrix_elems[r, c]
 
@@ -275,7 +275,7 @@ _, ψ = gf.ground_state(H; Nf=2)
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
     expHt = im * greens_function(H, t)
     orbs_t = expHt * orbitals(ψ)
-    return GaussianState(orbs_t, filling(ψ), nparticles(ψ))
+    return GaussianState(orbs_t, occupancy(ψ), nparticles(ψ))
 end
 
 """

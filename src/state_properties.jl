@@ -3,7 +3,7 @@
 
 Compute the single-particle correlation matrix ``C_{ij} = \\langle c^\\dagger_i c_j \\rangle``
 for the state `ϕ`, given by ``C_{ij} = \\sum_n \\bar{d}^n_i \\, \\eta_n \\, d^j_n``
-where ``d^j_n`` are the orbitals and ``\\eta_n`` the filling values.
+where ``d^j_n`` are the orbitals and ``\\eta_n`` the occupancy values.
 
 For a pure state (all ``\\eta_n \\in \\{0,1\\}``), the correlation matrix is a
 projector: ``C^2 = C``.
@@ -24,7 +24,7 @@ C = gf.correlation_matrix(ϕ)
 """
 function correlation_matrix(ϕ::GaussianState; labels = labels(ϕ))
     orbs = orbitals(ϕ)[labels, :]
-    return orbs * la.Diagonal(filling(ϕ)) * orbs'
+    return orbs * la.Diagonal(occupancy(ϕ)) * orbs'
 end
 
 """
