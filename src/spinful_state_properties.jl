@@ -1,4 +1,4 @@
-function sites(ϕ)
+function site_labels(ϕ)
     up_labels = filter(v -> (v isa Up), labels(ϕ))
     if length(up_labels) != length(labels(ϕ)) ÷ 2
         error("Expected equal number of Up and Dn labels")
@@ -7,7 +7,7 @@ function sites(ϕ)
 end
 
 """
-    up_correlation_matrix(ϕ::GaussianState; sites=sites(ϕ))
+    up_correlation_matrix(ϕ::GaussianState; labels=labels(ϕ))
 
 Compute the spin-up correlation matrix ``\\langle c^\\dagger_{\\uparrow,i} c_{\\uparrow,j} \\rangle``
 for a spinful state `ϕ`.
@@ -27,12 +27,12 @@ _, ϕ = gf.ground_state(H; Nf=4)
 gf.up_correlation_matrix(ϕ)
 ```
 """
-function up_correlation_matrix(ϕ::GaussianState; sites = sites(ϕ))
-    return correlation_matrix(ϕ; sites = [Up(s) for s in sites])
+function up_correlation_matrix(ϕ::GaussianState; labels = site_labels(ϕ))
+    return correlation_matrix(ϕ; labels = [Up(s) for s in labels])
 end
 
 """
-    dn_correlation_matrix(ϕ::GaussianState; sites=sites(ϕ))
+    dn_correlation_matrix(ϕ::GaussianState; labels=labels(ϕ))
 
 Compute the spin-down correlation matrix ``\\langle c^\\dagger_{\\downarrow,i} c_{\\downarrow,j} \\rangle``
 for a spinful state `ϕ`.
@@ -52,12 +52,12 @@ _, ϕ = gf.ground_state(H; Nf=4)
 gf.dn_correlation_matrix(ϕ)
 ```
 """
-function dn_correlation_matrix(ϕ::GaussianState; sites = sites(ϕ))
-    return correlation_matrix(ϕ; sites = [Dn(s) for s in sites])
+function dn_correlation_matrix(ϕ::GaussianState; labels = site_labels(ϕ))
+    return correlation_matrix(ϕ; labels = [Dn(s) for s in labels])
 end
 
 """
-    up_density(ϕ::GaussianState; sites=sites(ϕ))
+    up_density(ϕ::GaussianState; labels=labels(ϕ))
 
 Return a vector of spin-up occupation numbers ``\\langle n_{\\uparrow,i} \\rangle``.
 
@@ -81,7 +81,7 @@ function up_density(ϕ::GaussianState; kws...)
 end
 
 """
-    dn_density(ϕ::GaussianState; sites=sites(ϕ))
+    dn_density(ϕ::GaussianState; labels=labels(ϕ))
 
 Return a vector of spin-down occupation numbers ``\\langle n_{\\downarrow,i} \\rangle``.
 
@@ -105,7 +105,7 @@ function dn_density(ϕ::GaussianState; kws...)
 end
 
 """
-    total_density(ϕ::GaussianState; sites=sites(ϕ))
+    total_density(ϕ::GaussianState; labels=labels(ϕ))
 
 Return a vector of total occupation numbers ``\\langle n_{\\uparrow,i} \\rangle + \\langle n_{\\downarrow,i} \\rangle``.
 
