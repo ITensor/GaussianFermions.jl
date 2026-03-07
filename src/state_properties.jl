@@ -24,7 +24,7 @@ C = gf.correlation_matrix(ϕ)
 """
 function correlation_matrix(ϕ::GaussianState; labels = labels(ϕ))
     orbs = orbitals(ϕ)[labels, :]
-    return orbs * la.Diagonal(occupancy(ϕ)) * orbs'
+    return (orbs * la.Diagonal(occupancy(ϕ)) * orbs')
 end
 
 """
@@ -47,6 +47,21 @@ gf.density(ϕ)
 """
 function density(ϕ::GaussianState; kws...)
     return la.diag(correlation_matrix(ϕ; kws...))
+end
+
+"""
+    nparticles(ϕ::GaussianState)
+
+Return the number of particles in the state `ϕ`.
+"""
+function nparticles(ϕ::GaussianState; tol=1E-3) 
+    ispure(ϕ) || error("nparticles currently only defined for pure Gaussian states")
+    tot_density = sum(density(ϕ))
+    npart = round(Int,tot_density)
+    if abs(npart-tot_density) > tol
+        error("State does not have an integer number of particles")
+    end
+    return npart
 end
 
 """

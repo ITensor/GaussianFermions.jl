@@ -12,18 +12,21 @@ let
     for j in 1:(N - 1)
         H = gf.add_hop(H, j, j + 1, -t)
     end
-
-    display(gf.matrix_elements(H))
+    #display(gf.matrix_elements(H))
 
     E0, ϕ0 = gf.ground_state(H; Nf)
     n0 = gf.density(ϕ0)
-    display(n0)
+    #display(n0)
 
     v = rand(N)
     v /= norm(v)
     Cdag = gf.CreationOperator(labels, v)
 
-    gf.apply(Cdag, ϕ0)
+    Cdag_ϕ0 = gf.apply(Cdag, ϕ0)
+
+    @show gf.density(Cdag_ϕ0)
+    @show gf.occupancy(Cdag_ϕ0)
+    #@show gf.nparticles(Cdag_ϕ0)
 
     return
 end

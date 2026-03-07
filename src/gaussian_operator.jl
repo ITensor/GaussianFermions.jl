@@ -275,7 +275,7 @@ _, ψ = gf.ground_state(H; Nf=2)
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
     expHt = im * greens_function(H, t)
     orbs_t = expHt * orbitals(ψ)
-    return GaussianState(orbs_t, occupancy(ψ), nparticles(ψ))
+    return GaussianState(orbs_t, occupancy(ψ))
 end
 
 """
