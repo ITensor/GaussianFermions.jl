@@ -44,9 +44,26 @@ Cd = gf.CreationOperator(labels, v)
 """
 struct CreationOperator
     orbital::NamedArray
+    function CreationOperator(orbital::NamedArray)
+        new(orbital)
+    end
 end
 
-CreationOperator(labels, orbital::Vector) = CreationOperator(NamedArray(orbital,(labels,),("Labels",)))
+CreationOperator(labels, orbital=zeros(length(labels))) = CreationOperator(NamedArray(orbital,(labels,),("Labels",)))
+
+labels(Cdag::CreationOperator) = names(Cdag.orbital, 1)
+
+Base.copy(C::CreationOperator) = CreationOperator(C.orbital)
+
+function (Cdag::CreationOperator + t::Tuple)
+    coef, label = process_tuple(t; opnames=("Cdag","C†"))
+    if !(label in labels(Cdag))
+        error("Label $label is invalid in creation operator sum")
+    end
+    Cdag = copy(Cdag)
+    Cdag.orbital[label] += coef
+    return Cdag
+end
 
 """
     AnnihilationOperator(labels, orbital::Vector)
@@ -77,9 +94,26 @@ C = gf.AnnihilationOperator(1:4, w)
 """
 struct AnnihilationOperator
     orbital::NamedArray
+    function AnnihilationOperator(orbital::NamedArray)
+        new(orbital)
+    end
 end
 
-AnnihilationOperator(labels, orbital::Vector) = AnnihilationOperator(NamedArray(orbital,(labels,),("Labels",)))
+AnnihilationOperator(labels, orbital=zeros(length(labels))) = AnnihilationOperator(NamedArray(orbital,(labels,),("Labels",)))
+
+labels(C::AnnihilationOperator) = names(C.orbital, 1)
+
+Base.copy(C::AnnihilationOperator) = AnnihilationOperator(C.orbital)
+
+function (C::AnnihilationOperator + t::Tuple)
+    coef, label = process_tuple(t; opnames=("C",))
+    if !(label in labels(C))
+        error("Label $label is invalid in annihilation operator sum")
+    end
+    C = copy(C)
+    C.orbital[label] += coef
+    return C
+end
 
 """
     apply(Cdag::CreationOperator, ψ::GaussianState) -> GaussianState
