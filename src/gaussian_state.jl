@@ -50,6 +50,13 @@ and is not computed from the orbital or occupancy data of the Gaussian state.
 """
 trace(ϕ::GaussianState) = ϕ.trace
 
+"""
+    norm(ϕ::GaussianState)
+
+For a pure Gaussian state |ψ⟩ returns the norm √⟨ψ|ψ⟩.
+"""
+la.norm(ϕ::GaussianState) = sqrt(trace(ϕ))
+
 Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
 
 Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), occupancy(ϕ), trace(ϕ))

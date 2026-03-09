@@ -4,6 +4,8 @@ using ITensorMPS
 import GaussianFermions as gf
 using GaussianFermions: Up, Dn
 
+include("linear_combination_mpo.jl")
+
 @testset "MPS vs GaussianFermions: spinless fermion chain" begin
     outputlevel = 0
     N = 20
@@ -19,7 +21,7 @@ using GaussianFermions: Up, Dn
     end
     E0_gf, ϕ0 = gf.ground_state(H_gf; Nf)
 
-    S_gf = [gf.entanglement(ϕ0; sites = 1:b) for b in 1:(N - 1)]
+    S_gf = [gf.entanglement(ϕ0; labels = 1:b) for b in 1:(N - 1)]
 
     #
     # ITensorMPS / DMRG: ground state energy and entanglement
@@ -37,7 +39,7 @@ using GaussianFermions: Up, Dn
     psi0 = MPS(sites, state)
 
     nsweeps = 10
-    maxdim = [10, 20, 40, 80, 100]
+    maxdim = [10, 20, 40, 80, 100, 200]
     cutoff = 1.0e-12
 
     (outputlevel > 1) && println("Running DMRG for fermion chain")
@@ -83,22 +85,44 @@ using GaussianFermions: Up, Dn
     end
 
     @testset "Bond entanglement entropies" begin
-        for b in 1:(N - 1)
-            @test S_gf[b] ≈ S_mps[b] atol = 1.0e-6
-        end
+        @test norm(S_gf - S_mps) < 1E-6
     end
 
     @testset "Site densities" begin
-        for j in 1:N
-            @test n_gf[j] ≈ n_mps[j] atol = 1.0e-8
-        end
+        @test norm(n_gf - n_mps) < 1E-6
     end
 
     @testset "Correlation matrix" begin
-        for i in 1:N, j in 1:N
-            @test C_gf[i, j] ≈ C_mps[i, j] atol = 1.0e-6
-        end
+        @test norm(C_gf - C_mps) < 1E-5
     end
+
+    #
+    # Test action of ∑ⱼ wⱼ Cⱼ operator
+    #
+    w = randn(N)
+
+    Cw_mpo = linear_combination_mpo(sites,w,"C")
+    Cwpsi = apply(Cw_mpo, psi)
+
+    Cw = gf.AnnihilationOperator(gf.labels(ϕ0),w)
+    Cwϕ0 = gf.apply(Cw,ϕ0)
+
+    @test gf.trace(Cwϕ0) ≈ inner(Cwpsi,Cwpsi) atol=1E-5
+    @test gf.density(Cwϕ0) ≈ expect(Cwpsi,"N") atol=1E-5
+
+    #
+    # Test action of ∑ⱼ vⱼ C†ⱼ operator
+    #
+    v = randn(N)
+
+    Cdagv_mpo = linear_combination_mpo(sites,v,"Cdag")
+    Cdagv_psi = apply(Cdagv_mpo, psi)
+
+    Cdagv = gf.CreationOperator(gf.labels(ϕ0),v)
+    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
+
+    @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi,Cdagv_psi) atol=1E-5
+    @test gf.density(Cdagv_ϕ0) ≈ expect(Cdagv_psi,"N") atol=1E-5
 end
 
 @testset "MPS vs GaussianFermions: electron chain" begin
@@ -114,8 +138,8 @@ end
     #
     ups = [Up(j) for j in 1:N]
     dns = [Dn(j) for j in 1:N]
-    verts = vcat(ups, dns)
-    H_gf = gf.GaussianOperator(verts)
+    labels = vcat(ups, dns)
+    H_gf = gf.GaussianOperator(labels)
     for j in 1:(N - 1)
         H_gf = gf.add_hop(H_gf, Up(j), Up(j + 1), -t)
         H_gf = gf.add_hop(H_gf, Dn(j), Dn(j + 1), -t)
@@ -124,7 +148,7 @@ end
 
     # Entanglement at bond b: include both spins for sites 1:b
     # Vertex ordering is [up1,...,upN, dn1,...,dnN]
-    S_gf = [gf.entanglement(ϕ0; sites = [1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
+    S_gf = [gf.entanglement(ϕ0; labels = [1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
 
     # Densities per spin
     nup_gf = gf.up_density(ϕ0)
@@ -210,6 +234,42 @@ end
             @test Cdn_gf[i, j] ≈ Cdn_mps[i, j] atol = 1.0e-6
         end
     end
+
+    #
+    # Test action of ∑ⱼ wⱼ C↑ⱼ operator
+    #
+    w = randn(N)
+
+    Cw_mpo = linear_combination_mpo(sites,w,"Cup")
+    Cwpsi = apply(Cw_mpo, psi)
+
+    w_labeled = gf.named_vector(labels; dimname="Labels")
+    for j=1:N
+        w_labeled[Up(j)] = w[j]
+    end
+    Cw = gf.AnnihilationOperator(w_labeled)
+    Cwϕ0 = gf.apply(Cw,ϕ0)
+
+    @test gf.trace(Cwϕ0) ≈ inner(Cwpsi,Cwpsi) atol=1E-5
+    @test gf.total_density(Cwϕ0) ≈ expect(Cwpsi,"Ntot") atol=1E-5
+
+    #
+    # Test action of ∑ⱼ vⱼ C†ⱼ operator
+    #
+    v = randn(N)
+
+    Cdagv_mpo = linear_combination_mpo(sites,v,"Cdagup")
+    Cdagv_psi = apply(Cdagv_mpo, psi)
+
+    v_labeled = gf.named_vector(labels; dimname="Labels")
+    for j=1:N
+        v_labeled[Up(j)] = v[j]
+    end
+    Cdagv = gf.CreationOperator(v_labeled)
+    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
+
+    @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi,Cdagv_psi) atol=1E-5
+    @test gf.total_density(Cdagv_ϕ0) ≈ expect(Cdagv_psi,"Ntot") atol=1E-5
 end
 
 @testset "MPS vs GaussianFermions: 2D spinless fermion ladder" begin

@@ -1,5 +1,7 @@
 module GaussianFermions
 
+include("utilities/namedarrays_extensions.jl")
+
 include("spin_types.jl")
 include("abstract_gaussian_state.jl")
 include("gaussian_state.jl")
