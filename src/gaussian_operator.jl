@@ -258,7 +258,8 @@ greater_greens_function(H, t::Number; kws...) = greater_greens_function(H, [t]; 
     time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
 
 Evolve the Gaussian state `ψ` forward by time `t` under Hamiltonian `H`
-(Schrödinger picture). Returns a new [`GaussianState`](@ref).
+(Schrödinger picture). The time `t` can be of arbitrary size and can be 
+real or complex. Returns a new [`GaussianState`](@ref).
 
 # Example
 ```julia
@@ -282,7 +283,8 @@ end
     time_evolve(H::GaussianOperator, t::Number, O::GaussianOperator)
 
 Evolve the operator `O` forward by time `t` under Hamiltonian `H`
-(Heisenberg picture). Returns a new [`GaussianOperator`](@ref).
+(Heisenberg picture). The time `t` can be of arbitrary size and can be
+real or complex. Returns a new [`GaussianOperator`](@ref).
 
 # Example
 ```julia
