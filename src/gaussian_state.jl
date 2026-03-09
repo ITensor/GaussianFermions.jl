@@ -18,8 +18,12 @@ C_ij = ∑ₙ ϕ_in f_n ϕ̄_jn
 struct GaussianState <: AbstractGaussianState
     orbitals::NamedArray
     occupancy::Vector
-    nparticles::Integer
+    trace::Float64
+    function GaussianState(orbitals::NamedArray, occupancy::Vector, trace::Float64=1.0)
+        return new(orbitals, occupancy, trace)
+    end
 end
+
 
 """
     orbitals(ϕ::GaussianState)
@@ -38,15 +42,31 @@ orbital `n`: `fₙ = 0` or `1` for a pure state, or `fₙ ∈ [0,1]` for a mixed
 occupancy(ϕ::GaussianState) = ϕ.occupancy
 
 """
-    nparticles(ϕ::GaussianState)
+    trace(ϕ::GaussianState)
 
-Return the number of particles in the state `ϕ`.
+Return the trace of the density matrix of the Gaussian state. For a pure
+Gaussian state |ψ⟩ this is ⟨ψ|ψ⟩. Note that this is a separately stored number
+and is not computed from the orbital or occupancy data of the Gaussian state.
 """
-nparticles(ϕ::GaussianState) = ϕ.nparticles
+trace(ϕ::GaussianState) = ϕ.trace
+
+"""
+    norm(ϕ::GaussianState)
+
+For a pure Gaussian state |ψ⟩ returns the norm √⟨ψ|ψ⟩.
+"""
+la.norm(ϕ::GaussianState) = sqrt(trace(ϕ))
 
 Base.length(ϕ::GaussianState) = size(orbitals(ϕ), 1)
 
-Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), occupancy(ϕ), nparticles(ϕ))
+Base.copy(ϕ::GaussianState) = GaussianState(orbitals(ϕ), occupancy(ϕ), trace(ϕ))
+
+"""
+    normalize(ϕ::GaussianState)
+
+Return a Gaussian state equivalent to ϕ but with unit norm i.e. a trace of 1.
+"""
+normalize(ϕ::GaussianState) = GaussianState(orbitals(ϕ), occupancy(ϕ), 1.0)
 
 """
     labels(ϕ::GaussianState)
@@ -56,11 +76,13 @@ Return the orbital or mode labels of the state `ϕ`.
 labels(ϕ::GaussianState) = names(orbitals(ϕ), 1)
 
 """
-    ispure(ϕ::GaussianState)
+    ispure(ϕ::GaussianState; tol = 1E-12)
 
 Return `true` if `ϕ` is a pure Gaussian state, i.e. all occupancy values are 0 or 1.
+The optional `tol` keyword sets the precision at which an occupancy value is 
+considered to be 0 or 1.
 """
-ispure(ϕ::GaussianState) = all(f -> (f == 1.0 || f == 0.0), occupancy(ϕ))
+ispure(ϕ::GaussianState; tol = 1E-12) = all(f -> (abs(f-1) < tol || abs(f) < tol), occupancy(ϕ))
 
 """
     has_spin(ϕ::GaussianState)

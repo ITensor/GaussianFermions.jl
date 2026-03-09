@@ -47,10 +47,9 @@ function ground_state(G::GaussianOperator; Nf = nothing)
     N = length(G)
     ϵ, ϕ = energies_states(G)
     occupancies = ground_state_occupancies(ϵ; Nf)
-    Nf = count(==(1), occupancies)
     E = 0.0
     for n in 1:length(occupancies)
         E += ϵ[n] * occupancies[n]
     end
-    return E, GaussianState(ϕ, occupancies, Nf)
+    return E, GaussianState(ϕ, occupancies)
 end
