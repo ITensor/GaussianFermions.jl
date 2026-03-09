@@ -100,12 +100,15 @@ include("linear_combination_mpo.jl")
     # Test action of ∑ⱼ wⱼ Cⱼ operator
     #
     w = randn(N)
+    Cw = gf.AnnihilationOperator(gf.labels(ϕ0))
+    for j=1:N
+        Cw += w[j],"C",j
+    end
+    Cwϕ0 = gf.apply(Cw,ϕ0)
 
+    # Using MPO MPS
     Cw_mpo = linear_combination_mpo(sites,w,"C")
     Cwpsi = apply(Cw_mpo, psi)
-
-    Cw = gf.AnnihilationOperator(gf.labels(ϕ0),w)
-    Cwϕ0 = gf.apply(Cw,ϕ0)
 
     @test gf.trace(Cwϕ0) ≈ inner(Cwpsi,Cwpsi) atol=1E-5
     @test gf.density(Cwϕ0) ≈ expect(Cwpsi,"N") atol=1E-5
@@ -114,12 +117,15 @@ include("linear_combination_mpo.jl")
     # Test action of ∑ⱼ vⱼ C†ⱼ operator
     #
     v = randn(N)
+    Cdagv = gf.CreationOperator(gf.labels(ϕ0))
+    for j=1:N
+        Cdagv += v[j],"C†",j
+    end
+    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
 
+    # Using MPO MPS
     Cdagv_mpo = linear_combination_mpo(sites,v,"Cdag")
     Cdagv_psi = apply(Cdagv_mpo, psi)
-
-    Cdagv = gf.CreationOperator(gf.labels(ϕ0),v)
-    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
 
     @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi,Cdagv_psi) atol=1E-5
     @test gf.density(Cdagv_ϕ0) ≈ expect(Cdagv_psi,"N") atol=1E-5
@@ -240,15 +246,15 @@ end
     #
     w = randn(N)
 
+    Cw = gf.AnnihilationOperator(gf.labels(ϕ0))
+    for j=1:N
+        Cw += w[j],"C",Up(j)
+    end
+    Cwϕ0 = gf.apply(Cw,ϕ0)
+
+    # Using MPO MPS
     Cw_mpo = linear_combination_mpo(sites,w,"Cup")
     Cwpsi = apply(Cw_mpo, psi)
-
-    w_labeled = gf.named_vector(labels; dimname="Labels")
-    for j=1:N
-        w_labeled[Up(j)] = w[j]
-    end
-    Cw = gf.AnnihilationOperator(w_labeled)
-    Cwϕ0 = gf.apply(Cw,ϕ0)
 
     @test gf.trace(Cwϕ0) ≈ inner(Cwpsi,Cwpsi) atol=1E-5
     @test gf.total_density(Cwϕ0) ≈ expect(Cwpsi,"Ntot") atol=1E-5
@@ -258,15 +264,15 @@ end
     #
     v = randn(N)
 
+    Cdagv = gf.CreationOperator(gf.labels(ϕ0))
+    for j=1:(N+1)
+        Cdagv += v[j],"C†",Up(j)
+    end
+    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
+
+    # Using MPO MPS
     Cdagv_mpo = linear_combination_mpo(sites,v,"Cdagup")
     Cdagv_psi = apply(Cdagv_mpo, psi)
-
-    v_labeled = gf.named_vector(labels; dimname="Labels")
-    for j=1:N
-        v_labeled[Up(j)] = v[j]
-    end
-    Cdagv = gf.CreationOperator(v_labeled)
-    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
 
     @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi,Cdagv_psi) atol=1E-5
     @test gf.total_density(Cdagv_ϕ0) ≈ expect(Cdagv_psi,"Ntot") atol=1E-5
