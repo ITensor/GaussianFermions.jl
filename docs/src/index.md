@@ -25,6 +25,7 @@ Pages = [
     "theory.md",
     "operators.md",
     "states.md",
+    "creation_annihilation.md",
     "measurements.md",
     "dynamics.md",
     "spinful.md",
