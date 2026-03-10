@@ -265,7 +265,7 @@ end
     v = randn(N)
 
     Cdagv = gf.CreationOperator(gf.labels(ϕ0))
-    for j=1:(N+1)
+    for j=1:N
         Cdagv += v[j],"C†",Up(j)
     end
     Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
