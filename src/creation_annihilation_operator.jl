@@ -162,7 +162,6 @@ function apply(Cdag::CreationOperator, ψ::GaussianState)
     if trace < 1E-12
         error(@sprintf("Nearly zero state in creation apply, trace = %.4E\n",trace))
     end
-    # TODO: I think "Using left names" warning is coming from v0*v0' operation...
     Cv = C + v0*v0'
     f, ϕ = la.eigen(Cv)
     ϕ_labeled = NamedArray(ϕ,(labels(ψ), 1:length(f)),("Labels","N. Orbitals"))
@@ -207,16 +206,16 @@ C = gf.AnnihilationOperator(1:4, w)
 ```
 """
 function apply(C::AnnihilationOperator, ψ::GaussianState)
-    w = C.orbital
-    C = correlation_matrix(ψ)
-    w1 = C*w
+    w = Vector(C.orbital)
+    Cm = Matrix(correlation_matrix(ψ))
+    w1 = Cm * w
     nrm1 = norm(w1)
     trace = nrm1^2
     if trace < 1E-12
         error(@sprintf("Nearly zero state in annihilation apply, trace = %.4E\n",trace))
     end
     w1 /= nrm1
-    Cw = C - w1*w1'
+    Cw = Cm - w1*w1'
     f, ϕ = la.eigen(Cw)
     ϕ_labeled = NamedArray(ϕ,(labels(ψ), 1:length(f)),("Labels","N. Orbitals"))
     return GaussianState(ϕ_labeled, f, trace)
