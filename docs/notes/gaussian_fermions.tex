@@ -279,6 +279,17 @@ where $C_\phi$ is the correlation matrix of $\ket{\phi}$ and $w_1 = C_\phi w$ is
 
 Note that the states $\ket{\tilde{\psi}}$ or $\ket{\tilde{\eta}}$ are not normalized. This results in the trace of their correlation matrices $C_{\tilde{\psi}}$ or $C_{\tilde{\eta}}$ no longer having a trace equal to the correct particle number. (For $\ket{\tilde{\psi}}$ the correct particle number should be $N_\phi + 1$ and for $\ket{\tilde{\eta}}$ the correct particle number should be $N_\phi-1$.) If desired, the correct normalization can be restored by multiplying by the appropriate factor.
 
+
+\subsection{Inner Product of Gaussian States}
+
+Consider two Gaussian pure states $\ket{\mathbf{m}}_d$ and $\ket{\mathbf{n}}_f$ given by:
+\begin{align}
+\ket{\mathbf{m}}_d & = \ket{m_1 m_2 \ldots m_{N}}_d = \hat{d}^\dagger_{m_1} \hat{d}^\dagger_{m_2} \cdots \hat{d}^\dagger_{m_{N}} \ket{0} \\
+\ket{\mathbf{n}}_f & = \ket{n_1 n_2 \ldots n_{N}}_f = \hat{f}^\dagger_{n_1} \hat{f}^\dagger_{n_2} \cdots \hat{f}^\dagger_{n_{N}} \ket{0} \\
+\end{align}
+where the number of particles $N$ is taken to be the same. (Otherwise the inner product of these states is zero.)
+
+
 \section{Dynamics of Gaussian States}
 
 An appealing aspect of Gaussian states is that their dynamical or time-dependent properties can be completely understood through simple and efficiently- computable matrix expressions. In this section we will consider dynamics governed by a quadratic Hamiltonian of the form 
