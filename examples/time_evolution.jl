@@ -13,19 +13,21 @@ let
 
     H = gf.GaussianOperator(N)
     for j in 2:(N - 1)
-        H = gf.add_hop(H, j, j + 1, -1)
+        H += -1, "C†", j, "C", j+1
+        H += -1, "C†", j+1, "C", j
     end
 
     B = gf.GaussianOperator(N)
-    B = gf.add_hop(B, 1, 2, -1)
+    B += -1, "C†", 1, "C", 2
+    B += -1, "C†", 2, "C", 1
 
     E0, ψ0 = gf.ground_state(H; Nf)
     @show E0
     @show gf.expect(H, ψ0)
-    @show gf.entanglement(ψ0; sites = 1:(N ÷ 2))
+    @show gf.entanglement(ψ0; labels = 1:(N ÷ 2))
 
     A = gf.GaussianOperator(N)
-    A = gf.add_cdag_c(A, 1, 2)
+    A += "C†", 1, "C", 2
 
     t0 = 2.0
     σ = 0.2
