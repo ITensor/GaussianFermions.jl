@@ -23,12 +23,38 @@ include("utilities/write_data.jl")
     time_range = 0:dt:T
     ϕt = copy(ϕ0)
     for (n, t) in enumerate(time_range)
-        #if mod(t, 10.0) ≈ 0.0
-        #    @printf("  t=%.3f\n", t)
-        #end
-        ϕt = gf.time_evolve(H, dt, ϕt)
-        dens = only(real(gf.density(ϕt, sites = (N ÷ 2):(N ÷ 2))))
+        dens = only(real(gf.density(ϕt; labels = (N ÷ 2):(N ÷ 2))))
         push!(densities, dens)
+
+        ϕt = gf.time_evolve(H, dt, ϕt)
     end
     write_data("output/center_density.dat", time_range, densities)
+end
+
+@testset "Greens Function Consistency" begin
+    N = 10
+    H = fermion_chain_h(N)
+    Nf = N ÷ 2
+    E0, ϕg = gf.ground_state(H; Nf)
+
+    # Act with C†₁ |ϕ0⟩
+    Cdag = gf.CreationOperator(1:N)
+    Cdag += "C†",1
+    ϕ0 = gf.apply(Cdag, ϕg)
+
+    # Compute G>(t) with local quench approach
+    dt = 0.05
+    T = 100.0
+    time_range = 0:dt:T
+    GG_quench = zeros(ComplexF64,length(time_range))
+    ϕt = copy(ϕ0)
+    for (n,t) in enumerate(time_range)
+        GG_quench[n] = -im*gf.inner(ϕ0,ϕt)*exp(im*E0*t)
+        ϕt = gf.time_evolve(H,dt,ϕt)
+    end
+
+    # Compute G>(t) from formula
+    GG = gf.greater_greens_function(H, time_range; labels=[1])
+
+    @test GG_quench ≈ GG[:,1,1] atol=1E-7
 end
