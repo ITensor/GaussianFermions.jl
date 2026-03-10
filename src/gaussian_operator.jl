@@ -195,8 +195,8 @@ end
 Compute the Greens function ``g(t) = -i e^{-i h t}`` from a GaussianOperator with
 hopping matrix h. For positive time values this is identical to the 
 retarded Greens function ``G^R(t)``.
-Output is a Nt x Nv x Nv complex-valued tensor where the first index
-the time points, and the second two indices run over mode labels.
+Output is a Nt x Nv x Nv complex-valued tensor Gᴿ[t,l1,l2] where the first index 
+runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes ``g(t)`` only on these
 labels.
 """
@@ -213,10 +213,10 @@ end
 """
     lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
 
-Compute the lesser Green's function G^<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
+Compute the lesser Green's function G<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
-Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
-the time points, and the second two indices run over mode labels.
+Output is a Nt x Nv x Nv complex-valued tensor G<[t,l1,l2] where the first index 
+runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes G^<(t) only on these labels.
 """
 function lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
@@ -233,10 +233,10 @@ end
 """
     greater_greens_function(H::GaussianOperator, times; labels = labels(H))
 
-Compute the greater Green's function G^>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
+Compute the greater Green's function G>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
-Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
-the time points, and the second two indices run over mode labels.
+Output is a Nt x Nv x Nv complex-valued tensor G>[t,l1,l2] where the first index 
+runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes G^>(t) only on these labels.
 """
 function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
