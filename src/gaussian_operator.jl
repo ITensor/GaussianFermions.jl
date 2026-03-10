@@ -195,8 +195,8 @@ end
 Compute the Greens function ``g(t) = -i e^{-i h t}`` from a GaussianOperator with
 hopping matrix h. For positive time values this is identical to the 
 retarded Greens function ``G^R(t)``.
-Output is a Nt x Nv x Nv complex-valued tensor where the first index
-the time points, and the second two indices run over mode labels.
+Output is a Nt x Nv x Nv complex-valued tensor Gᴿ[t,l1,l2] where the first index 
+runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes ``g(t)`` only on these
 labels.
 """
@@ -213,10 +213,10 @@ end
 """
     lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
 
-Compute the lesser Green's function G^<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
+Compute the lesser Green's function G<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
-Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
-the time points, and the second two indices run over mode labels.
+Output is a Nt x Nv x Nv complex-valued tensor G<[t,l1,l2] where the first index 
+runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes G^<(t) only on these labels.
 """
 function lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
@@ -233,10 +233,10 @@ end
 """
     greater_greens_function(H::GaussianOperator, times; labels = labels(H))
 
-Compute the greater Green's function G^>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
+Compute the greater Green's function G>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
-Output is a Nt x Nv x Nv complex-valued tensor where the first index indexes
-the time points, and the second two indices run over mode labels.
+Output is a Nt x Nv x Nv complex-valued tensor G>[t,l1,l2] where the first index 
+runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes G^>(t) only on these labels.
 """
 function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
@@ -250,16 +250,46 @@ function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
     return NamedArray(GG,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
 end
 
-greens_function(H, t::Number; kws...) = greens_function(H, [t]; kws...)
-lesser_greens_function(H, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
-greater_greens_function(H, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
+greens_function(H::GaussianOperator, t::Number; kws...) = greens_function(H, [t]; kws...)
+lesser_greens_function(H::GaussianOperator, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
+greater_greens_function(H::GaussianOperator, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
+
+
+"""
+    time_evolve(H::GaussianOperator, times, ψ::GaussianState)
+
+Evolve the Gaussian state `ψ` under Hamiltonian `H` to each time point in `times`
+(Schrödinger picture), returning a `Vector{GaussianState}`. The Hamiltonian is
+diagonalized once and the propagator ``e^{-iHt}`` is evaluated at all time points
+efficiently.
+
+# Example
+```julia
+import GaussianFermions as gf
+
+H = gf.GaussianOperator(4)
+for j in 1:3
+    H = gf.add_hop(H, j, j + 1, -1.0)
+end
+_, ψ = gf.ground_state(H; Nf=2)
+times = 0.0:0.1:10.0
+ψs = gf.time_evolve(H, times, ψ)
+```
+"""
+function time_evolve(H::GaussianOperator, times, ψ::GaussianState)
+    prop = im * greens_function(H, times)
+    ψt = [GaussianState(prop[j,:,:] * orbitals(ψ), occupancy(ψ), trace(ψ)) for j=1:length(times)]
+    return ψt
+end
 
 """
     time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
 
-Evolve the Gaussian state `ψ` forward by time `t` under Hamiltonian `H`
-(Schrödinger picture). The time `t` can be of arbitrary size and can be 
+Evolve the Gaussian state `ψ` forward by a time step `t` under Hamiltonian `H`
+(Schrödinger picture). The time step `t` can be of arbitrary size and can be
 real or complex. Returns a new [`GaussianState`](@ref).
+
+See also [`time_evolve(H, times, ψ)`](@ref) for evolving to multiple time points at once.
 
 # Example
 ```julia
@@ -274,9 +304,7 @@ _, ψ = gf.ground_state(H; Nf=2)
 ```
 """
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
-    expHt = im * greens_function(H, t)
-    orbs_t = expHt * orbitals(ψ)
-    return GaussianState(orbs_t, occupancy(ψ))
+    return only(time_evolve(H,[t],ψ))
 end
 
 """

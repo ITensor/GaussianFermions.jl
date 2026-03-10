@@ -1,3 +1,5 @@
+import LinearAlgebra as la
+
 """
     correlation_matrix(ϕ::GaussianState; labels=labels(ϕ))
 
@@ -62,6 +64,16 @@ function nparticles(ϕ::GaussianState; tol=1E-3)
         error("State does not have an integer number of particles")
     end
     return npart
+end
+
+function inner(ϕ::GaussianState, ψ::GaussianState; tol=1E-6)
+    if !(ispure(ϕ) && ispure(ψ))
+        error("`inner` currently implemented for pure states only")
+    end
+    M = orbitals(ϕ)'*orbitals(ψ)
+    ϕset = findall(ν->isapprox(1.,ν; atol=tol),occupancy(ϕ))
+    ψset = findall(ν->isapprox(1.,ν; atol=tol),occupancy(ψ))
+    return la.det(M[ϕset,ψset])*norm(ϕ)*norm(ψ)
 end
 
 """

@@ -12,5 +12,6 @@ GaussianFermions.greater_greens_function(::GaussianFermions.GaussianOperator, ti
 
 ```@docs
 GaussianFermions.time_evolve(::GaussianFermions.GaussianOperator, ::Number, ::GaussianFermions.GaussianState)
+GaussianFermions.time_evolve(::GaussianFermions.GaussianOperator, ::AbstractVector, ::GaussianFermions.GaussianState)
 GaussianFermions.time_evolve(::GaussianFermions.GaussianOperator, ::Number, ::GaussianFermions.GaussianOperator)
 ```
