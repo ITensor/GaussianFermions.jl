@@ -254,12 +254,42 @@ greens_function(H::GaussianOperator, t::Number; kws...) = greens_function(H, [t]
 lesser_greens_function(H::GaussianOperator, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
 greater_greens_function(H::GaussianOperator, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
 
+
+"""
+    time_evolve(H::GaussianOperator, times, ψ::GaussianState)
+
+Evolve the Gaussian state `ψ` under Hamiltonian `H` to each time point in `times`
+(Schrödinger picture), returning a `Vector{GaussianState}`. The Hamiltonian is
+diagonalized once and the propagator ``e^{-iHt}`` is evaluated at all time points
+efficiently.
+
+# Example
+```julia
+import GaussianFermions as gf
+
+H = gf.GaussianOperator(4)
+for j in 1:3
+    H = gf.add_hop(H, j, j + 1, -1.0)
+end
+_, ψ = gf.ground_state(H; Nf=2)
+times = 0.0:0.1:10.0
+ψs = gf.time_evolve(H, times, ψ)
+```
+"""
+function time_evolve(H::GaussianOperator, times, ψ::GaussianState)
+    prop = im * greens_function(H, times)
+    ψt = [GaussianState(prop[j,:,:] * orbitals(ψ), occupancy(ψ), trace(ψ)) for j=1:length(times)]
+    return ψt
+end
+
 """
     time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
 
-Evolve the Gaussian state `ψ` forward by time `t` under Hamiltonian `H`
-(Schrödinger picture). The time `t` can be of arbitrary size and can be 
+Evolve the Gaussian state `ψ` forward by a time step `t` under Hamiltonian `H`
+(Schrödinger picture). The time step `t` can be of arbitrary size and can be
 real or complex. Returns a new [`GaussianState`](@ref).
+
+See also [`time_evolve(H, times, ψ)`](@ref) for evolving to multiple time points at once.
 
 # Example
 ```julia
@@ -274,10 +304,7 @@ _, ψ = gf.ground_state(H; Nf=2)
 ```
 """
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
-    expHt = im * greens_function(H, [t])
-    G = expHt[1,:,:]
-    orbs_t = G * orbitals(ψ)
-    return GaussianState(orbs_t, occupancy(ψ), trace(ψ))
+    return only(time_evolve(H,[t],ψ))
 end
 
 """

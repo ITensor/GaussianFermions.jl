@@ -46,15 +46,47 @@ end
     dt = 0.05
     T = 100.0
     time_range = 0:dt:T
-    GG_quench = zeros(ComplexF64,length(time_range))
+
+    # Compute G>(t) with local quench approach
+    ϕt = gf.time_evolve(H, time_range, ϕ0)
+    GG_quench = [-im*gf.inner(ϕ0,ϕt[n])*exp(im*E0*t) for (n,t) in enumerate(time_range)]
+
+    # More explicit version looping over time steps
+    GG_quench_loop = zeros(ComplexF64,length(time_range))
     ϕt = copy(ϕ0)
     for (n,t) in enumerate(time_range)
-        GG_quench[n] = -im*gf.inner(ϕ0,ϕt)*exp(im*E0*t)
+        GG_quench_loop[n] = -im*gf.inner(ϕ0,ϕt)*exp(im*E0*t)
         ϕt = gf.time_evolve(H,dt,ϕt)
     end
 
     # Compute G>(t) from formula
     GG = gf.greater_greens_function(H, time_range; labels=[1])
 
-    @test GG_quench ≈ GG[:,1,1] atol=1E-7
+    @test GG_quench_loop ≈ GG_quench atol=1E-10
+    @test GG_quench ≈ GG[:,1,1] atol=1E-10
+end
+
+@testset "Time Range time_evolve Function" begin
+    N = 10
+    H = fermion_chain_h(N)
+    Nf = N ÷ 2
+    E0, ϕ0 = gf.ground_state(H; Nf)
+
+    dt = 0.05
+    T = 5.0
+    time_range = 0:dt:T
+
+    # Evolve step-by-step from ϕ0
+    densities_loop = Float64[]
+    ϕt = copy(ϕ0)
+    for t in time_range
+        push!(densities_loop, only(real(gf.density(ϕt; labels = 1:1))))
+        ϕt = gf.time_evolve(H, dt, ϕt)
+    end
+
+    # Evolve to all time points at once from ϕ0
+    ϕs = gf.time_evolve(H, time_range, ϕ0)
+    densities_range = [only(real(gf.density(ϕs[j]; labels = 1:1))) for j in 1:length(time_range)]
+
+    @test densities_range ≈ densities_loop atol=1E-10
 end
