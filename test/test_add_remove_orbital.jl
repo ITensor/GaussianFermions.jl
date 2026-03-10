@@ -84,8 +84,7 @@ end
 #
 # Proof: expanding gives ∑_{jk} ū_j v_k ⟨ψ₀|c†_j c_k|ψ₀⟩ = u†C₀v.
 #
-# We verify this using the polarization identity (to avoid sign ambiguity in
-# gf.inner when eigenvectors from two independent la.eigen calls are compared):
+# Verify this using the polarization identity:
 #   ⟨ψu|ψv⟩ = (‖ψu+ψv‖² - ‖ψu‖² - ‖ψv‖²) / 2
 # Since A_{u+v}|ψ0⟩ = A_u|ψ0⟩ + A_v|ψ0⟩, we have ‖A_{u+v}|ψ0⟩‖² = gf.trace(ψuv).
 # ──────────────────────────────────────────────────────────────────────────────
@@ -97,7 +96,9 @@ end
     # Use complementary construction methods to also exercise both interfaces
     Cu   = gf.AnnihilationOperator(1:N, u)     # direct vector
     Cv   = gf.AnnihilationOperator(1:N)         # summation interface
-    for j in 1:N; Cv += v[j], "C", j; end
+    for j in 1:N 
+        Cv += v[j], "C", j 
+    end
     Cupv = gf.AnnihilationOperator(1:N, u + v)  # direct, for polarization
 
     ψu  = gf.apply(Cu,   ψ0)
@@ -126,7 +127,9 @@ end
     v = randn(N)
 
     Cdagu   = gf.CreationOperator(1:N)          # summation interface
-    for j in 1:N; Cdagu += u[j], "C†", j; end
+    for j in 1:N 
+        Cdagu += u[j], "C†", j 
+    end
     Cdagv   = gf.CreationOperator(1:N, v)       # direct vector
     Cdagupv = gf.CreationOperator(1:N, u + v)   # direct, for polarization
 

@@ -154,18 +154,45 @@ Cd = gf.CreationOperator(1:4, v)
 """
 function apply(Cdag::CreationOperator, ψ::GaussianState)
     v = Vector(Cdag.orbital)
-    C = Matrix(correlation_matrix(ψ))
-    v0 = v - C*v
+    Cm = Matrix(correlation_matrix(ψ))
+    v0 = v - Cm * v
     nrm0 = norm(v0)
     trace = nrm0^2
-    v0 /= nrm0
     if trace < 1E-12
-        error(@sprintf("Nearly zero state in creation apply, trace = %.4E\n",trace))
+        error(@sprintf("Nearly zero state in creation apply, trace = %.4E\n", trace))
     end
-    Cv = C + v0*v0'
-    f, ϕ = la.eigen(Cv)
-    ϕ_labeled = NamedArray(ϕ,(labels(ψ), 1:length(f)),("Labels","N. Orbitals"))
-    return GaussianState(ϕ_labeled, f, trace)
+    v0 /= nrm0
+
+    tol = 1E-6
+    f = occupancy(ψ)
+    occ   = findall(ν -> isapprox(1.0, ν; atol=tol), f)
+    unocc = findall(ν -> isapprox(0.0, ν; atol=tol), f)
+    Φ = Matrix(orbitals(ψ))
+    Φ_occ   = Φ[:, occ]
+    Φ_unocc = Φ[:, unocc]
+    N_unocc = length(unocc)
+
+    if N_unocc == 1
+        # v0 is the only unoccupied orbital; all modes become occupied
+        Φ_new = [Φ_occ  v0]
+        f_new = ones(length(f))
+    else
+        # Project v0 out of each unoccupied orbital and drop the most-aligned one
+        drop = argmax(abs.(Φ_unocc' * v0))
+        keep = deleteat!(collect(1:N_unocc), drop)
+        P = Φ_unocc[:, keep] .- v0 .* (v0' * Φ_unocc[:, keep])
+
+        # Thin QR of projected remaining unoccupied orbitals
+        Q_raw = Matrix(la.qr(P).Q)[:, 1:N_unocc-1]
+
+        # v0 is uniquely determined (no sign ambiguity); Q_raw is unoccupied
+        # so its sign does not affect inner products or observables
+        Φ_new = [Φ_occ  Q_raw  v0]
+        f_new = [ones(length(occ)); zeros(N_unocc - 1); 1.0]
+    end
+
+    ϕ_labeled = NamedArray(Φ_new, (labels(ψ), 1:length(f_new)), ("Labels", "N. Orbitals"))
+    return GaussianState(ϕ_labeled, f_new, trace)
 end
 
 """
@@ -212,11 +239,44 @@ function apply(C::AnnihilationOperator, ψ::GaussianState)
     nrm1 = norm(w1)
     trace = nrm1^2
     if trace < 1E-12
-        error(@sprintf("Nearly zero state in annihilation apply, trace = %.4E\n",trace))
+        error(@sprintf("Nearly zero state in annihilation apply, trace = %.4E\n", trace))
     end
     w1 /= nrm1
-    Cw = Cm - w1*w1'
-    f, ϕ = la.eigen(Cw)
-    ϕ_labeled = NamedArray(ϕ,(labels(ψ), 1:length(f)),("Labels","N. Orbitals"))
-    return GaussianState(ϕ_labeled, f, trace)
+
+    tol = 1E-6
+    f = occupancy(ψ)
+    occ   = findall(ν -> isapprox(1.0, ν; atol=tol), f)
+    unocc = findall(ν -> isapprox(0.0, ν; atol=tol), f)
+    Φ = Matrix(orbitals(ψ))
+    Φ_occ   = Φ[:, occ]
+    Φ_unocc = Φ[:, unocc]
+    Nf = length(occ)
+
+    if Nf == 1
+        # After annihilation: 0 occupied orbitals; w1 becomes unoccupied
+        Φ_new = [Φ_unocc  w1]
+        f_new = zeros(length(f))
+    else
+        # Project w1 out of each occupied orbital and drop the most-aligned one
+        drop = argmax(abs.(Φ_occ' * w1))
+        keep = deleteat!(collect(1:Nf), drop)
+        P = Φ_occ[:, keep] .- w1 .* (w1' * Φ_occ[:, keep])
+
+        # Thin QR of projected remaining occupied orbitals
+        Q_raw = Matrix(la.qr(P).Q)[:, 1:Nf-1]
+
+        # Sign fix: ensure det([α̂ | Φ_occ' Q_raw]) = +1
+        # This guarantees inner(c_w ψ, c_v ψ) = w† C_ψ v for all w, v
+        α_hat = Φ_occ' * w1
+        α_hat ./= norm(α_hat)
+        M = [α_hat  Φ_occ' * Q_raw]
+        s = sign(real(la.det(M)))
+        Q_raw[:, 1] .*= s
+
+        Φ_new = [Φ_unocc  w1  Q_raw]
+        f_new = [zeros(length(unocc) + 1); ones(Nf - 1)]
+    end
+
+    ϕ_labeled = NamedArray(Φ_new, (labels(ψ), 1:length(f_new)), ("Labels", "N. Orbitals"))
+    return GaussianState(ϕ_labeled, f_new, trace)
 end
