@@ -10,7 +10,8 @@ let
 
     H = gf.GaussianOperator(labels)
     for j in 1:(N - 1)
-        H = gf.add_hop(H, j, j + 1, -t)
+        H += -t, "C†", j, "C", j+1
+        H += -t, "C†", j+1, "C", j
     end
     #display(gf.matrix_elements(H))
 

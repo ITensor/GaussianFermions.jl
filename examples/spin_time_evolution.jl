@@ -20,24 +20,28 @@ let
 
     H = gf.GaussianOperator(verts)
     for j in 2:(N - 1)
-        H = gf.add_hop(H, gf.Up(j), gf.Up(j + 1), -1)
-        H = gf.add_hop(H, gf.Dn(j), gf.Dn(j + 1), -1)
+        H += -1, "C†", gf.Up(j), "C", gf.Up(j+1)
+        H += -1, "C†", gf.Up(j+1), "C", gf.Up(j)
+        H += -1, "C†", gf.Dn(j), "C", gf.Dn(j+1)
+        H += -1, "C†", gf.Dn(j+1), "C", gf.Dn(j)
     end
 
     B = gf.GaussianOperator(verts)
-    B = gf.add_hop(B, gf.Up(1), gf.Up(2), -1)
-    B = gf.add_hop(B, gf.Dn(1), gf.Dn(2), -1)
+    B += -1, "C†", gf.Up(1), "C", gf.Up(2)
+    B += -1, "C†", gf.Up(2), "C", gf.Up(1)
+    B += -1, "C†", gf.Dn(1), "C", gf.Dn(2)
+    B += -1, "C†", gf.Dn(2), "C", gf.Dn(1)
 
     E0, ψ0 = gf.ground_state(H; Nf = Nfup + Nfdn)
     @show E0
     @show gf.expect(H, ψ0)
 
     left_sites = vcat([gf.Up(j) for j in 1:(N ÷ 2)], [gf.Dn(j) for j in 1:(N ÷ 2)])
-    @show gf.entanglement(ψ0; sites = left_sites)
+    @show gf.entanglement(ψ0; labels = left_sites)
     @show gf.bond_dimension(ψ0, left_sites, bond_dim_cutoff)
 
     A = gf.GaussianOperator(verts)
-    A = gf.add_cdag_c(A, gf.Up(1), gf.Up(2))
+    A += "C†", gf.Up(1), "C", gf.Up(2)
 
     t0 = 4.0
     σ = 0.2
@@ -62,7 +66,7 @@ let
         Ht = H + field(t) * B
         ψt = gf.time_evolve(Ht, dt, ψt)
         Avals[n] = gf.expect(A, ψt)
-        entanglement_vals[n] = gf.entanglement(ψt; sites = left_sites)
+        entanglement_vals[n] = gf.entanglement(ψt; labels = left_sites)
         bond_dimension_vals[n] = gf.bond_dimension(ψt, left_sites, bond_dim_cutoff)
     end
 

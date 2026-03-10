@@ -11,7 +11,8 @@ let
 
     H = gf.GaussianOperator(N)
     for j in 1:(N - 1)
-        H = gf.add_hop(H, j, j + 1, -t)
+        H += -t, "C†", j, "C", j+1
+        H += -t, "C†", j+1, "C", j
     end
 
     display(gf.matrix_elements(H))
@@ -20,7 +21,7 @@ let
     @show E0
     @show gf.expect(H, ϕ0)
 
-    @show gf.entanglement(ϕ0; sites = 1:5)
+    @show gf.entanglement(ϕ0; labels = 1:5)
     @show gf.bond_dimension(ϕ0, 1:5, 1.0e-7)
 
     return nothing

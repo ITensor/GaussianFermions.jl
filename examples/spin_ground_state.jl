@@ -17,8 +17,10 @@ let
 
     H = gf.GaussianOperator(verts)
     for j in 1:(N - 1)
-        H = gf.add_hop(H, gf.Up(j), gf.Up(j + 1), -t)
-        H = gf.add_hop(H, gf.Dn(j), gf.Dn(j + 1), -t)
+        H += -t, "C†", gf.Up(j), "C", gf.Up(j+1)
+        H += -t, "C†", gf.Up(j+1), "C", gf.Up(j)
+        H += -t, "C†", gf.Dn(j), "C", gf.Dn(j+1)
+        H += -t, "C†", gf.Dn(j+1), "C", gf.Dn(j)
     end
 
     display(gf.matrix_elements(H))
@@ -28,11 +30,11 @@ let
     @show gf.expect(H, ϕ0)
 
     left_sites = vcat([gf.Up(j) for j in 1:5], [gf.Dn(j) for j in 1:5])
-    @show gf.entanglement(ϕ0; sites = left_sites)
+    @show gf.entanglement(ϕ0; labels = left_sites)
     @show gf.bond_dimension(ϕ0, left_sites, 7.0e-6)
 
     O = gf.GaussianOperator(verts)
-    O = gf.add_cdag_c(O, gf.Up(1), gf.Up(2))
+    O += "C†", gf.Up(1), "C", gf.Up(2)
     @show gf.expect(O, ϕ0)
 
     return nothing

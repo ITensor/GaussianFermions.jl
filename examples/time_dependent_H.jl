@@ -22,14 +22,18 @@ let
 
     H1 = gf.GaussianOperator(verts)
     for j in 1:(N - 1)
-        H1 = gf.add_hop(H1, gf.Up(j), gf.Up(j + 1), -t1)
-        H1 = gf.add_hop(H1, gf.Dn(j), gf.Dn(j + 1), -t1)
+        H1 += -t1, "C†", gf.Up(j), "C", gf.Up(j+1)
+        H1 += -t1, "C†", gf.Up(j+1), "C", gf.Up(j)
+        H1 += -t1, "C†", gf.Dn(j), "C", gf.Dn(j+1)
+        H1 += -t1, "C†", gf.Dn(j+1), "C", gf.Dn(j)
     end
 
     H2 = gf.GaussianOperator(verts)
     for j in 1:(N - 2)
-        H2 = gf.add_hop(H2, gf.Up(j), gf.Up(j + 2), -t2)
-        H2 = gf.add_hop(H2, gf.Dn(j), gf.Dn(j + 2), -t2)
+        H2 += -t2, "C†", gf.Up(j), "C", gf.Up(j+2)
+        H2 += -t2, "C†", gf.Up(j+2), "C", gf.Up(j)
+        H2 += -t2, "C†", gf.Dn(j), "C", gf.Dn(j+2)
+        H2 += -t2, "C†", gf.Dn(j+2), "C", gf.Dn(j)
     end
 
     E0, ϕ0 = gf.ground_state(H1; Nf = Nfup + Nfdn)

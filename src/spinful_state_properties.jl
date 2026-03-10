@@ -77,7 +77,7 @@ gf.up_density(ϕ)
 ```
 """
 function up_density(ϕ::GaussianState; kws...)
-    return la.diag(up_correlation_matrix(ϕ; kws...))
+    return Vector(la.diag(up_correlation_matrix(ϕ; kws...)))
 end
 
 """
@@ -101,7 +101,7 @@ gf.dn_density(ϕ)
 ```
 """
 function dn_density(ϕ::GaussianState; kws...)
-    return la.diag(dn_correlation_matrix(ϕ; kws...))
+    return Vector(la.diag(dn_correlation_matrix(ϕ; kws...)))
 end
 
 """

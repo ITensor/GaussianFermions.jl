@@ -94,6 +94,54 @@ function (A::GaussianOperator + B::GaussianOperator)
 end
 
 """
+    G::GaussianOperator + t::Tuple
+
+Add a single quadratic term to a `GaussianOperator` using operator-string notation.
+
+The tuple `t` must have the form `(coef,) "Op1", l1, "Op2", l2` where:
+- `coef` is an optional numeric coefficient (defaults to `1.0`)
+- `"Op1"` and `"Op2"` are operator strings, one of `"Cdag"`/`"C†"` (creation) and `"C"` (annihilation)
+- `l1`, `l2` are valid mode labels for the operator
+
+Creation and annihilation operators anticommute, so writing `"C",j,"Cdag",i`
+gives the **negative** of `"Cdag",i,"C",j` (up to a constant).
+
+# Examples
+```julia
+import GaussianFermions as gf
+
+N = 4
+h = [rand() for i in 1:N, j in 1:N]
+H = gf.GaussianOperator(N)
+for i in 1:N, j in 1:N
+    H += h[i,j], "Cdag", i, "C", j
+end
+
+# Using reversed order gives a minus sign:
+H2 = gf.GaussianOperator(N)
+for i in 1:N, j in 1:N
+    H2 += h[i,j], "C", j, "Cdag", i  # same as -h[i,j] * c†_i c_j
+end
+```
+"""
+function (G::GaussianOperator + t::Tuple)
+    coef, kind, label1, label2 = process_gaussian_tuple(t)
+    if !(label1 in labels(G))
+        error("Label $label1 is not a valid label for this GaussianOperator")
+    end
+    if !(label2 in labels(G))
+        error("Label $label2 is not a valid label for this GaussianOperator")
+    end
+    G = copy(G)
+    if kind == :cdag_c
+        G.matrix_elems[label1, label2] += coef
+    else  # :c_cdag — c_{label1} c†_{label2} = -(c†_{label2} c_{label1}) + const
+        G.matrix_elems[label2, label1] -= coef
+    end
+    return G
+end
+
+"""
     add_cdag_c(G::GaussianOperator, i, j, coef=1.0)
 
 Return a new operator equal to `G` plus `coef * c†_i c_j`.
