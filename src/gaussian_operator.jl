@@ -250,9 +250,9 @@ function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
     return NamedArray(GG,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
 end
 
-greens_function(H, t::Number; kws...) = greens_function(H, [t]; kws...)
-lesser_greens_function(H, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
-greater_greens_function(H, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
+greens_function(H::GaussianOperator, t::Number; kws...) = greens_function(H, [t]; kws...)
+lesser_greens_function(H::GaussianOperator, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
+greater_greens_function(H::GaussianOperator, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
 
 """
     time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
