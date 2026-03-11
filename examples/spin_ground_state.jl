@@ -4,6 +4,7 @@
 # and an off-diagonal correlation function in the up-spin sector.
 
 import GaussianFermions as gf
+using GaussianFermions: Up, Dn
 
 let
     N = 20
@@ -17,13 +18,11 @@ let
 
     H = gf.GaussianOperator(verts)
     for j in 1:(N - 1)
-        H += -t, "C†", gf.Up(j), "C", gf.Up(j+1)
-        H += -t, "C†", gf.Up(j+1), "C", gf.Up(j)
-        H += -t, "C†", gf.Dn(j), "C", gf.Dn(j+1)
-        H += -t, "C†", gf.Dn(j+1), "C", gf.Dn(j)
+        H += -t, "C†", Up(j),   "C", Up(j+1)
+        H += -t, "C†", Up(j+1), "C", Up(j)
+        H += -t, "C†", Dn(j),   "C", Dn(j+1)
+        H += -t, "C†", Dn(j+1), "C", Dn(j)
     end
-
-    display(gf.matrix_elements(H))
 
     E0, ϕ0 = gf.ground_state(H; Nf = Nfup + Nfdn)
     @show E0
@@ -37,5 +36,5 @@ let
     O += "C†", gf.Up(1), "C", gf.Up(2)
     @show gf.expect(O, ϕ0)
 
-    return nothing
+    return
 end

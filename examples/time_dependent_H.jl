@@ -4,6 +4,7 @@
 # and f(t) is a smooth ramp function.
 
 import GaussianFermions as gf
+using GaussianFermions: Up, Dn
 
 let
     N = 10
@@ -13,37 +14,37 @@ let
     t2 = 0.5
 
     dt = 0.05
-    Nstep = 100
-    f(t) = sin(π * t / (Nstep * dt))   # smooth ramp from 0 to 0 over total time
+    T = 10.0
+    time_range = 0.0:dt:10
+
+    f(t) = sin(π * t / T)   # smooth ramp from 0 to 0 over total time
 
     ups = [gf.Up(j) for j in 1:N]
     dns = [gf.Dn(j) for j in 1:N]
-    verts = vcat(ups, dns)
+    labels = vcat(ups, dns)
 
-    H1 = gf.GaussianOperator(verts)
+    H1 = gf.GaussianOperator(labels)
     for j in 1:(N - 1)
-        H1 += -t1, "C†", gf.Up(j), "C", gf.Up(j+1)
-        H1 += -t1, "C†", gf.Up(j+1), "C", gf.Up(j)
-        H1 += -t1, "C†", gf.Dn(j), "C", gf.Dn(j+1)
-        H1 += -t1, "C†", gf.Dn(j+1), "C", gf.Dn(j)
+        H1 += -t1, "C†", Up(j),   "C", Up(j+1)
+        H1 += -t1, "C†", Up(j+1), "C", Up(j)
+        H1 += -t1, "C†", Dn(j),   "C", Dn(j+1)
+        H1 += -t1, "C†", Dn(j+1), "C", Dn(j)
     end
 
-    H2 = gf.GaussianOperator(verts)
+    H2 = gf.GaussianOperator(labels)
     for j in 1:(N - 2)
-        H2 += -t2, "C†", gf.Up(j), "C", gf.Up(j+2)
-        H2 += -t2, "C†", gf.Up(j+2), "C", gf.Up(j)
-        H2 += -t2, "C†", gf.Dn(j), "C", gf.Dn(j+2)
-        H2 += -t2, "C†", gf.Dn(j+2), "C", gf.Dn(j)
+        H2 += -t2, "C†", Up(j),   "C", Up(j+2)
+        H2 += -t2, "C†", Up(j+2), "C", Up(j)
+        H2 += -t2, "C†", Dn(j),   "C", Dn(j+2)
+        H2 += -t2, "C†", Dn(j+2), "C", Dn(j)
     end
 
     E0, ϕ0 = gf.ground_state(H1; Nf = Nfup + Nfdn)
     @show E0
 
     ϕt = copy(ϕ0)
-    t = 0.0
-    for n in 1:Nstep
+    for t in time_range
         ϕt = gf.time_evolve(H1 + f(t) * H2, dt, ϕt)
-        t = t + dt
     end
 
     @show gf.expect(H1, ϕt)
