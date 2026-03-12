@@ -121,63 +121,62 @@ end
 
 
 """
-    bond_dimension(ϕ::GaussianState, range, cutoff::Real)
+    bond_dimension(ϕ::GaussianState, region, cutoff::Real)
 
-Estimate the MPS bond dimension needed to represent the state `ϕ` bipartitioned
-at `range` (the labels on one side of the cut) to accuracy `cutoff`.
+Compute the matrix product state (MPS) bond dimension needed to 
+represent the state `ϕ` bipartitioned into `region` 
+(the labels on one side of the cut) and the complement of
+this region to an accuracy given by the `cutoff`.
+
+The bond dimension is determined by discarding the smallest
+density matrix eigenvalues such that their sum is below `cutoff`.
+
+Returns a tuple of the bond dimension and the truncation error
+incurred by truncating to this bond dimension.
 
 # Example
 ```julia
 import GaussianFermions as gf
 
-H = gf.GaussianOperator(10)
-for j in 1:9
-    H = gf.add_hop(H, j, j + 1, -1.0)
+N = 10
+H = gf.GaussianOperator(N)
+for j in 1:(N-1)
+    H += -1,"C†",j,"C",j+1
+    H += -1,"C†",j+1,"C",j
 end
-_, ϕ = gf.ground_state(H; Nf=5)
-gf.bond_dimension(ϕ, 1:5, 1e-7)
+E0, ϕ0 = gf.ground_state(H; Nf=5)
+gf.bond_dimension(ϕ0, 1:N÷2, 1e-7)
 ```
 """
-function bond_dimension(ϕ::GaussianState, range, cutoff::Real)
-    C = correlation_matrix(ϕ; labels = range)
+function bond_dimension(ϕ::GaussianState, region, cutoff::Real)
+    C = correlation_matrix(ϕ; labels = region)
     occs, _ = la.eigen(C)
     occs = real(occs)
-
-    inactivity(ν) = abs(2ν - 1)
-
+    occs = sort(occs; by=ν->abs(ν-1/2))
     n = length(occs)
-    inactivities = sort(inactivity.(occs); rev = true)
 
-    # Decimate spectrum by "freezing" inactive modes
-    # Each decimation doubles number of discarded eigenvalues
-    # (ndiscard is number of discarded modes)
-    fidelity = 1.0
-    ndisc_modes = 0
-    while fidelity * inactivities[ndisc_modes + 1] + cutoff > 1.0
-        fidelity *= inactivities[ndisc_modes + 1]
-        ndisc_modes += 1
-    end
-
-    nactive_modes = n - ndisc_modes
-    inactivities = inactivities[(ndisc_modes + 1):n]
-
-    # Explicitly compute remaining eigenvalues
-    eigvals = zeros(2^nactive_modes)
-    for (w, inds) in enumerate(Iterators.product(fill(0:1, nactive_modes)...))
-        eigvals[w] = fidelity # account for modes already discarded
-        for j in 1:nactive_modes
-            ν, s = occs[j], inds[j]
-            eigvals[w] *= ((1 - s) * ν + s * (1 - ν))
+    # Build spectrum top down
+    # by doubling size of eigs
+    eigs = [1.0]
+    truncerr = 0.0
+    for j=1:n
+        νj = occs[j]
+        eigs = vcat(eigs .* (1-νj), eigs .* νj)
+        eigs = sort(eigs; rev=true)
+        remainder = 1.0
+        for r = (j+1):n
+            remainder *= max(occs[r],1-occs[r])
         end
+        truncerr = 1-remainder*sum(eigs)
+        (truncerr < cutoff) && break
     end
-    eigvals = sort(eigvals)
+    χ = length(eigs)
 
-    # Discard more eigvalues until infidelity exceeds cutoff
-    ndisc_evals = 0
-    while fidelity + cutoff - eigvals[ndisc_evals + 1] > 1.0
-        fidelity -= eigvals[ndisc_evals + 1]
-        ndisc_evals += 1
+    # Refine bond dimension
+    while (truncerr + eigs[χ] < cutoff) && (χ > 1)
+        truncerr += eigs[χ]
+        χ -= 1
     end
 
-    return 2^nactive_modes - ndisc_evals
+    return χ, truncerr
 end
