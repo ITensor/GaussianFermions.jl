@@ -121,12 +121,12 @@ end
 
 
 """
-    bond_dimension(ϕ::GaussianState, region, cutoff::Real)
+    bond_dimension(ϕ::GaussianState, labels, cutoff::Real)
 
 Compute the matrix product state (MPS) bond dimension needed to 
-represent the state `ϕ` bipartitioned into `region` 
-(the labels on one side of the cut) and the complement of
-this region to an accuracy given by the `cutoff`.
+represent the state `ϕ` bipartitioned into modes given by `labels` 
+(the labels on one side of the cut) and the complementary modes
+to an accuracy given by the `cutoff`.
 
 The bond dimension is determined by discarding the smallest
 density matrix eigenvalues such that their sum is below `cutoff`.
@@ -145,11 +145,12 @@ for j in 1:(N-1)
     H += -1,"C†",j+1,"C",j
 end
 E0, ϕ0 = gf.ground_state(H; Nf=5)
-gf.bond_dimension(ϕ0, 1:N÷2, 1e-7)
+region_labels = 1:N÷2
+gf.bond_dimension(ϕ0, region_labels, 1e-7)
 ```
 """
-function bond_dimension(ϕ::GaussianState, region, cutoff::Real)
-    C = correlation_matrix(ϕ; labels = region)
+function bond_dimension(ϕ::GaussianState, labels, cutoff::Real)
+    C = correlation_matrix(ϕ; labels)
     occs, _ = la.eigen(C)
     occs = real(occs)
     occs = sort(occs; by=ν->abs(ν-1/2))
@@ -162,6 +163,9 @@ function bond_dimension(ϕ::GaussianState, region, cutoff::Real)
     for j=1:n
         νj = occs[j]
         eigs = vcat(eigs .* (1-νj), eigs .* νj)
+        if length(eigs) > 2^18
+            error(@sprintf("Excessively large bond dimension > 2^18 in `bond_dimension`. Please use a larger cutoff (cutoff was %.4E).",cutoff))
+        end
         eigs = sort(eigs; rev=true)
         remainder = 1.0
         for r = (j+1):n
