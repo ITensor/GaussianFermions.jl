@@ -29,7 +29,7 @@ let
     @show gf.expect(H, ϕ0)
 
     left_sites = vcat([gf.Up(j) for j in 1:5], [gf.Dn(j) for j in 1:5])
-    @show gf.entanglement(ϕ0; labels = left_sites)
+    @show gf.entanglement(ϕ0, left_sites)
     @show gf.bond_dimension(ϕ0, left_sites, 7.0e-6)
 
     O = gf.GaussianOperator(verts)

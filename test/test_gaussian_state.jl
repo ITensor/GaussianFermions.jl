@@ -27,9 +27,16 @@ include("utilities/hamiltonians.jl")
     @test gf.labels(ϕ0_graph) == gf.labels(H_graph)
 end
 
-@testset "Entanglement" begin
+@testset "Entanglement and Bond Dimension" begin
     N = 10
     H = fermion_chain_h(N)
     E0, ϕ0 = gf.ground_state(H; Nf = N ÷ 2)
-    @test gf.entanglement(ϕ0; labels = 1:(N ÷ 2)) > 0
+
+    region_A = 1:(N÷2)
+    @test gf.entanglement(ϕ0, region_A) > 0
+
+    cutoff = 1E-7
+    χ, trunc_err = gf.bond_dimension(ϕ0, region_A, cutoff) 
+    @test trunc_err < cutoff
+    @test 10 < χ < 30
 end

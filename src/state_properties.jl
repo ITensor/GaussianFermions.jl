@@ -77,7 +77,7 @@ function inner(ϕ::GaussianState, ψ::GaussianState; tol=1E-6)
 end
 
 """
-    entanglement(ϕ::GaussianState; labels)
+    entanglement(ϕ::GaussianState, labels)
 
 Compute the von Neumann entanglement entropy of the subsystem defined by `labels`.
 
@@ -100,10 +100,10 @@ for j in 1:9
     H = gf.add_hop(H, j, j + 1, -1.0)
 end
 _, ϕ = gf.ground_state(H; Nf=5)
-gf.entanglement(ϕ; labels=1:5)
+gf.entanglement(ϕ, 1:5)
 ```
 """
-function entanglement(ϕ::GaussianState; labels)
+function entanglement(ϕ::GaussianState, labels)
     C = correlation_matrix(ϕ; labels)
     occs, _ = la.eigen(C)
     Svn = 0.0

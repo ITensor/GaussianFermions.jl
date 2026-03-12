@@ -22,7 +22,7 @@ let
 
     region_A = 1:(N÷2)
 
-    Sₐ = gf.entanglement(ϕ0; labels = region_A)
+    Sₐ = gf.entanglement(ϕ0, region_A)
     println("Entanglement of region A (=$region_A) is Sₐ = ",Sₐ)
 
     cutoff = 1E-8

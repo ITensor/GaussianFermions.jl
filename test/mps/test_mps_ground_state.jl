@@ -21,7 +21,7 @@ include("linear_combination_mpo.jl")
     end
     E0_gf, ϕ0 = gf.ground_state(H_gf; Nf)
 
-    S_gf = [gf.entanglement(ϕ0; labels = 1:b) for b in 1:(N - 1)]
+    S_gf = [gf.entanglement(ϕ0, 1:b) for b in 1:(N - 1)]
 
     #
     # ITensorMPS / DMRG: ground state energy and entanglement
@@ -154,7 +154,7 @@ end
 
     # Entanglement at bond b: include both spins for sites 1:b
     # Vertex ordering is [up1,...,upN, dn1,...,dnN]
-    S_gf = [gf.entanglement(ϕ0; labels = [1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
+    S_gf = [gf.entanglement(ϕ0, [1:b; (N + 1):(N + b)]) for b in 1:(N - 1)]
 
     # Densities per spin
     nup_gf = gf.up_density(ϕ0)
