@@ -13,7 +13,7 @@ A mixed state can have fractional occupancies fₙ ∈ [0,1].
 
 The single-particle density matrix or correlation matrix
 for such a state is given by
-C_ij = ∑ₙ ϕ_in f_n ϕ̄_jn
+C_ij = ∑ₙ ϕ̄_in f_n ϕ_jn
 """
 struct GaussianState <: AbstractGaussianState
     orbitals::NamedArray

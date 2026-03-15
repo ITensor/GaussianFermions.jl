@@ -26,7 +26,7 @@ C = gf.correlation_matrix(ϕ)
 """
 function correlation_matrix(ϕ::GaussianState; labels = labels(ϕ))
     orbs = orbitals(ϕ)[labels, :]
-    return (orbs * la.Diagonal(occupancy(ϕ)) * orbs')
+    return (conj.(orbs) * la.Diagonal(occupancy(ϕ)) * transpose(orbs))
 end
 
 """
