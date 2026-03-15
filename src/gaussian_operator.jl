@@ -90,6 +90,7 @@ function (G::GaussianOperator * x::Number)
 end
 
 function (A::GaussianOperator + B::GaussianOperator)
+    @assert labels(A) == labels(B)
     return GaussianOperator(matrix_elements(A) + matrix_elements(B))
 end
 
