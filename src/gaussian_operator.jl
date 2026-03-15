@@ -377,7 +377,6 @@ At = gf.time_evolve(H, 0.1, A)
 """
 function time_evolve(H::GaussianOperator, t::Number, O::GaussianOperator)
     expHt = im * greens_function(H, t)
-    # TODO: check conjugation convention here:
-    matrix_elems_t = expHt' * matrix_elements(O) * expHt
+    matrix_elems_t = expHt[1,:,:]' * matrix_elements(O) * expHt[1,:,:]
     return GaussianOperator(matrix_elems_t)
 end

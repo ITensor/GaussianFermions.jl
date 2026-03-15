@@ -9,26 +9,37 @@ include("utilities/write_data.jl")
     N = 10
     H1 = fermion_chain_h(N)
     Nf = N ÷ 2
+    c = N ÷ 2  # center site
     E0, ϕ0 = gf.ground_state(H1; Nf = Nf - 1)
 
     # H2 is a perturbation on H1
     H2 = gf.GaussianOperator(N)
-    H2 = gf.add_hop(H2, N ÷ 2, N ÷ 2 + 1, -1)
+    H2 = gf.add_hop(H2, c, c + 1, -1)
 
     H = H1 + H2
 
+    # Evaluate density at site c using Schrodinger picture
     densities = Float64[]
     dt = 0.02
     T = 100.0
     time_range = 0:dt:T
     ϕt = copy(ϕ0)
     for (n, t) in enumerate(time_range)
-        dens = only(real(gf.density(ϕt; labels = (N ÷ 2):(N ÷ 2))))
+        dens = only(real(gf.density(ϕt; labels = c:c)))
         push!(densities, dens)
 
         ϕt = gf.time_evolve(H, dt, ϕt)
     end
-    write_data("output/center_density.dat", time_range, densities)
+
+    # Evaluate density at site c using Heisenberg picture
+    heis_densities = ComplexF64[]
+    Nop = gf.GaussianOperator(N)
+    Nop += "Cdag",c,"C",c
+    for (n, t) in enumerate(time_range)
+        Nop_t = gf.time_evolve(H,t,Nop)
+        push!(heis_densities, gf.expect(Nop_t, ϕ0))
+    end
+    @test heis_densities ≈ densities atol=1E-8
 end
 
 @testset "Greens Function Consistency" begin
