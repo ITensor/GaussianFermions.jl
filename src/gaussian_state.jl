@@ -90,3 +90,7 @@ ispure(ϕ::GaussianState; tol = 1E-12) = all(f -> (abs(f-1) < tol || abs(f) < to
 Return `true` if the orbital labels of `ϕ` are spin labels ([`Up`](@ref) or [`Dn`](@ref)).
 """
 has_spin(ϕ::GaussianState) = first(names(ϕ.orbitals, 1)) isa Spin
+
+
+Base.:*(ϕ::GaussianState, a::Number) = GaussianState(ϕ.orbitals, ϕ.occupancy, ϕ.trace * a^2)
+Base.:*(a::Number, ϕ::GaussianState) = *(ϕ, a)
