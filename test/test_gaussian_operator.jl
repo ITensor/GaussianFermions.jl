@@ -196,3 +196,14 @@ end
     @test GL isa NamedArray
     @test GG isa NamedArray
 end
+
+@testset "Expected Value" begin
+    N = 10
+    H = electron_chain_h(N)
+    E0, ϕ0 = gf.ground_state(H)
+    @test gf.expect(H,ϕ0) ≈ E0
+
+    a = 0.2
+    ϕ0a = ϕ0 * a
+    @test gf.expect(H,ϕ0a) ≈ E0*a^2
+end

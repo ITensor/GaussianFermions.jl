@@ -34,8 +34,8 @@ end
 """
     dn_correlation_matrix(ϕ::GaussianState; labels=labels(ϕ))
 
-Compute the spin-down correlation matrix ``\\langle c^\\dagger_{\\downarrow,i} c_{\\downarrow,j} \\rangle``
-for a spinful state `ϕ`.
+Compute the spin-down correlation matrix ``\\langle c^\\dagger_{\\downarrow,i} c_{\\downarrow,j} \\rangle`` for a spinful state `ϕ`.
+These are computed relative to the normalized state, so as ⟨ϕ|n̂_{↓i}|ϕ⟩/⟨ϕ|ϕ⟩.
 
 # Example
 ```julia
@@ -60,6 +60,7 @@ end
     up_density(ϕ::GaussianState; labels=labels(ϕ))
 
 Return a vector of spin-up occupation numbers ``\\langle n_{\\uparrow,i} \\rangle``.
+These are computed relative to the normalized state, so as ⟨ϕ|n̂_{↑i}|ϕ⟩/⟨ϕ|ϕ⟩.
 
 # Example
 ```julia
@@ -77,7 +78,7 @@ gf.up_density(ϕ)
 ```
 """
 function up_density(ϕ::GaussianState; kws...)
-    return Vector(la.diag(up_correlation_matrix(ϕ; kws...)))
+    return Vector(la.diag(up_correlation_matrix(ϕ; kws...)))/trace(ϕ)
 end
 
 """
@@ -101,13 +102,14 @@ gf.dn_density(ϕ)
 ```
 """
 function dn_density(ϕ::GaussianState; kws...)
-    return Vector(la.diag(dn_correlation_matrix(ϕ; kws...)))
+    return Vector(la.diag(dn_correlation_matrix(ϕ; kws...)))/trace(ϕ)
 end
 
 """
     total_density(ϕ::GaussianState; labels=labels(ϕ))
 
 Return a vector of total occupation numbers ``\\langle n_{\\uparrow,i} \\rangle + \\langle n_{\\downarrow,i} \\rangle``.
+These are computed relative to the normalized state, so as ⟨ϕ|n̂_i|ϕ⟩/⟨ϕ|ϕ⟩.
 
 # Example
 ```julia

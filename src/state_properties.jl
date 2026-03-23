@@ -26,7 +26,7 @@ C = gf.correlation_matrix(ϕ)
 """
 function correlation_matrix(ϕ::GaussianState; labels = labels(ϕ))
     orbs = orbitals(ϕ)[labels, :]
-    return (conj.(orbs) * la.Diagonal(occupancy(ϕ)) * transpose(orbs))
+    return trace(ϕ)*(conj.(orbs) * la.Diagonal(occupancy(ϕ)) * transpose(orbs))
 end
 
 """
@@ -34,6 +34,8 @@ end
 
 Return a vector of site occupation numbers ``\\langle n_i \\rangle`` (the diagonal
 of the correlation matrix).
+These are computed relative to the normalized state, so as ⟨ϕ|n̂_i|ϕ⟩/⟨ϕ|ϕ⟩.
+
 
 # Example
 ```julia
@@ -48,7 +50,7 @@ gf.density(ϕ)
 ```
 """
 function density(ϕ::GaussianState; kws...)
-    return la.diag(correlation_matrix(ϕ; kws...))
+    return la.diag(correlation_matrix(ϕ; kws...))/trace(ϕ)
 end
 
 """
