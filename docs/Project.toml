@@ -1,8 +1,12 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ITensorFormatter = "b6bf39f1-c9d3-4bad-aad8-593d802f65fd"
 GaussianFermions = "2621d614-78f7-4793-80a6-586747345a0a"
-LiveServer = "16fef848-5104-11e9-1b77-fb7a48bbb589"
+
+[sources.GaussianFermions]
+path = ".."
 
 [compat]
 Documenter = "1"
-LiveServer = "1"
+ITensorFormatter = "0.2.27"
+GaussianFermions = "0.1"

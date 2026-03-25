@@ -1,10 +1,23 @@
-using GaussianFermions
-using Documenter
+using Documenter: Documenter, DocMeta, deploydocs, makedocs
+using ITensorFormatter: ITensorFormatter
+using GaussianFermions: GaussianFermions
+
+DocMeta.setdocmeta!(
+    GaussianFermions, :DocTestSetup, :(using GaussianFermions); recursive = true
+)
+
+ITensorFormatter.make_index!(pkgdir(GaussianFermions))
 
 makedocs(;
   modules=[GaussianFermions],
+  authors = "ITensor developers <support@itensor.org> and contributors",
   sitename="GaussianFermions.jl",
   warnonly=[:missing_docs, :cross_references],
+  format = Documenter.HTML(;
+      canonical = "https://itensor.github.io/GaussianFermions.jl",
+      edit_link = "main",
+      assets = ["assets/favicon.ico", "assets/extras.css"]
+  ),
   pages=[
     "Home" => "index.md",
     "Background" => "theory.md",
