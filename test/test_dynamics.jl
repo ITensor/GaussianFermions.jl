@@ -60,7 +60,8 @@ end
 
     # Compute G>(t) with local quench approach
     ϕt = gf.time_evolve(H, time_range, ϕ0)
-    GG_quench = [-im * gf.inner(ϕ0, ϕt[n]) * exp(im * E0 * t) for (n, t) in enumerate(time_range)]
+    GG_quench =
+        [-im * gf.inner(ϕ0, ϕt[n]) * exp(im * E0 * t) for (n, t) in enumerate(time_range)]
 
     # More explicit version looping over time steps
     GG_quench_loop = zeros(ComplexF64, length(time_range))
