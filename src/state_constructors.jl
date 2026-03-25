@@ -1,7 +1,7 @@
 """
     ground_state_occupancies(ϵ; Nf = nothing)
 
-Given an array of energies, return a vector of 
+Given an array of energies, return a vector of
 occupancies (νⱼ = 0,1) corresponding to the ground
 state configuration for those energies.
 """
@@ -32,6 +32,7 @@ Returns a tuple `(E0, ϕ0)` where `E0` is the ground state energy and
 `ϕ0` is the corresponding [`GaussianState`](@ref).
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -40,7 +41,7 @@ H = gf.GaussianOperator(N)
 for j in 1:(N - 1)
     H = gf.add_hop(H, j, j + 1, -1.0)
 end
-E0, ϕ0 = gf.ground_state(H; Nf=N ÷ 2)
+E0, ϕ0 = gf.ground_state(H; Nf = N ÷ 2)
 ```
 """
 function ground_state(G::GaussianOperator; Nf = nothing)

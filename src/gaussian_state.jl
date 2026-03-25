@@ -19,11 +19,10 @@ struct GaussianState <: AbstractGaussianState
     orbitals::NamedArray
     occupancy::Vector
     trace::Float64
-    function GaussianState(orbitals::NamedArray, occupancy::Vector, trace::Float64=1.0)
+    function GaussianState(orbitals::NamedArray, occupancy::Vector, trace::Float64 = 1.0)
         return new(orbitals, occupancy, trace)
     end
 end
-
 
 """
     orbitals(ϕ::GaussianState)
@@ -79,10 +78,12 @@ labels(ϕ::GaussianState) = names(orbitals(ϕ), 1)
     ispure(ϕ::GaussianState; tol = 1E-12)
 
 Return `true` if `ϕ` is a pure Gaussian state, i.e. all occupancy values are 0 or 1.
-The optional `tol` keyword sets the precision at which an occupancy value is 
+The optional `tol` keyword sets the precision at which an occupancy value is
 considered to be 0 or 1.
 """
-ispure(ϕ::GaussianState; tol = 1E-12) = all(f -> (abs(f-1) < tol || abs(f) < tol), occupancy(ϕ))
+function ispure(ϕ::GaussianState; tol = 1.0e-12)
+    return all(f -> (abs(f - 1) < tol || abs(f) < tol), occupancy(ϕ))
+end
 
 """
     has_spin(ϕ::GaussianState)
@@ -90,3 +91,6 @@ ispure(ϕ::GaussianState; tol = 1E-12) = all(f -> (abs(f-1) < tol || abs(f) < to
 Return `true` if the orbital labels of `ϕ` are spin labels ([`Up`](@ref) or [`Dn`](@ref)).
 """
 has_spin(ϕ::GaussianState) = first(names(ϕ.orbitals, 1)) isa Spin
+
+Base.:*(ϕ::GaussianState, a::Number) = GaussianState(ϕ.orbitals, ϕ.occupancy, ϕ.trace * a^2)
+Base.:*(a::Number, ϕ::GaussianState) = *(ϕ, a)

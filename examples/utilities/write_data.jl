@@ -6,7 +6,7 @@ using Printf: @sprintf
 format_string(i::Integer) = @sprintf("%d", i)
 format_string(x::Float64) = @sprintf("%.14f", x)
 function format_string(x)
-    error("Writing to data file of type $(typeof(x)) not currently supported")
+    return error("Writing to data file of type $(typeof(x)) not currently supported")
 end
 
 function write_data(fname::AbstractString, xv::Vector, yv::Vector)

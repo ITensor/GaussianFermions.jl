@@ -7,6 +7,7 @@ Spin-up label wrapping a site label. Used with [`Dn`](@ref) to label
 orbitals in spinful fermion systems.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -26,6 +27,7 @@ Spin-down label wrapping a site label. Used with [`Up`](@ref) to label
 orbitals in spinful fermion systems.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -44,6 +46,7 @@ end
 Return the site index wrapped by the spin label `s`.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 

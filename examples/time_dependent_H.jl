@@ -4,7 +4,7 @@
 # and f(t) is a smooth ramp function.
 
 import GaussianFermions as gf
-using GaussianFermions: Up, Dn
+using GaussianFermions: Dn, Up
 
 let
     N = 10
@@ -25,18 +25,18 @@ let
 
     H1 = gf.GaussianOperator(labels)
     for j in 1:(N - 1)
-        H1 += -t1, "C†", Up(j),   "C", Up(j+1)
-        H1 += -t1, "C†", Up(j+1), "C", Up(j)
-        H1 += -t1, "C†", Dn(j),   "C", Dn(j+1)
-        H1 += -t1, "C†", Dn(j+1), "C", Dn(j)
+        H1 += -t1, "C†", Up(j), "C", Up(j + 1)
+        H1 += -t1, "C†", Up(j + 1), "C", Up(j)
+        H1 += -t1, "C†", Dn(j), "C", Dn(j + 1)
+        H1 += -t1, "C†", Dn(j + 1), "C", Dn(j)
     end
 
     H2 = gf.GaussianOperator(labels)
     for j in 1:(N - 2)
-        H2 += -t2, "C†", Up(j),   "C", Up(j+2)
-        H2 += -t2, "C†", Up(j+2), "C", Up(j)
-        H2 += -t2, "C†", Dn(j),   "C", Dn(j+2)
-        H2 += -t2, "C†", Dn(j+2), "C", Dn(j)
+        H2 += -t2, "C†", Up(j), "C", Up(j + 2)
+        H2 += -t2, "C†", Up(j + 2), "C", Up(j)
+        H2 += -t2, "C†", Dn(j), "C", Dn(j + 2)
+        H2 += -t2, "C†", Dn(j + 2), "C", Dn(j)
     end
 
     E0, ϕ0 = gf.ground_state(H1; Nf = Nfup + Nfdn)

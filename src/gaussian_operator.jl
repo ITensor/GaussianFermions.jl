@@ -1,5 +1,5 @@
-import LinearAlgebra as la
 import Base: *, +
+import LinearAlgebra as la
 using NamedArrays: NamedArray
 
 """
@@ -15,6 +15,7 @@ and [`add_c_cdag`](@ref). Operators support scalar multiplication (`*`) and
 addition (`+`).
 
 # Examples
+
 ```julia
 import GaussianFermions as gf
 
@@ -100,14 +101,16 @@ end
 Add a single quadratic term to a `GaussianOperator` using operator-string notation.
 
 The tuple `t` must have the form `(coef,) "Op1", l1, "Op2", l2` where:
-- `coef` is an optional numeric coefficient (defaults to `1.0`)
-- `"Op1"` and `"Op2"` are operator strings, one of `"Cdag"`/`"C†"` (creation) and `"C"` (annihilation)
-- `l1`, `l2` are valid mode labels for the operator
+
+  - `coef` is an optional numeric coefficient (defaults to `1.0`)
+  - `"Op1"` and `"Op2"` are operator strings, one of `"Cdag"`/`"C†"` (creation) and `"C"` (annihilation)
+  - `l1`, `l2` are valid mode labels for the operator
 
 Creation and annihilation operators anticommute, so writing `"C",j,"Cdag",i`
 gives the **negative** of `"Cdag",i,"C",j` (up to a constant).
 
 # Examples
+
 ```julia
 import GaussianFermions as gf
 
@@ -115,13 +118,13 @@ N = 4
 h = [rand() for i in 1:N, j in 1:N]
 H = gf.GaussianOperator(N)
 for i in 1:N, j in 1:N
-    H += h[i,j], "Cdag", i, "C", j
+    H += h[i, j], "Cdag", i, "C", j
 end
 
 # Using reversed order gives a minus sign:
 H2 = gf.GaussianOperator(N)
 for i in 1:N, j in 1:N
-    H2 += h[i,j], "C", j, "Cdag", i  # same as -h[i,j] * c†_i c_j
+    H2 += h[i, j], "C", j, "Cdag", i  # same as -h[i,j] * c†_i c_j
 end
 ```
 """
@@ -148,6 +151,7 @@ end
 Return a new operator equal to `G` plus `coef * c†_i c_j`.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -168,6 +172,7 @@ Return a new operator equal to `G` plus `coef * c_i c†_j`.
 Since `c_i c†_j = δ_{ij} - c†_j c_i`, this adds `coef` to the `(j, i)` matrix element.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -188,6 +193,7 @@ Return a new operator equal to `G` plus a hopping term `coef * (c†_i c_j + c_i
 This is a shorthand for calling both [`add_cdag_c`](@ref) and [`add_c_cdag`](@ref).
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -223,6 +229,7 @@ Compute the expectation value ``\\langle ψ | G | ψ \\rangle`` of the operator 
 in the Gaussian state `ψ`.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -230,7 +237,7 @@ H = gf.GaussianOperator(4)
 for j in 1:3
     H = gf.add_hop(H, j, j + 1, -1.0)
 end
-E0, ϕ = gf.ground_state(H; Nf=2)
+E0, ϕ = gf.ground_state(H; Nf = 2)
 gf.expect(H, ϕ) ≈ E0  # true
 ```
 """
@@ -242,21 +249,26 @@ end
     greens_function(H::GaussianOperator, times; labels = labels(H))
 
 Compute the Greens function ``g(t) = -i e^{-i h t}`` from a GaussianOperator with
-hopping matrix h. For positive time values this is identical to the 
+hopping matrix h. For positive time values this is identical to the
 retarded Greens function ``G^R(t)``.
-Output is a Nt x Nv x Nv complex-valued tensor Gᴿ[t,l1,l2] where the first index 
+Output is a Nt x Nv x Nv complex-valued tensor Gᴿ[t,l1,l2] where the first index
 runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes ``g(t)`` only on these
 labels.
 """
 function greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
+    ϕ_labels = Matrix(ϕ[labels, :])
     G = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        G[j, :, :] = -im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
+        G[j, :, :] = -im * ϕ_labels * la.Diagonal(exp_itϵ) * ϕ_labels'
     end
-    return NamedArray(G,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
+    return NamedArray(
+        G,
+        (1:length(times), labels, labels),
+        ("Time Index", "Labels", "Labels")
+    )
 end
 
 """
@@ -264,19 +276,24 @@ end
 
 Compute the lesser Green's function G<(t) = i⟨c†(0)c(t)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
-Output is a Nt x Nv x Nv complex-valued tensor G<[t,l1,l2] where the first index 
+Output is a Nt x Nv x Nv complex-valued tensor G<[t,l1,l2] where the first index
 runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes G^<(t) only on these labels.
 """
 function lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
+    ϕ_labels = Matrix(ϕ[labels, :])
     occupancies = ground_state_occupancies(ϵ)
     GL = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [occupancies[n] * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        GL[j, :, :] = im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
+        GL[j, :, :] = im * ϕ_labels * la.Diagonal(exp_itϵ) * ϕ_labels'
     end
-    return NamedArray(GL,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
+    return NamedArray(
+        GL,
+        (1:length(times), labels, labels),
+        ("Time Index", "Labels", "Labels")
+    )
 end
 
 """
@@ -284,25 +301,33 @@ end
 
 Compute the greater Green's function G>(t) = -i⟨c(t)c†(0)⟩ from a GaussianOperator
 with hopping matrix h, evaluated in the ground state.
-Output is a Nt x Nv x Nv complex-valued tensor G>[t,l1,l2] where the first index 
+Output is a Nt x Nv x Nv complex-valued tensor G>[t,l1,l2] where the first index
 runs over the time points, and the second two indices run over mode labels.
 Optionally passing a subset of mode labels computes G^>(t) only on these labels.
 """
 function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
+    ϕ_labels = Matrix(ϕ[labels, :])
     occupancies = ground_state_occupancies(ϵ)
     GG = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [(1 - occupancies[n]) * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        GG[j, :, :] = -im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
+        GG[j, :, :] = -im * ϕ_labels * la.Diagonal(exp_itϵ) * ϕ_labels'
     end
-    return NamedArray(GG,(1:length(times), labels, labels), ("Time Index", "Labels", "Labels"))
+    return NamedArray(
+        GG,
+        (1:length(times), labels, labels),
+        ("Time Index", "Labels", "Labels")
+    )
 end
 
 greens_function(H::GaussianOperator, t::Number; kws...) = greens_function(H, [t]; kws...)
-lesser_greens_function(H::GaussianOperator, t::Number; kws...) = lesser_greens_function(H, [t]; kws...)
-greater_greens_function(H::GaussianOperator, t::Number; kws...) = greater_greens_function(H, [t]; kws...)
-
+function lesser_greens_function(H::GaussianOperator, t::Number; kws...)
+    return lesser_greens_function(H, [t]; kws...)
+end
+function greater_greens_function(H::GaussianOperator, t::Number; kws...)
+    return greater_greens_function(H, [t]; kws...)
+end
 
 """
     time_evolve(H::GaussianOperator, times, ψ::GaussianState)
@@ -313,6 +338,7 @@ diagonalized once and the propagator ``e^{-iHt}`` is evaluated at all time point
 efficiently.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -320,14 +346,17 @@ H = gf.GaussianOperator(4)
 for j in 1:3
     H = gf.add_hop(H, j, j + 1, -1.0)
 end
-_, ψ = gf.ground_state(H; Nf=2)
+_, ψ = gf.ground_state(H; Nf = 2)
 times = 0.0:0.1:10.0
 ψs = gf.time_evolve(H, times, ψ)
 ```
 """
 function time_evolve(H::GaussianOperator, times, ψ::GaussianState)
     prop = im * greens_function(H, times)
-    ψt = [GaussianState(prop[j,:,:] * orbitals(ψ), occupancy(ψ), trace(ψ)) for j=1:length(times)]
+    ψt = [
+        GaussianState(prop[j, :, :] * orbitals(ψ), occupancy(ψ), trace(ψ)) for
+            j in 1:length(times)
+    ]
     return ψt
 end
 
@@ -341,6 +370,7 @@ real or complex. Returns a new [`GaussianState`](@ref).
 See also [`time_evolve(H, times, ψ)`](@ref) for evolving to multiple time points at once.
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -348,12 +378,12 @@ H = gf.GaussianOperator(4)
 for j in 1:3
     H = gf.add_hop(H, j, j + 1, -1.0)
 end
-_, ψ = gf.ground_state(H; Nf=2)
+_, ψ = gf.ground_state(H; Nf = 2)
 ψt = gf.time_evolve(H, 0.1, ψ)
 ```
 """
 function time_evolve(H::GaussianOperator, t::Number, ψ::GaussianState)
-    return only(time_evolve(H,[t],ψ))
+    return only(time_evolve(H, [t], ψ))
 end
 
 """
@@ -364,6 +394,7 @@ Evolve the operator `O` forward by time `t` under Hamiltonian `H`
 real or complex. Returns a new [`GaussianOperator`](@ref).
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -377,7 +408,6 @@ At = gf.time_evolve(H, 0.1, A)
 """
 function time_evolve(H::GaussianOperator, t::Number, O::GaussianOperator)
     expHt = im * greens_function(H, t)
-    # TODO: check conjugation convention here:
-    matrix_elems_t = expHt' * matrix_elements(O) * expHt
+    matrix_elems_t = expHt[1, :, :]' * matrix_elements(O) * expHt[1, :, :]
     return GaussianOperator(matrix_elems_t)
 end

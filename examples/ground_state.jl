@@ -11,8 +11,8 @@ let
 
     H = gf.GaussianOperator(N)
     for j in 1:(N - 1)
-        H += -t, "C†", j, "C", j+1
-        H += -t, "C†", j+1, "C", j
+        H += -t, "C†", j, "C", j + 1
+        H += -t, "C†", j + 1, "C", j
     end
 
     E0, ϕ0 = gf.ground_state(H; Nf)
@@ -20,15 +20,14 @@ let
     @show gf.expect(H, ϕ0)
     @show sum(gf.density(ϕ0))
 
-    region_A = 1:(N÷2)
+    region_A = 1:(N ÷ 2)
 
     Sₐ = gf.entanglement(ϕ0, region_A)
-    println("Entanglement of region A (=$region_A) is Sₐ = ",Sₐ)
+    println("Entanglement of region A (=$region_A) is Sₐ = ", Sₐ)
 
-    cutoff = 1E-8
-    χ, trunc_error = gf.bond_dimension(ϕ0, region_A, 1E-8)
-    println("Truncating to cutoff $cutoff results in bond dimension χ = ",χ)
-
+    cutoff = 1.0e-8
+    χ, trunc_error = gf.bond_dimension(ϕ0, region_A, 1.0e-8)
+    println("Truncating to cutoff $cutoff results in bond dimension χ = ", χ)
 
     return nothing
 end

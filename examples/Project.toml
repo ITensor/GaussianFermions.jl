@@ -1,0 +1,8 @@
+[deps]
+GaussianFermions = "2621d614-78f7-4793-80a6-586747345a0a"
+
+[sources.GaussianFermions]
+path = ".."
+
+[compat]
+GaussianFermions = "0.1"

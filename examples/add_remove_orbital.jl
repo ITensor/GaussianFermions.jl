@@ -10,8 +10,8 @@ let
 
     H = gf.GaussianOperator(labels)
     for j in 1:(N - 1)
-        H += -t, "C†", j, "C", j+1
-        H += -t, "C†", j+1, "C", j
+        H += -t, "C†", j, "C", j + 1
+        H += -t, "C†", j + 1, "C", j
     end
 
     E0, ϕ0 = gf.ground_state(H; Nf)
