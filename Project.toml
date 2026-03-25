@@ -21,7 +21,7 @@ ITensorMPS = "0.3.23"
 ITensors = "0.9.25"
 LinearAlgebra = "1.10"
 NamedArrays = "0.10.5"
-Printf = "1.11.0"
+Printf = "1.10"
 julia = "1.10"
 Test = "1.10"
 
