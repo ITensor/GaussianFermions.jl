@@ -258,11 +258,11 @@ labels.
 """
 function greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
-    ϕ = Matrix(ϕ)
+    ϕ_labels = Matrix(ϕ[labels, :])
     G = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        G[j, :, :] = -im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
+        G[j, :, :] = -im * ϕ_labels * la.Diagonal(exp_itϵ) * ϕ_labels'
     end
     return NamedArray(
         G,
@@ -282,12 +282,12 @@ Optionally passing a subset of mode labels computes G^<(t) only on these labels.
 """
 function lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
-    ϕ = Matrix(ϕ)
+    ϕ_labels = Matrix(ϕ[labels, :])
     occupancies = ground_state_occupancies(ϵ)
     GL = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [occupancies[n] * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        GL[j, :, :] = im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
+        GL[j, :, :] = im * ϕ_labels * la.Diagonal(exp_itϵ) * ϕ_labels'
     end
     return NamedArray(
         GL,
@@ -307,12 +307,12 @@ Optionally passing a subset of mode labels computes G^>(t) only on these labels.
 """
 function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
-    ϕ = Matrix(ϕ)
+    ϕ_labels = Matrix(ϕ[labels, :])
     occupancies = ground_state_occupancies(ϵ)
     GG = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [(1 - occupancies[n]) * exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
-        GG[j, :, :] = -im * ϕ[labels, :] * la.Diagonal(exp_itϵ) * (ϕ[labels, :])'
+        GG[j, :, :] = -im * ϕ_labels * la.Diagonal(exp_itϵ) * ϕ_labels'
     end
     return NamedArray(
         GG,
