@@ -258,6 +258,7 @@ labels.
 """
 function greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
+    ϕ = Matrix(ϕ)
     G = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
         exp_itϵ = [exp(-im * times[j] * ϵ[n]) for n in 1:length(ϵ)]
@@ -281,6 +282,7 @@ Optionally passing a subset of mode labels computes G^<(t) only on these labels.
 """
 function lesser_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
+    ϕ = Matrix(ϕ)
     occupancies = ground_state_occupancies(ϵ)
     GL = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
@@ -305,6 +307,7 @@ Optionally passing a subset of mode labels computes G^>(t) only on these labels.
 """
 function greater_greens_function(H::GaussianOperator, times; labels = labels(H))
     ϵ, ϕ = energies_states(H)
+    ϕ = Matrix(ϕ)
     occupancies = ground_state_occupancies(ϵ)
     GG = zeros(ComplexF64, length(times), length(labels), length(labels))
     for j in 1:length(times)
