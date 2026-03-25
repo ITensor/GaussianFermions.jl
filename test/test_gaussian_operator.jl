@@ -1,7 +1,7 @@
-using Test
-using LinearAlgebra: norm, Diagonal
 import GaussianFermions as gf
+using LinearAlgebra: Diagonal, norm
 using NamedArrays: NamedArray
+using Test
 
 include("utilities/hamiltonians.jl")
 
@@ -27,10 +27,10 @@ end
         H = gf.add_hop(H, j, j + 1, -1)
     end
     h = [
-        0 -1  0  0;
-        -1  0 -1  0;
-        0 -1  0 -1;
-        0  0 -1  0
+        0 -1 0 0;
+        -1 0 -1 0;
+        0 -1 0 -1;
+        0 0 -1 0
     ]
     @test norm(gf.matrix_elements(H) - h) < 1.0e-12
 
@@ -38,7 +38,7 @@ end
     # 2D square lattice Hamiltonian
     sites = [(i, j) for i in 1:N for j in 1:N]
     H_graph = gf.GaussianOperator(sites)
-    for i in 1:N,j in 1:N
+    for i in 1:N, j in 1:N
         (i < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i + 1, j), -1))
         (j < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i, j + 1), -1))
     end
@@ -60,14 +60,14 @@ end
     # Build a chain Hamiltonian using += tuple syntax (C†/C style)
     H_new = gf.GaussianOperator(N)
     for j in 1:(N - 1)
-        H_new += -1, "C†", j, "C", j+1
-        H_new += -1, "C†", j+1, "C", j
+        H_new += -1, "C†", j, "C", j + 1
+        H_new += -1, "C†", j + 1, "C", j
     end
 
     # Compare against the same Hamiltonian built with add_hop
     H_old = gf.GaussianOperator(N)
     for j in 1:(N - 1)
-        H_old = gf.add_hop(H_old, j, j+1, -1)
+        H_old = gf.add_hop(H_old, j, j + 1, -1)
     end
 
     @test norm(gf.matrix_elements(H_new) - gf.matrix_elements(H_old)) < 1.0e-12
@@ -75,8 +75,8 @@ end
     # "Cdag" string is also accepted as an alias for "C†"
     H_cdag = gf.GaussianOperator(N)
     for j in 1:(N - 1)
-        H_cdag += -1, "Cdag", j, "C", j+1
-        H_cdag += -1, "Cdag", j+1, "C", j
+        H_cdag += -1, "Cdag", j, "C", j + 1
+        H_cdag += -1, "Cdag", j + 1, "C", j
     end
     @test norm(gf.matrix_elements(H_cdag) - gf.matrix_elements(H_old)) < 1.0e-12
 
@@ -104,13 +104,13 @@ end
     h = [Float64(i + j) for i in 1:N, j in 1:N]
     H_mat = gf.GaussianOperator(N)
     for i in 1:N, j in 1:N
-        H_mat += h[i,j], "C†", i, "C", j
+        H_mat += h[i, j], "C†", i, "C", j
     end
     @test norm(gf.matrix_elements(H_mat) - h) < 1.0e-12
 
     # Invalid label check
-    @test_throws ErrorException (gf.GaussianOperator(N) + ("C†", N+1, "C", 1))
-    @test_throws ErrorException (gf.GaussianOperator(N) + ("C†", 1, "C", N+1))
+    @test_throws ErrorException (gf.GaussianOperator(N) + ("C†", N + 1, "C", 1))
+    @test_throws ErrorException (gf.GaussianOperator(N) + ("C†", 1, "C", N + 1))
 
     # Invalid operator names
     @test_throws ErrorException (gf.GaussianOperator(N) + ("X", 1, "C", 2))
@@ -125,22 +125,24 @@ end
 
     H_new = gf.GaussianOperator(verts)
     for j in 1:(N - 1)
-        H_new += -1, "C†", gf.Up(j), "C", gf.Up(j+1)
-        H_new += -1, "C†", gf.Up(j+1), "C", gf.Up(j)
-        H_new += -1, "C†", gf.Dn(j), "C", gf.Dn(j+1)
-        H_new += -1, "C†", gf.Dn(j+1), "C", gf.Dn(j)
+        H_new += -1, "C†", gf.Up(j), "C", gf.Up(j + 1)
+        H_new += -1, "C†", gf.Up(j + 1), "C", gf.Up(j)
+        H_new += -1, "C†", gf.Dn(j), "C", gf.Dn(j + 1)
+        H_new += -1, "C†", gf.Dn(j + 1), "C", gf.Dn(j)
     end
 
     H_old = gf.GaussianOperator(verts)
     for j in 1:(N - 1)
-        H_old = gf.add_hop(H_old, gf.Up(j), gf.Up(j+1), -1)
-        H_old = gf.add_hop(H_old, gf.Dn(j), gf.Dn(j+1), -1)
+        H_old = gf.add_hop(H_old, gf.Up(j), gf.Up(j + 1), -1)
+        H_old = gf.add_hop(H_old, gf.Dn(j), gf.Dn(j + 1), -1)
     end
 
     @test norm(gf.matrix_elements(H_new) - gf.matrix_elements(H_old)) < 1.0e-12
 
     # Invalid spin label check
-    @test_throws ErrorException (gf.GaussianOperator(verts) + ("C†", gf.Up(N+1), "C", gf.Up(1)))
+    @test_throws ErrorException (
+        gf.GaussianOperator(verts) + ("C†", gf.Up(N + 1), "C", gf.Up(1))
+    )
 end
 
 @testset "Energies and States" begin
@@ -149,7 +151,7 @@ end
     # 2D square lattice Hamiltonian
     sites = [(i, j) for i in 1:N for j in 1:N]
     H_graph = gf.GaussianOperator(sites)
-    for i in 1:N,j in 1:N
+    for i in 1:N, j in 1:N
         (i < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i + 1, j), -1))
         (j < N) && (H_graph = gf.add_hop(H_graph, (i, j), (i, j + 1), -1))
     end
@@ -171,27 +173,27 @@ end
     H = electron_chain_h(N)
     times = 0:0.1:6
 
-    G = gf.greens_function(H,times)
-    GG = gf.greater_greens_function(H,times)
-    GL = gf.lesser_greens_function(H,times)
-    @test norm(G-(GG-GL)) < 1E-10
-    @test size(G) == (length(times),2N,2N)
-    @test size(GG) == (length(times),2N,2N)
-    @test size(GL) == (length(times),2N,2N)
+    G = gf.greens_function(H, times)
+    GG = gf.greater_greens_function(H, times)
+    GL = gf.lesser_greens_function(H, times)
+    @test norm(G - (GG - GL)) < 1.0e-10
+    @test size(G) == (length(times), 2N, 2N)
+    @test size(GG) == (length(times), 2N, 2N)
+    @test size(GL) == (length(times), 2N, 2N)
     @test G isa NamedArray
     @test GL isa NamedArray
     @test GG isa NamedArray
 
     # Test pre-selecting labels
     # for computing G, GG, GL
-    labels = [2,4]
-    G = gf.greens_function(H,times; labels)
-    GG = gf.greater_greens_function(H,times; labels)
-    GL = gf.lesser_greens_function(H,times; labels)
-    @test norm(G-(GG-GL)) < 1E-10
-    @test size(G) == (length(times),2,2)
-    @test size(GG) == (length(times),2,2)
-    @test size(GL) == (length(times),2,2)
+    labels = [2, 4]
+    G = gf.greens_function(H, times; labels)
+    GG = gf.greater_greens_function(H, times; labels)
+    GL = gf.lesser_greens_function(H, times; labels)
+    @test norm(G - (GG - GL)) < 1.0e-10
+    @test size(G) == (length(times), 2, 2)
+    @test size(GG) == (length(times), 2, 2)
+    @test size(GL) == (length(times), 2, 2)
     @test G isa NamedArray
     @test GL isa NamedArray
     @test GG isa NamedArray
@@ -201,9 +203,9 @@ end
     N = 10
     H = electron_chain_h(N)
     E0, ϕ0 = gf.ground_state(H)
-    @test gf.expect(H,ϕ0) ≈ E0
+    @test gf.expect(H, ϕ0) ≈ E0
 
     a = 0.2
     ϕ0a = ϕ0 * a
-    @test gf.expect(H,ϕ0a) ≈ E0*a^2
+    @test gf.expect(H, ϕ0a) ≈ E0 * a^2
 end

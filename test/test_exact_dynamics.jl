@@ -1,6 +1,6 @@
-using Test
-using LinearAlgebra: norm
 import GaussianFermions as gf
+using LinearAlgebra: norm
+using Test
 
 include("utilities/hamiltonians.jl")
 include("utilities/many_body.jl")
@@ -20,22 +20,22 @@ include("utilities/many_body.jl")
     E0_exact, psi0 = exact_ground_state(H_mb)
 
     # Ground state energy
-    @test E0_gf ≈ E0_exact atol=1E-10
+    @test E0_gf ≈ E0_exact atol = 1.0e-10
 
     # Site densities
-    n_gf    = real(gf.density(ϕ0_gf))
+    n_gf = real(gf.density(ϕ0_gf))
     n_exact = exact_density(psi0, sector, N)
-    @test n_gf ≈ n_exact atol=1E-10
+    @test n_gf ≈ n_exact atol = 1.0e-10
 
     # Full correlation matrix C[i,j] = ⟨c†_i c_j⟩
-    C_gf    = Array(gf.correlation_matrix(ϕ0_gf))
+    C_gf = Array(gf.correlation_matrix(ϕ0_gf))
     C_exact = exact_correlation_matrix(psi0, sector, N)
-    @test real(C_gf) ≈ real(C_exact) atol=1E-10
-    @test norm(imag(C_gf))    < 1E-10
-    @test norm(imag(C_exact)) < 1E-10
+    @test real(C_gf) ≈ real(C_exact) atol = 1.0e-10
+    @test norm(imag(C_gf)) < 1.0e-10
+    @test norm(imag(C_exact)) < 1.0e-10
 
     # Sanity: correlation matrix is a projector for a pure state (C² = C)
-    @test real(C_gf)^2 ≈ real(C_gf) atol=1E-10
+    @test real(C_gf)^2 ≈ real(C_gf) atol = 1.0e-10
 end
 
 @testset "Time Evolution of Ground State vs Exact" begin
@@ -51,20 +51,20 @@ end
     # Compare densities and correlation matrices at several time points
     for t in (0.5, 1.0, 2.0, 5.0)
         ϕt_gf = gf.time_evolve(H_gf, t, ϕ0_gf)
-        psi_t  = time_evolve_exact(H_mb, t, psi0)
+        psi_t = time_evolve_exact(H_mb, t, psi0)
 
-        n_gf    = real(gf.density(ϕt_gf))
+        n_gf = real(gf.density(ϕt_gf))
         n_exact = exact_density(psi_t, sector, N)
-        @test n_gf ≈ n_exact atol=1E-8
+        @test n_gf ≈ n_exact atol = 1.0e-8
     end
 
     # Full correlation matrix at one time point
     t = 1.5
     ϕt_gf = gf.time_evolve(H_gf, t, ϕ0_gf)
-    psi_t  = time_evolve_exact(H_mb, t, psi0)
-    C_gf    = Array(gf.correlation_matrix(ϕt_gf))
+    psi_t = time_evolve_exact(H_mb, t, psi0)
+    C_gf = Array(gf.correlation_matrix(ϕt_gf))
     C_exact = exact_correlation_matrix(psi_t, sector, N)
-    @test C_gf ≈ C_exact atol=1E-8
+    @test C_gf ≈ C_exact atol = 1.0e-8
 end
 
 @testset "Quench Dynamics vs Exact" begin
@@ -78,7 +78,7 @@ end
     _, ϕ0_gf = gf.ground_state(H1_gf; Nf)
 
     # Quench Hamiltonian: chain + on-site energy μ=1 at site `center`
-    H_quench_gf = H1_gf + ("Cdag",center,"C",center)
+    H_quench_gf = H1_gf + ("Cdag", center, "C", center)
 
     # Extract the single-particle matrix and build the many-body version
     h_quench = real(Array(gf.matrix_elements(H_quench_gf)))
@@ -88,20 +88,20 @@ end
 
     for t in (0.5, 1.0, 2.0, 5.0)
         ϕt_gf = gf.time_evolve(H_quench_gf, t, ϕ0_gf)
-        psi_t  = time_evolve_exact(H_quench_mb, t, psi0)
+        psi_t = time_evolve_exact(H_quench_mb, t, psi0)
 
-        n_gf    = real(gf.density(ϕt_gf))
+        n_gf = real(gf.density(ϕt_gf))
         n_exact = exact_density(psi_t, sector, N)
-        @test n_gf ≈ n_exact atol=1E-8
+        @test n_gf ≈ n_exact atol = 1.0e-8
     end
 
     # Correlation matrix at one time point
     t = 2.0
     ϕt_gf = gf.time_evolve(H_quench_gf, t, ϕ0_gf)
-    psi_t  = time_evolve_exact(H_quench_mb, t, psi0)
-    C_gf    = Array(gf.correlation_matrix(ϕt_gf))
+    psi_t = time_evolve_exact(H_quench_mb, t, psi0)
+    C_gf = Array(gf.correlation_matrix(ϕt_gf))
     C_exact = exact_correlation_matrix(psi_t, sector, N)
-    @test C_gf ≈ C_exact atol=1E-8
+    @test C_gf ≈ C_exact atol = 1.0e-8
 end
 
 @testset "Physical Consistency of Time Evolution" begin
@@ -120,19 +120,19 @@ end
         ϕt = gf.time_evolve(H_gf, t, ϕ0)
 
         # (1) Particle number
-        @test sum(real(gf.density(ϕt))) ≈ Nf atol=1E-10
+        @test sum(real(gf.density(ϕt))) ≈ Nf atol = 1.0e-10
 
         # (2) Projector property C² = C
         C = Array(gf.correlation_matrix(ϕt))
-        @test C * C ≈ C atol=1E-10
+        @test C * C ≈ C atol = 1.0e-10
 
         # (3) Energy conservation
-        @test real(gf.expect(H_gf, ϕt)) ≈ E0 atol=1E-10
+        @test real(gf.expect(H_gf, ϕt)) ≈ E0 atol = 1.0e-10
     end
 
     # Same checks for quench evolution (different Hamiltonian preserves Nf but not energy of H1)
     c = N ÷ 2
-    H_quench = H_gf + ("Cdag",c,"C",c)
+    H_quench = H_gf + ("Cdag", c, "C", c)
     E_quench0 = gf.expect(H_quench, ϕ0)
     @test E_quench0 > E0
 
@@ -140,13 +140,13 @@ end
         ϕt = gf.time_evolve(H_quench, t, ϕ0)
 
         # Particle number conserved
-        @test sum(real(gf.density(ϕt))) ≈ Nf atol=1E-10
+        @test sum(real(gf.density(ϕt))) ≈ Nf atol = 1.0e-10
 
         # Projector property
         C = Array(gf.correlation_matrix(ϕt))
-        @test C * C ≈ C atol=1E-10
+        @test C * C ≈ C atol = 1.0e-10
 
         # Energy under H_quench is conserved
-        @test real(gf.expect(H_quench, ϕt)) ≈ E_quench0 atol=1E-10
+        @test real(gf.expect(H_quench, ϕt)) ≈ E_quench0 atol = 1.0e-10
     end
 end

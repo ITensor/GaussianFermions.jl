@@ -1,5 +1,5 @@
-using NamedArrays: NamedArray
 using LinearAlgebra: norm
+using NamedArrays: NamedArray
 using Printf: @sprintf
 
 function pause()
@@ -24,11 +24,13 @@ Use [`apply`](@ref apply(::CreationOperator, ::GaussianState)) to act with this
 operator on a Gaussian state.
 
 # Examples
+
 ```julia
 import GaussianFermions as gf
 
 # Create c†₁ (creation operator on site 1)
-v = zeros(4); v[1] = 1.0
+v = zeros(4);
+v[1] = 1.0
 Cd = gf.CreationOperator(1:4, v)
 
 # Create a superposition of creation operators
@@ -38,25 +40,28 @@ Cd = gf.CreationOperator(1:4, v)
 # Spinful system
 using GaussianFermions: Up, Dn
 labels = [Up(1), Up(2), Dn(1), Dn(2)]
-v = zeros(4); v[1] = 1.0  # c†_{1,↑}
+v = zeros(4);
+v[1] = 1.0  # c†_{1,↑}
 Cd = gf.CreationOperator(labels, v)
 ```
 """
 struct CreationOperator
     orbital::NamedArray
     function CreationOperator(orbital::NamedArray)
-        new(orbital)
+        return new(orbital)
     end
 end
 
-CreationOperator(labels, orbital=zeros(length(labels))) = CreationOperator(NamedArray(orbital,(labels,),("Labels",)))
+function CreationOperator(labels, orbital = zeros(length(labels)))
+    return CreationOperator(NamedArray(orbital, (labels,), ("Labels",)))
+end
 
 labels(Cdag::CreationOperator) = names(Cdag.orbital, 1)
 
 Base.copy(C::CreationOperator) = CreationOperator(C.orbital)
 
 function (Cdag::CreationOperator + t::Tuple)
-    coef, label = process_tuple(t; opnames=("Cdag","C†"))
+    coef, label = process_tuple(t; opnames = ("Cdag", "C†"))
     if !(label in labels(Cdag))
         error("Label $label is invalid in creation operator sum")
     end
@@ -80,11 +85,13 @@ Use [`apply`](@ref apply(::AnnihilationOperator, ::GaussianState)) to act with t
 operator on a Gaussian state.
 
 # Examples
+
 ```julia
 import GaussianFermions as gf
 
 # Create c₃ (annihilation operator on site 3)
-w = zeros(4); w[3] = 1.0
+w = zeros(4);
+w[3] = 1.0
 C = gf.AnnihilationOperator(1:4, w)
 
 # Create a superposition of annihilation operators
@@ -95,18 +102,20 @@ C = gf.AnnihilationOperator(1:4, w)
 struct AnnihilationOperator
     orbital::NamedArray
     function AnnihilationOperator(orbital::NamedArray)
-        new(orbital)
+        return new(orbital)
     end
 end
 
-AnnihilationOperator(labels, orbital=zeros(length(labels))) = AnnihilationOperator(NamedArray(orbital,(labels,),("Labels",)))
+function AnnihilationOperator(labels, orbital = zeros(length(labels)))
+    return AnnihilationOperator(NamedArray(orbital, (labels,), ("Labels",)))
+end
 
 labels(C::AnnihilationOperator) = names(C.orbital, 1)
 
 Base.copy(C::AnnihilationOperator) = AnnihilationOperator(C.orbital)
 
 function (C::AnnihilationOperator + t::Tuple)
-    coef, label = process_tuple(t; opnames=("C",))
+    coef, label = process_tuple(t; opnames = ("C",))
     if !(label in labels(C))
         error("Label $label is invalid in annihilation operator sum")
     end
@@ -138,6 +147,7 @@ Throws an error if the resulting state has near-zero norm (i.e. the orbital is
 already fully occupied).
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -145,9 +155,10 @@ H = gf.GaussianOperator(4)
 for j in 1:3
     H = gf.add_hop(H, j, j+1, -1.0)
 end
-_, ψ = gf.ground_state(H; Nf=2)
+_, ψ = gf.ground_state(H; Nf = 2)
 
-v = zeros(4); v[1] = 1.0
+v = zeros(4);
+v[1] = 1.0
 Cd = gf.CreationOperator(1:4, v)
 ψ_new = gf.apply(Cd, ψ)  # ψ_new = c†₁ |ψ⟩
 ```
@@ -158,23 +169,23 @@ function apply(Cdag::CreationOperator, ψ::GaussianState)
     v0 = v - Cm * v
     nrm0 = norm(v0)
     trace = nrm0^2
-    if trace < 1E-12
+    if trace < 1.0e-12
         error(@sprintf("Nearly zero state in creation apply, trace = %.4E\n", trace))
     end
     v0 /= nrm0
 
-    tol = 1E-6
+    tol = 1.0e-6
     f = occupancy(ψ)
-    occ   = findall(ν -> isapprox(1.0, ν; atol=tol), f)
-    unocc = findall(ν -> isapprox(0.0, ν; atol=tol), f)
+    occ = findall(ν -> isapprox(1.0, ν; atol = tol), f)
+    unocc = findall(ν -> isapprox(0.0, ν; atol = tol), f)
     Φ = Matrix(orbitals(ψ))
-    Φ_occ   = Φ[:, occ]
+    Φ_occ = Φ[:, occ]
     Φ_unocc = Φ[:, unocc]
     N_unocc = length(unocc)
 
     if N_unocc == 1
         # v0 is the only unoccupied orbital; all modes become occupied
-        Φ_new = [Φ_occ  v0]
+        Φ_new = [Φ_occ v0]
         f_new = ones(length(f))
     else
         # Project v0 out of each unoccupied orbital and drop the most-aligned one
@@ -183,11 +194,11 @@ function apply(Cdag::CreationOperator, ψ::GaussianState)
         P = Φ_unocc[:, keep] .- v0 .* (v0' * Φ_unocc[:, keep])
 
         # Thin QR of projected remaining unoccupied orbitals
-        Q_raw = Matrix(la.qr(P).Q)[:, 1:N_unocc-1]
+        Q_raw = Matrix(la.qr(P).Q)[:, 1:(N_unocc - 1)]
 
         # v0 is uniquely determined (no sign ambiguity); Q_raw is unoccupied
         # so its sign does not affect inner products or observables
-        Φ_new = [Φ_occ  Q_raw  v0]
+        Φ_new = [Φ_occ Q_raw v0]
         f_new = [ones(length(occ)); zeros(N_unocc - 1); 1.0]
     end
 
@@ -218,6 +229,7 @@ Throws an error if the resulting state has near-zero norm (i.e. the orbital is
 unoccupied).
 
 # Example
+
 ```julia
 import GaussianFermions as gf
 
@@ -225,9 +237,10 @@ H = gf.GaussianOperator(4)
 for j in 1:3
     H = gf.add_hop(H, j, j+1, -1.0)
 end
-_, ψ = gf.ground_state(H; Nf=2)
+_, ψ = gf.ground_state(H; Nf = 2)
 
-w = zeros(4); w[1] = 1.0
+w = zeros(4);
+w[1] = 1.0
 C = gf.AnnihilationOperator(1:4, w)
 ψ_new = gf.apply(C, ψ)  # ψ_new = c₁ |ψ⟩
 ```
@@ -238,23 +251,23 @@ function apply(C::AnnihilationOperator, ψ::GaussianState)
     w1 = Cm * w
     nrm1 = norm(w1)
     trace = nrm1^2
-    if trace < 1E-12
+    if trace < 1.0e-12
         error(@sprintf("Nearly zero state in annihilation apply, trace = %.4E\n", trace))
     end
     w1 /= nrm1
 
-    tol = 1E-6
+    tol = 1.0e-6
     f = occupancy(ψ)
-    occ   = findall(ν -> isapprox(1.0, ν; atol=tol), f)
-    unocc = findall(ν -> isapprox(0.0, ν; atol=tol), f)
+    occ = findall(ν -> isapprox(1.0, ν; atol = tol), f)
+    unocc = findall(ν -> isapprox(0.0, ν; atol = tol), f)
     Φ = Matrix(orbitals(ψ))
-    Φ_occ   = Φ[:, occ]
+    Φ_occ = Φ[:, occ]
     Φ_unocc = Φ[:, unocc]
     Nf = length(occ)
 
     if Nf == 1
         # After annihilation: 0 occupied orbitals; w1 becomes unoccupied
-        Φ_new = [Φ_unocc  w1]
+        Φ_new = [Φ_unocc w1]
         f_new = zeros(length(f))
     else
         # Project w1 out of each occupied orbital and drop the most-aligned one
@@ -263,17 +276,17 @@ function apply(C::AnnihilationOperator, ψ::GaussianState)
         P = Φ_occ[:, keep] .- w1 .* (w1' * Φ_occ[:, keep])
 
         # Thin QR of projected remaining occupied orbitals
-        Q_raw = Matrix(la.qr(P).Q)[:, 1:Nf-1]
+        Q_raw = Matrix(la.qr(P).Q)[:, 1:(Nf - 1)]
 
         # Sign fix: ensure det([α̂ | Φ_occ' Q_raw]) = +1
         # This guarantees inner(c_w ψ, c_v ψ) = w† C_ψ v for all w, v
         α_hat = Φ_occ' * w1
         α_hat ./= norm(α_hat)
-        M = [α_hat  Φ_occ' * Q_raw]
+        M = [α_hat Φ_occ' * Q_raw]
         s = sign(real(la.det(M)))
         Q_raw[:, 1] .*= s
 
-        Φ_new = [Φ_unocc  w1  Q_raw]
+        Φ_new = [Φ_unocc w1 Q_raw]
         f_new = [zeros(length(unocc) + 1); ones(Nf - 1)]
     end
 

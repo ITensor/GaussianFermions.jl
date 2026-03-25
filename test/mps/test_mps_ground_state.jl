@@ -1,8 +1,8 @@
-using Test
-using ITensors
-using ITensorMPS
 import GaussianFermions as gf
-using GaussianFermions: Up, Dn
+using GaussianFermions: Dn, Up
+using ITensorMPS
+using ITensors
+using Test
 
 include("linear_combination_mpo.jl")
 
@@ -85,15 +85,15 @@ include("linear_combination_mpo.jl")
     end
 
     @testset "Bond entanglement entropies" begin
-        @test norm(S_gf - S_mps) < 1E-6
+        @test norm(S_gf - S_mps) < 1.0e-6
     end
 
     @testset "Site densities" begin
-        @test norm(n_gf - n_mps) < 1E-6
+        @test norm(n_gf - n_mps) < 1.0e-6
     end
 
     @testset "Correlation matrix" begin
-        @test norm(C_gf - C_mps) < 1E-5
+        @test norm(C_gf - C_mps) < 1.0e-5
     end
 
     #
@@ -101,34 +101,34 @@ include("linear_combination_mpo.jl")
     #
     w = randn(N)
     Cw = gf.AnnihilationOperator(gf.labels(ϕ0))
-    for j=1:N
-        Cw += w[j],"C",j
+    for j in 1:N
+        Cw += w[j], "C", j
     end
-    Cwϕ0 = gf.apply(Cw,ϕ0)
+    Cwϕ0 = gf.apply(Cw, ϕ0)
 
     # Using MPO MPS
-    Cw_mpo = linear_combination_mpo(sites,w,"C")
+    Cw_mpo = linear_combination_mpo(sites, w, "C")
     Cwpsi = apply(Cw_mpo, psi)
 
-    @test gf.trace(Cwϕ0) ≈ inner(Cwpsi,Cwpsi) atol=1E-5
-    @test gf.density(Cwϕ0) ≈ expect(Cwpsi,"N") atol=1E-5
+    @test gf.trace(Cwϕ0) ≈ inner(Cwpsi, Cwpsi) atol = 1.0e-5
+    @test gf.density(Cwϕ0) ≈ expect(Cwpsi, "N") atol = 1.0e-5
 
     #
     # Test action of ∑ⱼ vⱼ C†ⱼ operator
     #
     v = randn(N)
     Cdagv = gf.CreationOperator(gf.labels(ϕ0))
-    for j=1:N
-        Cdagv += v[j],"C†",j
+    for j in 1:N
+        Cdagv += v[j], "C†", j
     end
-    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
+    Cdagv_ϕ0 = gf.apply(Cdagv, ϕ0)
 
     # Using MPO MPS
-    Cdagv_mpo = linear_combination_mpo(sites,v,"Cdag")
+    Cdagv_mpo = linear_combination_mpo(sites, v, "Cdag")
     Cdagv_psi = apply(Cdagv_mpo, psi)
 
-    @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi,Cdagv_psi) atol=1E-5
-    @test gf.density(Cdagv_ϕ0) ≈ expect(Cdagv_psi,"N") atol=1E-5
+    @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi, Cdagv_psi) atol = 1.0e-5
+    @test gf.density(Cdagv_ϕ0) ≈ expect(Cdagv_psi, "N") atol = 1.0e-5
 end
 
 @testset "MPS vs GaussianFermions: electron chain" begin
@@ -247,17 +247,17 @@ end
     w = randn(N)
 
     Cw = gf.AnnihilationOperator(gf.labels(ϕ0))
-    for j=1:N
-        Cw += w[j],"C",Up(j)
+    for j in 1:N
+        Cw += w[j], "C", Up(j)
     end
-    Cwϕ0 = gf.apply(Cw,ϕ0)
+    Cwϕ0 = gf.apply(Cw, ϕ0)
 
     # Using MPO MPS
-    Cw_mpo = linear_combination_mpo(sites,w,"Cup")
+    Cw_mpo = linear_combination_mpo(sites, w, "Cup")
     Cwpsi = apply(Cw_mpo, psi)
 
-    @test gf.trace(Cwϕ0) ≈ inner(Cwpsi,Cwpsi) atol=1E-5
-    @test gf.total_density(Cwϕ0) ≈ expect(Cwpsi,"Ntot") atol=1E-5
+    @test gf.trace(Cwϕ0) ≈ inner(Cwpsi, Cwpsi) atol = 1.0e-5
+    @test gf.total_density(Cwϕ0) ≈ expect(Cwpsi, "Ntot") atol = 1.0e-5
 
     #
     # Test action of ∑ⱼ vⱼ C†ⱼ operator
@@ -265,17 +265,17 @@ end
     v = randn(N)
 
     Cdagv = gf.CreationOperator(gf.labels(ϕ0))
-    for j=1:N
-        Cdagv += v[j],"C†",Up(j)
+    for j in 1:N
+        Cdagv += v[j], "C†", Up(j)
     end
-    Cdagv_ϕ0 = gf.apply(Cdagv,ϕ0)
+    Cdagv_ϕ0 = gf.apply(Cdagv, ϕ0)
 
     # Using MPO MPS
-    Cdagv_mpo = linear_combination_mpo(sites,v,"Cdagup")
+    Cdagv_mpo = linear_combination_mpo(sites, v, "Cdagup")
     Cdagv_psi = apply(Cdagv_mpo, psi)
 
-    @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi,Cdagv_psi) atol=1E-5
-    @test gf.total_density(Cdagv_ϕ0) ≈ expect(Cdagv_psi,"Ntot") atol=1E-5
+    @test gf.trace(Cdagv_ϕ0) ≈ inner(Cdagv_psi, Cdagv_psi) atol = 1.0e-5
+    @test gf.total_density(Cdagv_ϕ0) ≈ expect(Cdagv_psi, "Ntot") atol = 1.0e-5
 end
 
 @testset "MPS vs GaussianFermions: 2D spinless fermion ladder" begin

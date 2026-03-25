@@ -21,7 +21,7 @@ end
 function square_lattice_h(N)
     verts = [(i, j) for i in 1:N for j in 1:N]
     H = gf.GaussianOperator(verts)
-    for i in 1:N,j in 1:N
+    for i in 1:N, j in 1:N
         (i < N) && (H = gf.add_hop(H, (i, j), (i + 1, j), -1))
         (j < N) && (H = gf.add_hop(H, (i, j), (i, j + 1), -1))
     end

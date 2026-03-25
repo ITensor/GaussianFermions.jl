@@ -1,5 +1,5 @@
-using ITensors
 using ITensorMPS
+using ITensors
 
 """
     linear_combination_mpo(sites, w::Vector, opname::String) -> MPO
@@ -11,10 +11,11 @@ Construct a bond-dimension-2 MPO representing the operator
 with Jordan-Wigner string ("F") operators included.
 
 # Arguments
-- `sites`: vector of site indices (from `siteinds`)
-- `w`: coefficient vector (length must match number of sites)
-- `opname`: operator name string. For "Fermion" sites: "C" or "Cdag".
-  For "Electron" sites: "Cup", "Cdn", "Cdagup", or "Cdagdn".
+
+  - `sites`: vector of site indices (from `siteinds`)
+  - `w`: coefficient vector (length must match number of sites)
+  - `opname`: operator name string. For "Fermion" sites: "C" or "Cdag".
+    For "Electron" sites: "Cup", "Cdn", "Cdagup", or "Cdagdn".
 """
 function linear_combination_mpo(sites, w::Vector{<:Number}, opname::String)
     N = length(sites)
@@ -61,9 +62,10 @@ function linear_combination_mpo(sites, w::Vector{<:Number}, opname::String)
             #         |0    I |
             ll = dag(links[j - 1])
             lr = links[j]
-            tensors[j] = F_j * onehot(ll => 1) * onehot(lr => 1) +
-                         w[j] * c_j * onehot(ll => 1) * onehot(lr => 2) +
-                         I_j * onehot(ll => 2) * onehot(lr => 2)
+            tensors[j] =
+                F_j * onehot(ll => 1) * onehot(lr => 1) +
+                w[j] * c_j * onehot(ll => 1) * onehot(lr => 2) +
+                I_j * onehot(ll => 2) * onehot(lr => 2)
         end
     end
 
