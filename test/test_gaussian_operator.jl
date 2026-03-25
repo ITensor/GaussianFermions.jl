@@ -164,7 +164,8 @@ end
     @test ϵ isa Vector{Float64}
     @test length(ϵ) == length(sites)
 
-    h_reconstruct = ϕ * Diagonal(ϵ) * ϕ'
+    ϕM = Matrix(ϕ)
+    h_reconstruct = ϕM * Diagonal(ϵ) * ϕM'
     @test norm(gf.matrix_elements(H_graph) - h_reconstruct) < 1.0e-12
 end
 
