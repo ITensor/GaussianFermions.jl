@@ -1,12 +1,24 @@
 name = "GaussianFermions"
 uuid = "2621d614-78f7-4793-80a6-586747345a0a"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["ITensor developers <support@itensor.org> and contributors"]
+
+[workspace]
+projects = ["benchmark", "dev", "docs", "examples", "test"]
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NamedArrays = "86f7a689-2022-50b4-a561-43c23ac3c673"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+
+[compat]
+ITensorMPS = "0.3.23"
+ITensors = "0.9.25"
+LinearAlgebra = "1.10"
+NamedArrays = "0.10.5"
+Printf = "1.10"
+Test = "1.10"
+julia = "1.10"
 
 [extras]
 ITensorMPS = "0d1a4710-d33b-49a5-8f18-73bdf49b47e2"
@@ -15,15 +27,3 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test", "ITensors", "ITensorMPS"]
-
-[compat]
-ITensorMPS = "0.3.23"
-ITensors = "0.9.25"
-LinearAlgebra = "1.10"
-NamedArrays = "0.10.5"
-Printf = "1.10"
-julia = "1.10"
-Test = "1.10"
-
-[workspace]
-projects = ["benchmark", "dev", "docs", "examples", "test"]
