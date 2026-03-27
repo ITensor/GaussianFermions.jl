@@ -1,8 +1,8 @@
 [deps]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 GaussianFermions = "2621d614-78f7-4793-80a6-586747345a0a"
-ITensorPkgSkeleton = "3d388ab1-018a-49f4-ae50-18094d5f71ea"
 ITensorMPS = "0d1a4710-d33b-49a5-8f18-73bdf49b47e2"
+ITensorPkgSkeleton = "3d388ab1-018a-49f4-ae50-18094d5f71ea"
 ITensors = "9136182c-28ba-11e9-034c-db9fb085ebd5"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NamedArrays = "86f7a689-2022-50b4-a561-43c23ac3c673"
@@ -14,7 +14,8 @@ path = ".."
 
 [compat]
 Aqua = "0.8.9"
+GaussianFermions = "0.1"
+ITensorMPS = "0.3.23"
 ITensorPkgSkeleton = "0.3.42"
 ITensors = "0.9.25"
-GaussianFermions = "0.1"
 Test = "1.10"
