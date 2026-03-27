@@ -1,5 +1,7 @@
 # GaussianFermions.jl
 
+Tools for Gaussian or free fermion calculations.
+
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://itensor.github.io/GaussianFermions.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://itensor.github.io/GaussianFermions.jl/dev/)
 [![Build Status](https://github.com/ITensor/GaussianFermions.jl/actions/workflows/Tests.yml/badge.svg?branch=main)](https://github.com/ITensor/GaussianFermions.jl/actions/workflows/Tests.yml?query=branch%3Amain)
