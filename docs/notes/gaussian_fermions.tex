@@ -180,7 +180,7 @@ So the amplitude tensor $\Psi$ of $\ket{AB}$ is constructed from two vectors (it
 
 To understand the origin of the name Slater determinant, consider the basis defined as $\ket{i} = \hat{c}^\dagger_i \ket{0}$, the so-called ``real-space basis''.
 Expressing states in this basis is known as \emph{first quantization}.
-We can express the amplitudes of $\ket{AB}$ in this basis, as $\psi_{AB}(i,j) = \braket{i,j|AB} = \bra{0} c^\dagger_i c^\dagger_j \ket{AB}$. One finds that
+We can express the amplitudes of $\ket{AB}$ in this basis, as $\psi_{AB}(i,j) = \braket{i,j|AB} = (c^\dagger_i c^\dagger_j \ket{0})^\dagger \ket{AB} = \bra{0} c_j c_i \ket{AB}$. One finds that
 \begin{align}
 \psi_{AB}(i,j) =  A^i B^j - B^i A^j  \label{eq:two_particle_slater}
 \end{align}
@@ -441,7 +441,7 @@ Given a spectral decomposition of the ``hopping matrix'' $h^i_j = \sum_n \phi^i_
 
 The correlation matrix of a thermal Gaussian state is 
 \begin{align}
-C_i\,^j = \text{Tr}[ \hat{c}^\dagger_i \hat{c}^j ] = \left[ \frac{1}{1+e^{\beta h}} \right]_i^j 
+    C_i\,^j = \text{Tr}[ \hat{c}^\dagger_i \hat{c}^j ] = \left[ \frac{1}{1+e^{\beta \mathbf{h}}} \right]_i^j 
 \end{align}
 
 \section{Entanglement and Schmidt Decomposition of Gaussian States}
