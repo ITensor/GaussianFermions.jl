@@ -58,6 +58,6 @@ end
 function thermal_state(H::GaussianOperator, β::Float64)
     N = length(H)
     ϵ, ϕ = energies_states(H)
-    occupancies = map(x -> 1/(1+exp(-β*x)), ϵ)
+    occupancies = map(x -> 1 / (1 + exp(-β * x)), ϵ)
     return GaussianState(ϕ, occupancies)
 end
