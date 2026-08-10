@@ -432,17 +432,23 @@ The Gaussian formalism extends straightforwardly to finite temperature, also off
 \begin{align}
 \hat{\rho} = \frac{1}{Z}\ e^{-\beta \hat{H}} \ \ .
 \end{align}
-Given a spectral decomposition of the ``hopping matrix'' $h^i_j = \sum_n \phi^i_n \epsilon_n \hat{\phi}^n_j$ and defining $\hat{\phi}^\dagger_n = \sum_j \phi^j_n \hat{c}^\dagger_j$, we can then write 
+Given a spectral decomposition of the ``hopping matrix'' $h^i_j = \sum_n \phi^i_n \epsilon_n \bar{\phi}^n_j$ and defining $\hat{\phi}^\dagger_n = \sum_j \phi^j_n \hat{c}^\dagger_j$, we can then write 
 \begin{align}
 \hat{\rho} = \frac{1}{Z}\   e^{-\beta \sum_n  \epsilon_n \hat{\phi}^\dagger_n \hat{\phi}^n} \ \ . 
 \end{align}
 
-\section{Correlation Matrix}
+\subsection{Thermal Correlation Matrix}
 
 The correlation matrix of a thermal Gaussian state is 
 \begin{align}
-    C_i\,^j = \text{Tr}[ \hat{c}^\dagger_i \hat{c}^j ] = \left[ \frac{1}{1+e^{\beta \mathbf{h}}} \right]_i^j 
+    C_i\,^j = \text{Tr}[ \hat{c}^\dagger_i \hat{c}^j ] = \left[ \frac{1}{1+e^{\beta \mathbf{h}}} \right]_i^j  =  \sum_n \bar{\phi}^n_i \, f_\beta(\epsilon_n) \, \phi^j_n 
 \end{align}
+where $f_\beta(\epsilon)$ is the \emph{Fermi function}
+\begin{align}
+f_\beta(\epsilon) = \frac{1}{1+e^{\beta \epsilon}} \ \ .
+\end{align}
+Notably, for low temperatures $\beta \rightarrow \infty$, $f_\beta(\epsilon \leq 0) \rightarrow 1$ and $f_\beta(\epsilon > 0) \rightarrow 0$.
+
 
 \section{Entanglement and Schmidt Decomposition of Gaussian States}
 
