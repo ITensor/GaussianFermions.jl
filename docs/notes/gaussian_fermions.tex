@@ -159,7 +159,7 @@ The most general many-particle state is a sum of these:
 \end{align}
 where $\Psi^{n_1 n_2 \cdots n_N}$ is an arbitrary tensor of complex amplitudes. The anti-commuting nature of the fermions is automatically satisfied by the properties of the basis, and no additional symmetry property needs to be assumed for the amplitudes $\Psi^{n_1 n_2 \cdots n_N}$. 
 
-A typical extra assumption, though, is that for a closed system the total number of particles $N_p$ is fixed. Mathematically this means $n_1 + n_2 + \ldots + n_N = N_p$ otherwise $\Psi^{n_1 n_2 \cdots n_N} = 0$. (Superconducting states are a common exception to this rule, though these are more properly understood in terms of density matrices or mixed states.)
+A typical additional assumption is that for a closed system the total number of particles $N_p$ is fixed. Mathematically this means $n_1 + n_2 + \ldots + n_N = N_p$ otherwise $\Psi^{n_1 n_2 \cdots n_N} = 0$. (One important exception are states derived from mean-field approximations of superconductors, though one can also formulate descriptions of superconductors which are number-preserving.)
 
 A special subset of many-particle fermionic states are the \emph{Gaussian states}, more commonly known as \emph{Slater determinants}.
 The general form of a Gaussian state with four fermions is:
@@ -167,7 +167,7 @@ The general form of a Gaussian state with four fermions is:
 \ket{\Psi} & = \hat{A}^\dagger \hat{B}^\dagger \hat{C}^\dagger \hat{D}^\dagger \ket{0} \nonumber \\
 & = \left( \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1} \right) \left( \sum_{i_2=1}^N B^{i_2} \hat{c}^\dagger_{i_2} \right) \left( \sum_{i_3=1}^N C^{i_3} \hat{c}^\dagger_{i_3} \right) \left( \sum_{i_4=1}^N D^{i_4} \hat{c}^\dagger_{i_4} \right) \ket{0} \ \ \ .
 \end{align}
-Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions which are in the ``orbitals'' $A, B, C$ and $D$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not required to be orthogonal, though the properties of the state are simpler to deduce if they are.
+Above we have introduced operators such as $\hat{A} =  \sum_{i_1=1}^N A^{i_1} \hat{c}^\dagger_{i_1}$. One describes the state above by saying that it contains four fermions which are in the ``orbitals'' or ``single-particle wavefunctions'' $\vec{A}, \vec{B}, \vec{C}$ and $\vec{D}$. These orbitals are vectors $\vec{A}= [A^1 \ A^2 \ \ldots A^N]$ which are unit-normalized. The vectors are not required to be orthogonal, though the properties of the state are simpler to understand if they are.
 
 The Gaussian states are quite special and far from being a general fermionic state, even though they are elements of the general vector space of fermionic many-body states. To see that the Gaussian states are not general, let us write a two-particle Gaussian state 
 $\ket{AB} = \hat{A}^\dagger \hat{B}^\dagger \ket{0}$ in the general form Eq.~(\ref{eqn:general_state}) for a fermionic state.
