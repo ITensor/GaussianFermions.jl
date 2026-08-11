@@ -44,13 +44,20 @@ end
 E0, ϕ0 = gf.ground_state(H; Nf = N ÷ 2)
 ```
 """
-function ground_state(G::GaussianOperator; Nf = nothing)
-    N = length(G)
-    ϵ, ϕ = energies_states(G)
+function ground_state(H::GaussianOperator; Nf = nothing)
+    N = length(H)
+    ϵ, ϕ = energies_states(H)
     occupancies = ground_state_occupancies(ϵ; Nf)
     E = 0.0
     for n in 1:length(occupancies)
         E += ϵ[n] * occupancies[n]
     end
     return E, GaussianState(ϕ, occupancies)
+end
+
+function thermal_state(H::GaussianOperator, β::Float64)
+    N = length(H)
+    ϵ, ϕ = energies_states(H)
+    occupancies = map(x -> 1 / (1 + exp(-β * x)), ϵ)
+    return GaussianState(ϕ, occupancies)
 end
