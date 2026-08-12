@@ -55,9 +55,9 @@ function ground_state(H::GaussianOperator; Nf = nothing)
     return E, GaussianState(ϕ, occupancies)
 end
 
-function thermal_state(H::GaussianOperator, β::Float64)
+function thermal_state(H::GaussianOperator, β::Real)
     N = length(H)
     ϵ, ϕ = energies_states(H)
-    occupancies = map(x -> 1 / (1 + exp(-β * x)), ϵ)
+    occupancies = map(x -> 1 / (1 + exp(β * x)), ϵ)
     return GaussianState(ϕ, occupancies)
 end
